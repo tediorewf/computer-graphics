@@ -30,33 +30,19 @@ namespace RasterAlgorithms
 
             double m = deltaX == 0 ? deltaY : (double)deltaY / deltaX;
             SwapDrawingAxisIfNeeded(m, out bool swappedDrawingAxis, out int growthDirection);
-            if (!swappedDrawingAxis)
-            {
-                SwapPointsIfNeeded(ref x1, ref y1, ref x2, ref y2);
-            }
-            else
-            {
-                SwapPointsIfNeeded(ref y1, ref x1, ref y2, ref x2);
-            }
 
             deltaX = Math.Abs(deltaX);
             deltaY = Math.Abs(deltaY);
 
-            int decision;
             if (!swappedDrawingAxis)
             {
-                decision = 2 * deltaY - deltaX;
-            }
-            else
-            {
-                decision = 2 * deltaX - deltaY;
-            }
+                SwapPointsIfNeeded(ref x1, ref y1, ref x2, ref y2);
 
-            int currentX = x1;
-            int currentY = y1;
+                int decision = 2 * deltaY - deltaX;
 
-            if (!swappedDrawingAxis)
-            {
+                int currentX = x1;
+                int currentY = y1;
+
                 while (currentX <= x2)
                 {
                     source[currentX, currentY] = c1;
@@ -65,6 +51,13 @@ namespace RasterAlgorithms
             }
             else
             {
+                SwapPointsIfNeeded(ref y1, ref x1, ref y2, ref x2);
+
+                int decision = 2 * deltaX - deltaY;
+
+                int currentX = x1;
+                int currentY = y1;
+
                 while (currentY <= y2)
                 {
                     source[currentX, currentY] = c1;
