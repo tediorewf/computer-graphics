@@ -70,6 +70,7 @@
             this.trianglePictureBox.Size = new System.Drawing.Size(980, 838);
             this.trianglePictureBox.TabIndex = 3;
             this.trianglePictureBox.TabStop = false;
+            this.trianglePictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.trianglePictureBox_MouseClick);
             this.trianglePictureBox.MouseLeave += new System.EventHandler(this.trianglePictureBox_MouseLeave);
             this.trianglePictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.trianglePictureBox_MouseMove);
             // 
@@ -97,6 +98,7 @@
             this.MinimizeBox = false;
             this.Name = "Task3Form";
             this.Text = "Растеризация треугольника";
+            this.Load += new System.EventHandler(this.Task3Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trianglePictureBox)).EndInit();
             this.ResumeLayout(false);
 

@@ -48,7 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BresenhamAlgorithm.cs" />
+    <Compile Include="ColoredPoint.cs" />
     <Compile Include="FastBitmap.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
