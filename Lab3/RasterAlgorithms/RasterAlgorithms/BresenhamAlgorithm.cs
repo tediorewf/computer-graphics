@@ -34,17 +34,17 @@ namespace RasterAlgorithms
 
             int decision = 2 * axisGrowthDirection * (deltaY - deltaX);
 
-            int currentX = x1;
-            int currentY = y1;
+            int xCurrent = x1;
+            int yCurrent = y1;
 
             int refereeY = Math.Max(axisGrowthDirection, 0);
             int refereeX = Math.Min(axisGrowthDirection, 0);
 
-            while (currentX != x2)
+            while (xCurrent != x2)
             {
-                fastDrawingSurface[currentX, currentY] = color;
-                currentX += growthDirectionX * refereeY;  // gradient <= 1
-                currentY -= growthDirectionY * refereeX;  // gradient > 1
+                fastDrawingSurface[xCurrent, yCurrent] = color;
+                xCurrent += growthDirectionX * refereeY;  // gradient <= 1
+                yCurrent -= growthDirectionY * refereeX;  // gradient > 1
 
                 if (decision < 0)
                 {
@@ -52,8 +52,8 @@ namespace RasterAlgorithms
                 }
                 else
                 {
-                    currentY += growthDirectionY * refereeY;  // gradient <= 1
-                    currentX -= growthDirectionX * refereeX;  // gradient > 1
+                    yCurrent += growthDirectionY * refereeY;  // gradient <= 1
+                    xCurrent -= growthDirectionX * refereeX;  // gradient > 1
                     decision += 2 * axisGrowthDirection * (deltaY - deltaX);
                 }
             }
