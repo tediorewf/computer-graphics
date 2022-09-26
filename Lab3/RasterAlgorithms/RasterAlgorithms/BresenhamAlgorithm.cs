@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace RasterAlgorithms
@@ -12,94 +8,55 @@ namespace RasterAlgorithms
 
     public static class BresenhamAlgoritm
     {
-        public static void DrawBresenhamLine(this Bitmap source, ColoredPoint p1, ColoredPoint p2)
+        public static void DrawBresenhamLine(this Bitmap drawingSurface, Point p1, Point p2, Color color)
         {
-            using (var fastSource = new FastBitmap(source))
-                fastSource.DrawBresenhamLine(p1, p2);
+            using (var fastSource = new FastBitmap(drawingSurface))
+                fastSource.DrawBresenhamLine(p1, p2, color);
         }
 
-        public static void DrawBresenhamLine(this FastBitmap fastSource, ColoredPoint p1, ColoredPoint p2)
+        public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color)
         {
-            fastSource.DrawBresenhamLine(p1.X, p1.Y, p1.Color, p2.X, p2.Y, p2.Color);
+            fastDrawingSurface.DrawBresenhamLine(p1.X, p1.Y, p2.X, p2.Y, color);
         }
 
-        public static void DrawBresenhamLine(this FastBitmap source, int x1, int y1, Color c1, int x2, int y2, Color c2)
+        public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, int x1, int y1, int x2, int y2, Color color)
         {
-            int deltaX = x2 - x1;
-            int deltaY = y2 - y1;
+            int diffX = x2 - x1;
+            int diffY = y2 - y1;
 
-            double m = deltaX == 0 ? deltaY : (double)deltaY / deltaX;
-            SwapDrawingAxisIfNeeded(m, out bool swappedDrawingAxis, out int growthDirection);
+            int growthDirectionX = diffX > 0 ? 1 : -1;
+            int growthDirectionY = diffY > 0 ? 1 : -1;
 
-            deltaX = Math.Abs(deltaX);
-            deltaY = Math.Abs(deltaY);
+            int deltaX = Math.Abs(diffX);
+            int deltaY = Math.Abs(diffY);
 
-            if (!swappedDrawingAxis)
+            // Определяем gradient <= 1 или gradient > 1
+            int axisGrowthDirection = deltaX > deltaY ? 1 : -1;
+
+            int decision = 2 * axisGrowthDirection * (deltaY - deltaX);
+
+            int currentX = x1;
+            int currentY = y1;
+
+            int refereeY = Math.Max(axisGrowthDirection, 0);
+            int refereeX = Math.Min(axisGrowthDirection, 0);
+
+            while (currentX != x2)
             {
-                SwapPointsIfNeeded(ref x1, ref y1, ref x2, ref y2);
+                fastDrawingSurface[currentX, currentY] = color;
+                currentX += growthDirectionX * refereeY;  // gradient <= 1
+                currentY -= growthDirectionY * refereeX;  // gradient > 1
 
-                int decision = 2 * deltaY - deltaX;
-
-                int currentX = x1;
-                int currentY = y1;
-
-                while (currentX <= x2)
+                if (decision < 0)
                 {
-                    source[currentX, currentY] = c1;
-                    MoveBresenhamPixel(ref currentX, ref currentY, ref decision, deltaX, deltaY, growthDirection);
+                    decision += 2 * (deltaY * refereeY - deltaX * refereeX);
                 }
-            }
-            else
-            {
-                SwapPointsIfNeeded(ref y1, ref x1, ref y2, ref x2);
-
-                int decision = 2 * deltaX - deltaY;
-
-                int currentX = x1;
-                int currentY = y1;
-
-                while (currentY <= y2)
+                else
                 {
-                    source[currentX, currentY] = c1;
-                    MoveBresenhamPixel(ref currentY, ref currentX, ref decision, deltaY, deltaX, growthDirection);
+                    currentY += growthDirectionY * refereeY;  // gradient <= 1
+                    currentX -= growthDirectionX * refereeX;  // gradient > 1
+                    decision += 2 * axisGrowthDirection * (deltaY - deltaX);
                 }
-            }
-        }
-
-        private static void SwapDrawingAxisIfNeeded(double m, out bool swappedDrawingAxis, out int growthDirection)
-        {
-            swappedDrawingAxis = Math.Abs(m) >= 1;
-            if (swappedDrawingAxis)
-            {
-                growthDirection = m >= 1 ? 1 : -1;
-            }
-            else
-            {
-                growthDirection = 0 < m && m < 1 ? 1 : -1;
-            }
-        }
-
-        private static void SwapPointsIfNeeded(ref int x1, ref int y1, ref int x2, ref int y2)
-        {
-            if (x1 > x2)
-            {
-                Swap(ref x1, ref x2);
-                Swap(ref y1, ref y2);
-            }
-        }
-
-        private static void MoveBresenhamPixel(ref int currentX, ref int currentY, ref int decision, int deltaX, int deltaY, int growthDirection)
-        {
-            currentX += 1;
-
-            if (decision < 0)
-            {
-                decision += 2 * deltaY;
-            }
-            else
-            {
-                currentY += growthDirection;
-                decision += 2 * (deltaY - deltaX);
             }
         }
     }

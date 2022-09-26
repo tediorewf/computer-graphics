@@ -14,7 +14,7 @@ namespace RasterAlgorithms
 
     public partial class Task3Form : Form
     {
-        private List<ColoredPoint> points = new List<ColoredPoint>();
+        private List<Point> points = new List<Point>();
 
         public Task3Form()
         {
@@ -42,15 +42,16 @@ namespace RasterAlgorithms
         {
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
             {
-                var coloredPoint = new ColoredPoint(e.X, e.Y, Color.Blue);
-                points.Add(coloredPoint);
+                var point = new Point(e.X, e.Y);
+                points.Add(point);
                 var bmp = trianglePictureBox.Image as Bitmap;
-                bmp.SetPixel(coloredPoint.X, coloredPoint.Y, coloredPoint.Color);
+                var color = Color.Blue;
+                bmp.SetPixel(point.X, point.Y, color);
                 trianglePictureBox.Image = bmp;
                 if (points.Count == 2)
                 {
                     bmp = trianglePictureBox.Image as Bitmap;
-                    bmp.DrawBresenhamLine(points[0], points[1]);
+                    bmp.DrawBresenhamLine(points[0], points[1], color);
                     trianglePictureBox.Image = bmp;
                     points.Clear();
                 }
