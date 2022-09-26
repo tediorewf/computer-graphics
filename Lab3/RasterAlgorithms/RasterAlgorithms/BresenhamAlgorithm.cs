@@ -4,14 +4,13 @@ using System.Drawing;
 namespace RasterAlgorithms
 {
     using FastBitmap;
-    using static Helpers;
 
     public static class BresenhamAlgoritm
     {
         public static void DrawBresenhamLine(this Bitmap drawingSurface, Point p1, Point p2, Color color)
         {
-            using (var fastSource = new FastBitmap(drawingSurface))
-                fastSource.DrawBresenhamLine(p1, p2, color);
+            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+                fastDrawingSurface.DrawBresenhamLine(p1, p2, color);
         }
 
         public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color)
