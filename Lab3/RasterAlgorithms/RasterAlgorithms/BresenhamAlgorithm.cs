@@ -5,7 +5,7 @@ namespace RasterAlgorithms
 {
     using FastBitmap;
 
-    public static class BresenhamAlgoritm
+    public static class BresenhamAlgorithm
     {
         public static void DrawBresenhamLine(this Bitmap drawingSurface, Point p1, Point p2, Color color)
         {

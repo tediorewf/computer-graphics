@@ -10,8 +10,6 @@ using System.Windows.Forms;
 
 namespace RasterAlgorithms
 {
-    using static BresenhamAlgoritm;
-
     public partial class Task3Form : Form
     {
         private List<Point> points = new List<Point>();
