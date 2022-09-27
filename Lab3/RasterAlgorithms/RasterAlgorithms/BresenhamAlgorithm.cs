@@ -37,7 +37,7 @@ namespace RasterAlgorithms
             int refereeY = Math.Max(axisGrowthDirection, 0);
             int refereeX = Math.Min(axisGrowthDirection, 0);
 
-            while (x1 != x2)
+            while (x1 != x2 || y1 != y2)
             {
                 fastDrawingSurface[x1, y1] = color;
                 x1 += growthDirectionX * refereeY;  // gradient <= 1
