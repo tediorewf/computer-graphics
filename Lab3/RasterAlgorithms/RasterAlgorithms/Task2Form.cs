@@ -39,9 +39,9 @@ namespace RasterAlgorithms
 		}
 		private void plot(int x, int y, double c)
         {
-			int col = (int)c * 100;
+			int col = (int)c * 255;
 			var bmp = pictureBox1.Image as Bitmap;
-			Color color = Color.FromArgb(col, col, col);
+			Color color = Color.FromArgb(255-col,255- col,255- col);
 			Pen pen = new Pen(color, 1);
 			bmp.SetPixel(x, y, color);
 			pictureBox1.Image = bmp;
