@@ -82,6 +82,7 @@
             this.removeVerticesButton.TabIndex = 4;
             this.removeVerticesButton.Text = "Удалить вершины";
             this.removeVerticesButton.UseVisualStyleBackColor = true;
+            this.removeVerticesButton.Click += new System.EventHandler(this.removeVerticesButton_Click);
             // 
             // Task3Form
             // 

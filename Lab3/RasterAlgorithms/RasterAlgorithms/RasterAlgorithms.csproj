@@ -52,6 +52,7 @@
     <Compile Include="ColoredPoint.cs" />
     <Compile Include="FastBitmap.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ListExtensionMethods.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

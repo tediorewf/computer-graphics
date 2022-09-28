@@ -80,5 +80,11 @@ namespace RasterAlgorithms
                 }*/
             }
         }
+
+        private void removeVerticesButton_Click(object sender, EventArgs e)
+        {
+            var size = trianglePictureBox.Image.Size;
+            trianglePictureBox.Image = new Bitmap(size.Width, size.Height);
+        }
     }
 }

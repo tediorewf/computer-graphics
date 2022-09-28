@@ -23,20 +23,23 @@ namespace RasterAlgorithms
             return lhs.Y.CompareTo(rhs.Y);
         }
     }
-    public class PointsPair
+
+    public class ColoredPointsGroupPair
     {
-        public PointsPair(ColoredPoint left, ColoredPoint right)
+        public List<ColoredPoint> Left { get; }
+        public List<ColoredPoint> Right { get; }
+
+        public ColoredPointsGroupPair(List<ColoredPoint> left, List<ColoredPoint> right)
         {
             Left = left;
             Right = right;
         }
-
-        public ColoredPoint Left { get; set; }
-        public ColoredPoint Right { get; set; }
     }
 
     public static class TriangleRasterisationAlgorithm
     {
+        private const int IndexVertex1 = 0, IndexVertex2 = 1, IndexVertex3 = 2;
+
         public static void RasteriseTriangle(this Bitmap drawingSurface, ColoredPoint v1, ColoredPoint v2, ColoredPoint v3)
         {
             EnsureVerticesAreDifferent(v1, v2, v3);
@@ -46,21 +49,40 @@ namespace RasterAlgorithms
 
             using (var fastDrawingsurface = new FastBitmap(drawingSurface))
             {
-                var pointsPairs = MakeBresenhamMovement(vertices[0], vertices[1])
-                    .Concat(MakeBresenhamMovement(vertices[1], vertices[2]))
-                    .Zip(MakeBresenhamMovement(vertices[0], vertices[2]), (pLeft, pRight) => new PointsPair(pLeft, pRight));
-                foreach (var pointsPair in pointsPairs)
+                var pointsGroupPairs = MakeBresenhamMovement(vertices[IndexVertex1], vertices[IndexVertex2])
+                    .Concat(MakeBresenhamMovement(vertices[IndexVertex2], vertices[IndexVertex3]))
+                    .Zip(MakeBresenhamMovement(vertices[IndexVertex1], vertices[IndexVertex3]), (pointsGroupLeft, pointsGroupRight) => new ColoredPointsGroupPair(pointsGroupLeft, pointsGroupRight));
+                foreach (var pointsGroupPair in pointsGroupPairs)
                 {
-                    var pLeft = pointsPair.Left;
-                    var pRight = pointsPair.Right;
-                    int coordinateDeltaX = Math.Abs(pLeft.X - pRight.X);
-                    fastDrawingsurface[pLeft.X, pLeft.Y] = pLeft.Color;
-                    for (int x = pLeft.X + 1; x < pRight.X; x += 1)
+                    var pointsGroupLeft = pointsGroupPair.Left;
+                    var pointsGroupRight = pointsGroupPair.Right;
+                    
+                    var leftSideMostRightPoint = pointsGroupLeft.FetchRightMost();
+                    var rightSideMostLeftPoint = pointsGroupRight.FetchLeftMost();
+
+                    int coordinateDeltaX = Math.Abs(leftSideMostRightPoint.X - rightSideMostLeftPoint.X);
+                    fastDrawingsurface[leftSideMostRightPoint.X, leftSideMostRightPoint.Y] = leftSideMostRightPoint.Color;
+                    int y = leftSideMostRightPoint.Y;
+                    for (int x = leftSideMostRightPoint.X + 1; x < rightSideMostLeftPoint.X; x += 1)
                     {
-                        var currentCOlor = ApplyLinearInterpolation(pLeft.Color, pRight.Color, x, pRight.X, coordinateDeltaX);
-                        fastDrawingsurface[x, pLeft.Y] = currentCOlor;
+                        var currentCOlor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                        fastDrawingsurface[x, y] = currentCOlor;
                     }
-                    fastDrawingsurface[pRight.X, pRight.Y] = pRight.Color;
+                    for (int x = rightSideMostLeftPoint.X + 1; x < leftSideMostRightPoint.X; x += 1)
+                    {
+                        var currentCOlor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                        fastDrawingsurface[x, y] = currentCOlor;
+                    }
+                    fastDrawingsurface[rightSideMostLeftPoint.X, rightSideMostLeftPoint.Y] = rightSideMostLeftPoint.Color;
+
+                    foreach (var pointGroupLeft in pointsGroupLeft)
+                    {
+                        fastDrawingsurface[pointGroupLeft.X, pointGroupLeft.Y] = pointGroupLeft.Color;
+                    }
+                    foreach (var pointGroupRight in pointsGroupRight)
+                    {
+                        fastDrawingsurface[pointGroupRight.X, pointGroupRight.Y] = pointGroupRight.Color;
+                    }
                 }
             }
         }
@@ -69,7 +91,7 @@ namespace RasterAlgorithms
         {
             if (v1.X == v2.X && v1.Y == v2.Y || v2.X == v3.X && v2.Y == v3.Y)
             {
-                throw new TriangleRasterisationException("Есть вершины с совпадающими координататми");
+                throw new TriangleRasterisationException("Есть вершины с совпадающими координатами");
             }
 
             if (v1.Color == v2.Color || v2.Color == v3.Color)
@@ -78,7 +100,7 @@ namespace RasterAlgorithms
             }
         }
 
-        private static IEnumerable<ColoredPoint> MakeBresenhamMovement(ColoredPoint v1, ColoredPoint v2)
+        private static IEnumerable<List<ColoredPoint>> MakeBresenhamMovement(ColoredPoint v1, ColoredPoint v2)
         {
             int x1 = v1.X, x2 = v2.X;
             int y1 = v1.Y, y2 = v2.Y;
@@ -93,10 +115,6 @@ namespace RasterAlgorithms
             int deltaX = Math.Abs(diffX);
             int deltaY = Math.Abs(diffY);
 
-            int xCurrent = x1;
-            int yCurrent = y1;
-
-            // Определяем gradient <= 1 или gradient > 1
             int axisGrowthDirection = deltaX > deltaY ? 1 : -1;
 
             int decision = 2 * axisGrowthDirection * (deltaY - deltaX);
@@ -107,13 +125,32 @@ namespace RasterAlgorithms
             int interpolationEndCoordinate = x2 * refereeY - y2 * refereeX;
             int interpolationCoordinateDelta = deltaX * refereeY - deltaY * refereeX;
 
-            while (xCurrent != x2 || yCurrent != y2)
-            {
-                var colorCurrent = ApplyLinearInterpolation(c1, c2, xCurrent * refereeY - yCurrent * refereeX, interpolationEndCoordinate, interpolationCoordinateDelta);
-                var nextVertex = new ColoredPoint(xCurrent, yCurrent, colorCurrent);
+            int previousY = y1;
 
-                xCurrent += growthDirectionX * refereeY;  // gradient <= 1
-                yCurrent -= growthDirectionY * refereeX;  // gradient > 1
+            var currentPointsQueue = new Queue<ColoredPoint>();
+
+            List<ColoredPoint> pointsGroup;
+
+            while (x1 != x2 || y1 != y2)
+            {
+                var colorCurrent = ApplyLinearInterpolation(c1, c2, x1 * refereeY - y1 * refereeX, interpolationEndCoordinate, interpolationCoordinateDelta);
+                var pointCurrent = new ColoredPoint(x1, y1, colorCurrent);
+
+                currentPointsQueue.Enqueue(pointCurrent);
+
+                if (pointCurrent.Y != previousY)
+                {
+                    previousY = pointCurrent.Y;
+                    pointsGroup = new List<ColoredPoint>();
+                    while (currentPointsQueue.Count > 1)
+                    {
+                        pointsGroup.Add(currentPointsQueue.Dequeue());
+                    }
+                    yield return pointsGroup;
+                }
+
+                x1 += growthDirectionX * refereeY;
+                y1 -= growthDirectionY * refereeX;
 
                 if (decision < 0)
                 {
@@ -121,12 +158,20 @@ namespace RasterAlgorithms
                 }
                 else
                 {
-                    yCurrent += growthDirectionY * refereeY;  // gradient <= 1
-                    xCurrent -= growthDirectionX * refereeX;  // gradient > 1
+                    y1 += growthDirectionY * refereeY;
+                    x1 -= growthDirectionX * refereeX;
                     decision += 2 * axisGrowthDirection * (deltaY - deltaX);
                 }
+            }
 
-                yield return nextVertex;
+            pointsGroup = new List<ColoredPoint>();
+            while (currentPointsQueue.Count > 0)
+            {
+                pointsGroup.Add(currentPointsQueue.Dequeue());
+            }
+            if (pointsGroup.Count > 0)
+            {
+                yield return pointsGroup;
             }
         }
 
