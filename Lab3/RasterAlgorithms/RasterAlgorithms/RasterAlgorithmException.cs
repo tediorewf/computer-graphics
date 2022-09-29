@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RasterAlgorithms
 {
-    public class RasterAlgorithmException : Exception
+public class RasterAlgorithmException : Exception
+{
+    public RasterAlgorithmException(string message) : base(message)
     {
-        public RasterAlgorithmException(string message) : base(message)
-        {
-        }
     }
+}
 }

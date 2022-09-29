@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RasterAlgorithms
 {
-    public static class Helpers
+public static class Helpers
+{
+    public static void Swap(ref int lhs, ref int rhs)
     {
-        public static void Swap(ref int lhs, ref int rhs)
-        {
-            int tmp = lhs;
-            lhs = rhs;
-            rhs = tmp;
-        }
+        int tmp = lhs;
+        lhs = rhs;
+        rhs = tmp;
     }
+}
 }
