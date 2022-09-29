@@ -27,10 +27,21 @@ namespace RasterAlgorithms
         {
 			try
 			{
-				x1 = int.Parse(textBox1.Text);
-				x2 = int.Parse(textBox2.Text);
-				y1 = int.Parse(textBox3.Text);
-				y2 = int.Parse(textBox4.Text);
+				bool b = true;
+                while (b)
+                {
+					x1 = int.Parse(textBox1.Text);
+					x2 = int.Parse(textBox2.Text);
+					y1 = int.Parse(textBox3.Text);
+					y2 = int.Parse(textBox4.Text);
+					b = ((x1 < 0) || (x2 < 0) || (y1 < 0) || (y2 < 0) || (x1 > 480) || (x2 > 480) || (y1 > 340) || (y2 > 340));
+                    if (b)
+                    {
+						MessageBox.Show("Значения за пределами границ");
+						return;
+					}
+				}
+				
 			}catch(Exception ex)
             {
 				MessageBox.Show(Text, ex.Message);
