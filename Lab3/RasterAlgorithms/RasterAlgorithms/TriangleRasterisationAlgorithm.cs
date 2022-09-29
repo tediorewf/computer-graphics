@@ -65,13 +65,13 @@ namespace RasterAlgorithms
                     int y = leftSideMostRightPoint.Y;
                     for (int x = leftSideMostRightPoint.X + 1; x < rightSideMostLeftPoint.X; x += 1)
                     {
-                        var currentCOlor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
-                        fastDrawingsurface[x, y] = currentCOlor;
+                        var currentColor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                        fastDrawingsurface[x, y] = currentColor;
                     }
                     for (int x = rightSideMostLeftPoint.X + 1; x < leftSideMostRightPoint.X; x += 1)
                     {
-                        var currentCOlor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
-                        fastDrawingsurface[x, y] = currentCOlor;
+                        var currentColor = ApplyLinearInterpolation(leftSideMostRightPoint.Color, rightSideMostLeftPoint.Color, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                        fastDrawingsurface[x, y] = currentColor;
                     }
                     fastDrawingsurface[rightSideMostLeftPoint.X, rightSideMostLeftPoint.Y] = rightSideMostLeftPoint.Color;
 
