@@ -39,9 +39,11 @@ namespace RasterAlgorithms
 		}
 		private void plot(int x, int y, double c)
         {
-			int col = (int)c * 255;
+			int col = 255 - (int)(c * 255);
 			var bmp = pictureBox1.Image as Bitmap;
-			Color color = Color.FromArgb(255-col,255- col,255- col);
+			Color color = Color.FromArgb(col, col, col);
+			//int cc = (int)(c*255);
+			//Color color = Color.FromArgb(cc, cc, cc);
 			Pen pen = new Pen(color, 1);
 			bmp.SetPixel(x, y, color);
 			pictureBox1.Image = bmp;
@@ -62,21 +64,58 @@ namespace RasterAlgorithms
 
         private double fpart(double x)
         {
-			return x - ipart(x);
-        }
-		private void draw_line(int x1,int y1,int x2, int y2)
-        {
-			int dx = x2 - x1;
-			int dy = y2- y1;
-			double gradient = dy / dx;
+			return x - (int)Math.Truncate(x);
+		}
+		private double rfpart(double x)
+		{
+			return 1 - fpart(x);
+		}
+		private void draw_line(int x1, int y1, int x2, int y2)
+		{
+			bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
 
+			if (steep) {
+				int t = y1;
+				y1 = x1;
+				x1 = t;
+				t = y2;
+				y2 = x2;
+				x2 = t;
+			}
+
+			if (x1 > x2) {
+				int t = x2;
+				x2 = x1;
+				x1 = t;
+				t = y2;
+				y2 = y1;
+				y1 = t;
+			}
+
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+			double gradient = 1.0;
+			if (dx != 0)
+            {
+				gradient = (double)dy / (double)dx;
+			}
+			double a = gradient;
 			int xend = round(x1);
 			double yend = y1 + gradient * (xend - x1);
-			var xgapg = 1 - fpart(x1 + 0.5);
+			var xgapg = rfpart(x1 + 0.5);
 			var xpxl1 = xend;  // будет использоваться в основном цикле
 			var ypxl1 = ipart(yend);
-			plot(xpxl1, ypxl1, (1 - fpart(yend)) * xgapg);
-			plot(xpxl1, ypxl1 + 1, fpart(yend) * xgapg);
+            if (steep)
+            {
+				plot(ypxl1, xpxl1, rfpart(yend) * xgapg);
+				plot(ypxl1 + 1, xpxl1, fpart(yend) * xgapg);
+            }
+            else
+            {
+				plot(xpxl1, ypxl1, rfpart(yend) * xgapg);
+				plot(xpxl1, ypxl1 + 1, fpart(yend) * xgapg);
+			}
+			
 			var intery = yend + gradient; // первое y-пересечение для цикла
 
 			// обработать конечную точку
@@ -85,15 +124,38 @@ namespace RasterAlgorithms
 			var xgap = fpart(x2 + 0.5);
 			var xpxl2 = xend;  // будет использоваться в основном цикле
 			var ypxl2 = ipart(yend);
-			plot(xpxl2, ypxl2, (1 - fpart(yend)) * xgap);
-			plot(xpxl2, ypxl2 + 1, fpart(yend) * xgap);
-
-			// основной цикл
-			for (var x = xpxl1 + 1; x < xpxl2 - 1; x++) {
-				plot(x, ipart(intery), 1 - fpart(intery));
-				plot(x, ipart(intery) + 1, fpart(intery));
-			    intery = intery + gradient;
+            if (steep)
+            {
+				plot(ypxl2, xpxl2, rfpart(yend) * xgap);
+				plot(ypxl2 + 1, xpxl2, fpart(yend) * xgap);
+            }
+            else
+            {
+				plot(xpxl2, ypxl2, rfpart(yend) * xgap);
+				plot(xpxl2, ypxl2 + 1, fpart(yend) * xgap);
 			}
+
+
+            // основной цикл
+            if (steep)
+            {
+				for (var x = xpxl1 + 1; x < xpxl2 - 1; x++)
+				{
+					plot(ipart(intery),x, rfpart(intery));
+					plot(ipart(intery) + 1,x, fpart(intery));
+					intery = intery + gradient;
+				}
+            }
+            else
+            {
+				for (var x = xpxl1 + 1; x < xpxl2 - 1; x++)
+				{
+					plot(x,ipart(intery),  rfpart(intery));
+					plot(x,ipart(intery) + 1, fpart(intery));
+					intery = intery + gradient;
+				}
+			}
+			
 		}
     }
 }
