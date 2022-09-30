@@ -34,5 +34,11 @@ namespace RasterAlgorithms
             var task3Form = new Task3Form();
             task3Form.ShowDialog();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var task1CForm = new Task1CForm();
+            task1CForm.ShowDialog();
+        }
     }
 }
