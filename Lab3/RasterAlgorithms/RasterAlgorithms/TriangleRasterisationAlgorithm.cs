@@ -9,13 +9,6 @@ namespace RasterAlgorithms
 {
     using FastBitmap;
 
-    public class TriangleRasterisationException : RasterAlgorithmException
-    {
-        public TriangleRasterisationException(string message) : base(message)
-        {
-        }
-    }
-
     public class NearestOrdinateComparer : IComparer<ColoredPoint>
     {
         public int Compare(ColoredPoint lhs, ColoredPoint rhs)
@@ -42,8 +35,6 @@ namespace RasterAlgorithms
 
         public static void RasteriseTriangle(this Bitmap drawingSurface, ColoredPoint v1, ColoredPoint v2, ColoredPoint v3)
         {
-            EnsureVerticesAreDifferent(v1, v2, v3);
-
             var vertices = new ColoredPoint[] { v1, v2, v3 };
             Array.Sort(vertices, new NearestOrdinateComparer());
 
@@ -84,14 +75,6 @@ namespace RasterAlgorithms
                         fastDrawingsurface[pointGroupRight.X, pointGroupRight.Y] = pointGroupRight.Color;
                     }
                 }
-            }
-        }
-
-        private static void EnsureVerticesAreDifferent(ColoredPoint v1, ColoredPoint v2, ColoredPoint v3)
-        {
-            if (v1.X == v2.X && v1.Y == v2.Y || v2.X == v3.X && v2.Y == v3.Y)
-            {
-                throw new TriangleRasterisationException("Есть вершины с совпадающими координатами");
             }
         }
 

@@ -5,13 +5,6 @@ namespace RasterAlgorithms
 {
     using FastBitmap;
 
-    public class BorderHightlightingException : RasterAlgorithmException
-    {
-        public BorderHightlightingException(string message) : base(message)
-        {
-        }
-    }
-
     public static class BorderHightlightingAlgorithm
     {
         public static void HightlightBorder(this Bitmap imageSurface, Point chosenPoint, Color chosenBorderColor)

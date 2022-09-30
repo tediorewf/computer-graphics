@@ -44,31 +44,13 @@ namespace RasterAlgorithms
             {   
                 var point = new ColoredPoint(e.X, e.Y, currentColor);
                 points.Add(point);
-                var bmp = trianglePictureBox.Image as Bitmap;
-                //bmp.SetPixel(point.X, point.Y, color);
-                //trianglePictureBox.Image = bmp;
                 if (points.Count == 3)
                 {
-                    bmp = trianglePictureBox.Image as Bitmap;
+                    var bmp = trianglePictureBox.Image as Bitmap;
                     bmp.RasteriseTriangle(points[0], points[1], points[2]);
                     trianglePictureBox.Image = bmp;
                     points.Clear();
                 }
-                
-                /*
-                var color = Color.Blue;
-                var point = new Point(e.X, e.Y);
-                points.Add(point);
-                var bmp = trianglePictureBox.Image as Bitmap;
-                bmp.SetPixel(point.X, point.Y, color);
-                trianglePictureBox.Image = bmp;
-                if (points.Count == 2)
-                {
-                    bmp = trianglePictureBox.Image as Bitmap;
-                    bmp.DrawBresenhamLine(points[0], points[1], color);
-                    trianglePictureBox.Image = bmp;
-                    points.Clear();
-                }*/
             }
         }
 

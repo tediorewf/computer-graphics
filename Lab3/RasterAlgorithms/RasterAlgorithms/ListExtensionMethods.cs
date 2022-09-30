@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RasterAlgorithms
 {
-    public static class ListExtensions
+    public static class ListExtensionMethods
     {
         public static ColoredPoint FetchLeftMost(this List<ColoredPoint> collection)
         {
