@@ -93,11 +93,6 @@ namespace RasterAlgorithms
             {
                 throw new TriangleRasterisationException("Есть вершины с совпадающими координатами");
             }
-
-            if (v1.Color == v2.Color || v2.Color == v3.Color)
-            {
-                throw new TriangleRasterisationException("Есть вершины с совпадающими цветами");
-            }
         }
 
         private static IEnumerable<List<ColoredPoint>> MakeBresenhamMovement(ColoredPoint v1, ColoredPoint v2)
