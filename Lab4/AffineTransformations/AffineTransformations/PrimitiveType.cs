@@ -6,29 +6,29 @@ using System.Threading.Tasks;
 
 namespace AffineTransformations
 {
-    public enum PrimitiveType
-    {
-        Point, Edge, Polygon
-    }
+public enum PrimitiveType
+{
+    Point, Edge, Polygon
+}
 
-    public static class PrimitiveTypeExtensionMethods
+public static class PrimitiveTypeExtensionMethods
+{
+    public static string GetPrimitiveName(this PrimitiveType primitiveType)
     {
-        public static string GetPrimitiveName(this PrimitiveType primitiveType)
+        string primitiveName = null;
+        switch (primitiveType)
         {
-            string primitiveName = null;
-            switch (primitiveType)
-            {
-                case PrimitiveType.Point:
-                    primitiveName = "Точка";
-                    break;
-                case PrimitiveType.Edge:
-                    primitiveName = "Ребро";
-                    break;
-                case PrimitiveType.Polygon:
-                    primitiveName = "Полигон";
-                    break;
-            }
-            return primitiveName;
+        case PrimitiveType.Point:
+            primitiveName = "Точка";
+            break;
+        case PrimitiveType.Edge:
+            primitiveName = "Ребро";
+            break;
+        case PrimitiveType.Polygon:
+            primitiveName = "Полигон";
+            break;
         }
+        return primitiveName;
     }
+}
 }
