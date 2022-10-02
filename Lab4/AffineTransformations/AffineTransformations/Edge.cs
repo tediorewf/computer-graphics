@@ -9,8 +9,9 @@ namespace AffineTransformations
 {
     public class Edge
     {
-        public Point Begin { get; private set; }
-        public Point End { get; private set; }
+        public bool Red { get; set; }
+        public Point Begin { get;  set; }
+        public Point End { get;  set; }
 
         public Edge(Point begin, Point end)
         {
