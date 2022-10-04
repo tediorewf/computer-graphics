@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AffineTransformations
-{
-public class AffineTransformationException : Exception
-{
-}
+namespace AffineTransformations {
+public class AffineTransformationException : Exception {}
 }
