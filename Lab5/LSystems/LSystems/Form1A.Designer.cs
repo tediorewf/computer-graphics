@@ -42,10 +42,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.scenePictureBox.BackColor = System.Drawing.Color.White;
-            this.scenePictureBox.Location = new System.Drawing.Point(6, 6);
+            this.scenePictureBox.Location = new System.Drawing.Point(54, 6);
             this.scenePictureBox.Margin = new System.Windows.Forms.Padding(2);
             this.scenePictureBox.Name = "scenePictureBox";
-            this.scenePictureBox.Size = new System.Drawing.Size(726, 627);
+            this.scenePictureBox.Size = new System.Drawing.Size(678, 615);
             this.scenePictureBox.TabIndex = 2;
             this.scenePictureBox.TabStop = false;
             // 
@@ -85,11 +85,11 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // MainForm
+            // Form1A
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(997, 638);
+            this.ClientSize = new System.Drawing.Size(997, 669);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -98,7 +98,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "MainForm";
+            this.Name = "Form1A";
             this.Text = "Аффинные преобразования";
             ((System.ComponentModel.ISupportInitialize)(this.scenePictureBox)).EndInit();
             this.ResumeLayout(false);

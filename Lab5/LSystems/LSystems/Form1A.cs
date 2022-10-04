@@ -22,7 +22,7 @@ namespace AffineTransformations
         //Цвет для рисования
         private static readonly Color DrawingColor = Color.Blue;
         //Размер линии 
-        private int length = 10;
+        private int length = 15;
         public Form1A()
         {
             InitializeComponent();
@@ -77,6 +77,7 @@ namespace AffineTransformations
                     rules.Add(line);
             }
             mainstr = BuildFractal(mainstr, rules, iteration);
+
             PaintFractal(mainstr, corner);
         }
         //Создание описания фрактала
@@ -85,17 +86,23 @@ namespace AffineTransformations
                 foreach (string item in rules)
                 {
                     string c = ""+item[0];
-                    mainstr.Replace(c, item.Substring(2));
+                    mainstr = mainstr.Replace(c, item.Substring(2));
                 }
+
             return mainstr;
         }
         //Рисование фрактала
         private void PaintFractal(string mainstr, double corner)
         {
             //создать список линий
+            corner = corner * Math.PI / 180.0;
+
             List<Edge> edges = MakeEdges(mainstr, corner);
+            
             //перенос и масштабирование
             edges = TransferringScaling(edges);
+
+            
             //прорисовка
             PaintEdges(edges);
         }
@@ -107,6 +114,7 @@ namespace AffineTransformations
                 foreach (var edge in edges)
                     fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, DrawingColor);
             }
+            scenePictureBox.Image = drawingSurface;
         }
         //перенос и масштабирование
         private List<Edge> TransferringScaling(List<Edge> edges)
@@ -139,10 +147,10 @@ namespace AffineTransformations
             double k2 = 1;
             var size = scenePictureBox.Size;
             int L = PointRight.X - PointLeft.X;
-            int H = PointRight.Y - PointBotton.Y;
-            if (L > size.Width)
+            int H = PointTop.Y - PointBotton.Y;
+            if (L >= size.Width)
                 k = (double)L / (double)size.Width;
-            if (L > size.Height)
+            if (H >= size.Height)
                 k2 = (double)H / (double)size.Height;
             if (k2 > k)
                 k = k2;
@@ -152,36 +160,83 @@ namespace AffineTransformations
             foreach (var edge in edges)
             {
                 Matrix M = new Matrix(1, 3, new double[,] { { edge.Begin.X, edge.Begin.Y, 1 } });
-                Matrix M2 = new Matrix(3, 3, new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { dx, 0, 1 } });
+                Matrix M2 = new Matrix(3, 3, new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { -dx, -dy, 1 } });
                 Matrix M3 = M.Mul(M2);
                 edge.Begin = new Point((int)M3.Arr()[0, 0], (int)M3.Arr()[0, 1]);
 
                 M = new Matrix(1, 3, new double[,] { { edge.End.X, edge.End.Y, 1 } });
-                M2 = new Matrix(3, 3, new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { dy, 0, 1 } });
+                M2 = new Matrix(3, 3, new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { -dx, -dy, 1 } });
                 M3 = M.Mul(M2);
                 edge.End = new Point((int)M3.Arr()[0, 0], (int)M3.Arr()[0, 1]);
             }
+            k = 1.0 / k;
+
             //масштабирование
             foreach (var edge in edges)
             {
                 Matrix M = new Matrix(1, 3, new double[,] { { edge.Begin.X , edge.Begin.Y , 1 } });
                 Matrix M2 = new Matrix(3, 3, new double[,] { { k, 0, 0 }, { 0, k, 0 }, { 0, 0, 1 } });
                 Matrix M3 = M.Mul(M2);
-                edge.Begin = new Point((int)M3.Arr()[0, 0] , (int)M3.Arr()[0, 1] );
+                edge.Begin = new Point((int)M3.Arr()[0, 0] , size.Height -  (int)M3.Arr()[0, 1] );
 
                 M = new Matrix(1, 3, new double[,] { { edge.End.X , edge.End.Y , 1 } });
                 M2 = new Matrix(3, 3, new double[,] { { k, 0, 0 }, { 0, k, 0 }, { 0, 0, 1 } });
                 M3 = M.Mul(M2);
-                edge.End = new Point((int)M3.Arr()[0, 0] , (int)M3.Arr()[0, 1] );
+                edge.End = new Point((int)M3.Arr()[0, 0] , size.Height - (int)M3.Arr()[0, 1] );
             }
+
             return edges;
         }
         //создать список линий
         private List<Edge> MakeEdges(string mainstr, double corner) {
+            Random rnd = new Random();
+            bool Rand = false;
+            Stack<Point> PointStack = new Stack<Point>();
+            Stack<double> CornerStack = new Stack<double>();
+            Stack<bool> BoolStack = new Stack<bool>();
+            double alpha = 0;
             List<Edge> Lst = new List<Edge>();
             Point P = new Point(0, 0);
-            //дописать
-
+            for (int i = 0; i < mainstr.Length; i++)
+            {
+                switch (mainstr[i])
+                {
+                    case '−':
+                        alpha -= corner;
+                        break;
+                    case '+':
+                        alpha += corner;
+                        break;
+                    case '[':
+                        Point PP = new Point(P.X, P.Y);
+                        PointStack.Push(PP);
+                        CornerStack.Push(alpha);
+                        BoolStack.Push(Rand);
+                        break;
+                    case ']':
+                        P = PointStack.Pop();
+                        alpha = CornerStack.Pop();
+                        Rand = BoolStack.Pop();
+                        break;
+                    case '@':
+                        Rand = true;
+                        break;
+                    default:
+                        Point NewP;
+                        if (Rand)
+                        {
+                            int value = rnd.Next(10);
+                            double a = alpha * value / 10.0;
+                            NewP = new Point(P.X + (int)(length * Math.Sin(a)), P.Y + (int)(length * Math.Cos(a)));
+                        }
+                        else
+                            NewP = new Point(P.X + (int)(length * Math.Sin(alpha)), P.Y + (int)(length * Math.Cos(alpha)));
+                        Edge E = new Edge(P, NewP);
+                        Lst.Add(E);
+                        P = NewP;
+                        break;
+                }
+            }
             return Lst;
         }
 
