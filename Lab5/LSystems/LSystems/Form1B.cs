@@ -8,13 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AffineTransformations
-{
-public partial class Form1B : Form
-{
-    public Form1B()
-    {
-        InitializeComponent();
-    }
+namespace AffineTransformations {
+public partial class Form1B : Form {
+  public Form1B() { InitializeComponent(); }
 }
 }
