@@ -39,7 +39,7 @@ namespace RasterAlgorithms
 
             while (x1 != x2 || y1 != y2)
             {
-                fastDrawingSurface[x1, y1] = color;
+                fastDrawingSurface.SetPixelSafely(x1, y1, color);
                 x1 += growthDirectionX * refereeY;  // gradient <= 1
                 y1 -= growthDirectionY * refereeX;  // gradient > 1
 
@@ -55,5 +55,16 @@ namespace RasterAlgorithms
                 }
             }
         }
+
+        private static void SetPixelSafely(this FastBitmap fastDrawingSurface, int x, int y, Color color)
+        {
+            bool xIsInBounds = 0 <= x && x <= fastDrawingSurface.Width;
+            bool yIsInBounds = 0 <= y && y <= fastDrawingSurface.Height;
+            if (xIsInBounds && yIsInBounds)
+            {
+                fastDrawingSurface[x, y] = color;
+            }
+        }
+
     }
 }
