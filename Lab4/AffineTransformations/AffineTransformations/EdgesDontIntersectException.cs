@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AffineTransformations
 {
-    public class EdgesDontIntersectException : AffineTransformationException
-    {
-    }
+public class EdgesDontIntersectException : AffineTransformationException
+{
+}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AffineTransformations
 {
-    public class AffineTransformationException : Exception
-    {
-    }
+public class AffineTransformationException : Exception
+{
+}
 }
