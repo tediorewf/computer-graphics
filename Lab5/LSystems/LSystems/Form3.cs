@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace AffineTransformations
 {
-    public partial class Form3 : Form
+public partial class Form3 : Form
+{
+    public Form3()
     {
-        public Form3()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
+}
 }
