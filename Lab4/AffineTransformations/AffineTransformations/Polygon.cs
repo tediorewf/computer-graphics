@@ -15,6 +15,15 @@ namespace AffineTransformations
             Edges = edges;
         }
 
+        public void ToRed() {
+            foreach (var item in Edges)
+                item.Red = true;
+        }
+        public void ToUsual()
+        {
+            foreach (var item in Edges)
+                item.Red = false;
+        }
         // TODO: реализовать методы для полигона. При необходимости реализовать методы для ребра и вызавать в полигоне
         // (например, для поворота полигона нужно реализовать поворот ребра).
     }
