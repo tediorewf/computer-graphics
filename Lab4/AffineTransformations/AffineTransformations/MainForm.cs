@@ -29,6 +29,8 @@ namespace AffineTransformations
         private double alpha = 0.3;
         private List<Point> currentPoints;
 
+        private Edge currentlySelectedEdge;
+
         private const int DefaultSelectedPrimitiveType = 0;
 
         private static readonly Color DrawingColor = Color.Blue;
@@ -64,6 +66,9 @@ namespace AffineTransformations
             var scene = new Bitmap(size.Width, size.Height);
             scenePictureBox.Image = scene;
             comboBox1.Items.Clear();
+            edgesComboBox.Items.Clear();
+            P = null;
+            currentlySelectedEdge = null;
             if (points!=null)
                 points.Clear();
             if (edges != null)
@@ -91,7 +96,7 @@ namespace AffineTransformations
         private void scenePictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             var p = new Point(e.X, e.Y);
-            DrawPoint(p.X, p.Y);
+            DrawPoint(p.X, p.Y, DrawingColor);
 
             switch (selectedPrimitiveType)
             {
@@ -105,11 +110,12 @@ namespace AffineTransformations
                     {
                         var begin = currentPoints.First();
                         var end = currentPoints.Last();
-                        var edge = new Edge(begin, end);
-                        edges.Add(edge);
+                        edges.Add(new Edge(begin, end));
+
+                        edgesComboBox.Items.Add(edges.Count);
+                        edgesComboBox.SelectedIndex = edges.Count - 1;
 
                         var drawingSurface = scenePictureBox.Image as Bitmap;
-                        drawingSurface.DrawBresenhamLine(begin, end, DrawingColor);
                         scenePictureBox.Image = drawingSurface;
 
                         currentPoints.Clear();
@@ -125,12 +131,12 @@ namespace AffineTransformations
             }
         }
 
-        private void DrawPoint(int x, int y)
+        private void DrawPoint(int x, int y, Color color)
         {
             var drawingSurface = scenePictureBox.Image as Bitmap;
             using (var fastDrawingSurface = new FastBitmap(drawingSurface))
             {
-                fastDrawingSurface[x, y] = DrawingColor;
+                fastDrawingSurface[x, y] = color;
             }
             scenePictureBox.Image = drawingSurface;
         }
@@ -138,15 +144,6 @@ namespace AffineTransformations
         private void primitiveTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedPrimitiveType = primitiveTypes[primitiveTypeComboBox.SelectedIndex];
-            switch (selectedPrimitiveType)
-            {
-                case PrimitiveType.Point:
-                    break;
-                case PrimitiveType.Edge:
-                    break;
-                case PrimitiveType.Polygon:
-                    break;
-            }
         }
 
         private void doneButton_Click(object sender, EventArgs e)
@@ -170,7 +167,8 @@ namespace AffineTransformations
             primitiveTypeComboBox.Enabled = true;
             doneButton.Enabled = false;
 
-            comboBox1.Items.Add("" + polygons.Count);
+            comboBox1.Items.Add(polygons.Count);
+            comboBox1.SelectedIndex = polygons.Count - 1;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -201,12 +199,19 @@ namespace AffineTransformations
                 foreach (var PP in polygons)
                     foreach (var edge in PP.Edges)
                         fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, DrawingColor);
-                foreach (var edge in P.Edges)
-                    fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, DrawingColorRed);
+                if (P != null)
+                {
+                    foreach (var edge in P.Edges)
+                        fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, DrawingColorRed);
+                }
                 foreach (var PP in points)
                     fastDrawingSurface[PP.X, PP.Y] = DrawingColor;
                 foreach (var edge in edges)
                     fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, DrawingColor);
+                if (currentlySelectedEdge != null)
+                {
+                    fastDrawingSurface.DrawBresenhamLine(currentlySelectedEdge.Begin, currentlySelectedEdge.End, DrawingColorRed);
+                }
             }
             scenePictureBox.Image = drawingSurface;
         }
@@ -369,6 +374,47 @@ namespace AffineTransformations
                 }
                 Return();
             }
+        }
+
+        private void edgesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var prevEdge = currentlySelectedEdge;
+            currentlySelectedEdge = edges[edgesComboBox.SelectedIndex];
+            var drawingSurface = scenePictureBox.Image as Bitmap;
+            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+            {
+                fastDrawingSurface.DrawBresenhamLine(currentlySelectedEdge.Begin, currentlySelectedEdge.End, DrawingColorRed);
+                if (prevEdge != null)
+                {
+                    fastDrawingSurface.DrawBresenhamLine(prevEdge.Begin, prevEdge.End, DrawingColor);
+                }
+            }
+            scenePictureBox.Image = drawingSurface;
+
+            var bmp = scenePictureBox.Image as Bitmap;
+            var gfx = Graphics.FromImage(bmp);
+            var pen = new Pen(Color.Black, 5);
+
+            foreach (var edge in edges)
+            {
+                if (edge != currentlySelectedEdge)
+                {
+                    try
+                    {
+                        var intersectionPoint = currentlySelectedEdge.Intersect(edge);
+                        gfx.DrawEllipse(pen, intersectionPoint.X, intersectionPoint.Y, 1, 1);
+                    }
+                    catch (EdgesDontIntersectException)
+                    {
+                    }
+                }
+            }
+        }
+
+        private void turnEdge90DegreesButton_Click(object sender, EventArgs e)
+        {
+            currentlySelectedEdge.Rotate();
+            Return();
         }
     }
 }
