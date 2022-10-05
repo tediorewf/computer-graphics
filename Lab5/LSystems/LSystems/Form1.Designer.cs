@@ -1,6 +1,6 @@
 ﻿namespace AffineTransformations
 {
-    partial class Form1A
+    partial class Form1
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -33,6 +33,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.scenePictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,7 +78,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(774, 182);
+            this.button2.Location = new System.Drawing.Point(774, 287);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(139, 61);
             this.button2.TabIndex = 6;
@@ -85,11 +86,22 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // Form1A
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(774, 189);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(139, 61);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Сгенерировать дерево";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(997, 669);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -98,8 +110,8 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form1A";
-            this.Text = "Аффинные преобразования";
+            this.Name = "Form1";
+            this.Text = "Фрактальные узоры и деревья";
             ((System.ComponentModel.ISupportInitialize)(this.scenePictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -112,6 +124,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 
