@@ -19,14 +19,8 @@ namespace AffineTransformations
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var Form1A = new Form1A();
+            var Form1A = new Form1();
             Form1A.ShowDialog();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            var Form1B = new Form1B();
-            Form1B.ShowDialog();
         }
 
         private void button3_Click(object sender, EventArgs e)
