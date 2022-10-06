@@ -300,15 +300,7 @@ namespace AffineTransformations
         }
         private void Centr()
         {
-            int x = 0;
-            int y = 0;
-            int i = 0;
-            foreach (var edge in P.Edges) {
-                x += edge.Begin.X;
-                y += edge.Begin.Y;
-                i++;
-            }
-            Cntr = new Point(x / i, y / i);
+            Cntr = P.Center;
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -415,6 +407,122 @@ namespace AffineTransformations
         {
             currentlySelectedEdge.Rotate();
             Return();
+        }
+
+        
+        private void buttonTask3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                edgePositionRelationLabel.Visible = true;
+
+                var point = points.Last();
+
+                var cm1 = currentlySelectedEdge.Begin;
+
+                int yb = currentlySelectedEdge.End.Y - cm1.Y;
+                int xb = currentlySelectedEdge.End.X - cm1.X;
+                int ya = point.Y - cm1.Y;
+                int xa = point.X - cm1.X;
+
+                if (yb * xa - xb * ya > 0)
+                {
+                    edgePositionRelationLabel.Text = " левее";
+                }
+                else if (yb * xa - xb * ya < 0)
+                {
+                    edgePositionRelationLabel.Text = " правее";
+                }
+                else
+                {
+                    edgePositionRelationLabel.Text += " лежит на прямой";
+                }
+            }
+            catch (Exception ex)
+            {
+                edgePositionRelationLabel.Visible = true;
+                edgePositionRelationLabel.Text = ex.Message;
+            }
+        }
+        
+        private void buttonPrinadlegit_Click(object sender, EventArgs e)
+        {
+            int number;
+            var point = points.Last();
+            var point0 = new Point(0, point.Y);
+            int intersections = 0;
+            try
+            {
+                number = comboBox1.SelectedIndex;
+                P = polygons[number];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + " Выбран полигон 1");
+                P = polygons[0];
+            }
+
+            List<Point> primitiv = ToPoint(P);
+            Point p1 = primitiv.First();
+            int num = 0;
+
+            foreach (var p2 in primitiv)
+            {
+                if (p1 == p2)
+                {
+                    continue;
+                }
+
+                if (point.X <= p1.X && point.Y == p1.Y && num == 0)
+                {
+                    num++;
+                    continue;
+                }
+                else
+                {
+                    num = 0;
+                }
+
+                if (Edge.DoesIntersect(point, point0, p1, p2))
+                {
+                    intersections++;
+                }
+
+                p1 = p2;
+            }
+
+            if (!(point.X <= p1.X && point.Y == p1.Y && num == 0))
+            {
+
+                if (Edge.DoesIntersect(point, point0, p1, primitiv.First()))
+                {
+                    intersections++;
+                }
+            }
+
+            polygonPositionRelationLabel.Visible = true;
+            polygonPositionRelationLabel.Text = intersections % 2 == 0 ? "Не принадлежит полигону" : "Принадлежит полигону";
+        }
+
+        private List<Point> ToPoint(Polygon polygon)
+        {
+            List<Point> result = new List<Point>();
+            result.Add(polygon.Edges[0].Begin);
+            foreach (Edge e in polygon.Edges)
+            {
+                result.Add(e.End);
+            }
+            return result;
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -38,6 +38,19 @@ namespace AffineTransformations
             End = new Point(mid.X - normal.X / 2, mid.Y - normal.Y / 2);
         }
 
+        public static bool DoesIntersect(Point a, Point b, Point c, Point d)
+        {
+            try
+            {
+                var _intersectionPoint = Intersect(a, b, c, d);
+                return true;
+            }
+            catch (EdgesDontIntersectException)
+            {
+                return false;
+            }
+        }
+
         public Point Intersect(Edge other)
         {
             var a = Begin;
@@ -46,6 +59,11 @@ namespace AffineTransformations
             var c = other.Begin;
             var d = other.End;
 
+            return Intersect(a, b, c, d);
+        }
+
+        public static Point Intersect(Point a, Point b, Point c, Point d)
+        {
             var n = new Point(d.Y - c.Y, c.X - d.X);
 
             int denominator = ScalarProduct(n, new Edge(b, a).Vector);
@@ -57,9 +75,9 @@ namespace AffineTransformations
 
             double t = (double)numerator / denominator;
 
-            var p = ParametrizePoint(t);
+            var p = ParametrizePoint(a, b, t);
 
-            if (!IsPointOnEdge(this, p) || !IsPointOnEdge(other, p))
+            if (!IsPointOnEdge(new Edge(a, b), p) || !IsPointOnEdge(new Edge(c, d), p))
             {
                 throw new EdgesDontIntersectException();
             }
@@ -73,9 +91,9 @@ namespace AffineTransformations
                 edge.Begin.X, edge.End.X) && Math.Min(edge.Begin.Y, edge.End.Y) <= p.Y && p.Y <= Math.Max(edge.Begin.Y, edge.End.Y);
         }
 
-        private Point ParametrizePoint(double t)
+        private static Point ParametrizePoint(Point begin, Point end, double t)
         {
-            return new Point(Begin.X + (int)(t * (End.X - Begin.X)), Begin.Y + (int)(t * (End.Y - Begin.Y)));
+            return new Point(begin.X + (int)(t * (end.X - begin.X)), begin.Y + (int)(t * (end.Y - begin.Y)));
         }
 
         private static int ScalarProduct(Point vec1, Point vec2)

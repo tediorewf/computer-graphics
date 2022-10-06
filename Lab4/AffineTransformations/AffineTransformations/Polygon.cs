@@ -3,12 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace AffineTransformations
 {
     public class Polygon
     {
         public List<Edge> Edges { get; private set; }
+        public Point Center { 
+            get
+            {
+                int verticesCount = 0;
+                int x = 0, y = 0;
+                Edges.ForEach(e => {
+                    x += e.Begin.Y;
+                    y += e.Begin.Y;
+                    verticesCount += 1;
+                });
+                return new Point(x / verticesCount, y / verticesCount);
+            }
+        }
 
         public Polygon(List<Edge> edges)
         {
