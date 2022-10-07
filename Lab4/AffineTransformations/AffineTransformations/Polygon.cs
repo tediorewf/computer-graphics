@@ -7,25 +7,28 @@ using System.Drawing;
 
 namespace AffineTransformations
 {
-    public class Polygon
-    {
-        public List<Edge> Edges { get; private set; }
-
-        public Polygon(List<Edge> edges)
-        {
-            Edges = edges;
-        }
-
-        public void ToRed() {
-            foreach (var item in Edges)
-                item.Red = true;
-        }
-        public void ToUsual()
-        {
-            foreach (var item in Edges)
-                item.Red = false;
-        }
-        // TODO: реализовать методы для полигона. При необходимости реализовать методы для ребра и вызывать в полигоне
-        // (например, для поворота полигона нужно реализовать поворот ребра).
+public class Polygon
+{
+    public List<Edge> Edges {
+        get;
+        private set;
     }
+
+    public Polygon(List<Edge> edges)
+    {
+        Edges = edges;
+    }
+
+    public void ToRed() {
+        foreach (var item in Edges)
+            item.Red = true;
+    }
+    public void ToUsual()
+    {
+        foreach (var item in Edges)
+            item.Red = false;
+    }
+    // TODO: реализовать методы для полигона. При необходимости реализовать методы для ребра и вызывать в полигоне
+    // (например, для поворота полигона нужно реализовать поворот ребра).
+}
 }
