@@ -300,7 +300,17 @@ namespace AffineTransformations
         }
         private void Centr()
         {
-            Cntr = P.Center;
+            
+            int x = 0;
+            int y = 0;
+            int i = 0;
+            foreach (var edge in P.Edges)
+            {
+                x += edge.Begin.X;
+                y += edge.Begin.Y;
+                i++;
+            }
+            Cntr = new Point(x / i, y / i);
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -483,7 +493,7 @@ namespace AffineTransformations
                     num = 0;
                 }
 
-                if (Edge.DoesIntersect(point, point0, p1, p2))
+                if (Edge.AreIntersect(point, point0, p1, p2))
                 {
                     intersections++;
                 }
@@ -494,7 +504,7 @@ namespace AffineTransformations
             if (!(point.X <= p1.X && point.Y == p1.Y && num == 0))
             {
 
-                if (Edge.DoesIntersect(point, point0, p1, primitiv.First()))
+                if (Edge.AreIntersect(point, point0, p1, primitiv.First()))
                 {
                     intersections++;
                 }

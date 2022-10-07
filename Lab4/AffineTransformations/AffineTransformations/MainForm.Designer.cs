@@ -49,11 +49,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.turnEdge90DegreesButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button8 = new System.Windows.Forms.Button();
             this.edgePositionRelationLabel = new System.Windows.Forms.Label();
+            this.button8 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button9 = new System.Windows.Forms.Button();
             this.polygonPositionRelationLabel = new System.Windows.Forms.Label();
+            this.button9 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.scenePictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -89,7 +89,7 @@
             this.scenePictureBox.Location = new System.Drawing.Point(12, 102);
             this.scenePictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.scenePictureBox.Name = "scenePictureBox";
-            this.scenePictureBox.Size = new System.Drawing.Size(834, 724);
+            this.scenePictureBox.Size = new System.Drawing.Size(834, 749);
             this.scenePictureBox.TabIndex = 2;
             this.scenePictureBox.TabStop = false;
             this.scenePictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.scenePictureBox_MouseClick);
@@ -125,7 +125,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.51077F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.48923F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.clearSceneButton, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.doneButton, 1, 0);
@@ -260,7 +260,7 @@
             // 
             this.edgesComboBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.edgesComboBox.FormattingEnabled = true;
-            this.edgesComboBox.Location = new System.Drawing.Point(858, 356);
+            this.edgesComboBox.Location = new System.Drawing.Point(860, 368);
             this.edgesComboBox.Name = "edgesComboBox";
             this.edgesComboBox.Size = new System.Drawing.Size(172, 33);
             this.edgesComboBox.TabIndex = 14;
@@ -270,7 +270,7 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(853, 324);
+            this.label3.Location = new System.Drawing.Point(855, 336);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(177, 25);
             this.label3.TabIndex = 15;
@@ -279,7 +279,7 @@
             // turnEdge90DegreesButton
             // 
             this.turnEdge90DegreesButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.turnEdge90DegreesButton.Location = new System.Drawing.Point(1040, 316);
+            this.turnEdge90DegreesButton.Location = new System.Drawing.Point(1042, 328);
             this.turnEdge90DegreesButton.Name = "turnEdge90DegreesButton";
             this.turnEdge90DegreesButton.Size = new System.Drawing.Size(192, 73);
             this.turnEdge90DegreesButton.TabIndex = 16;
@@ -298,16 +298,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Положение точки относительно ребра";
             // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(11, 68);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(365, 61);
-            this.button8.TabIndex = 0;
-            this.button8.Text = "Определить";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.buttonTask3_Click);
-            // 
             // edgePositionRelationLabel
             // 
             this.edgePositionRelationLabel.AutoSize = true;
@@ -318,16 +308,36 @@
             this.edgePositionRelationLabel.Text = "label4";
             this.edgePositionRelationLabel.Click += new System.EventHandler(this.label4_Click_1);
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(11, 68);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(365, 61);
+            this.button8.TabIndex = 0;
+            this.button8.Text = "Определить";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.buttonTask3_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.polygonPositionRelationLabel);
             this.groupBox2.Controls.Add(this.button9);
             this.groupBox2.Location = new System.Drawing.Point(858, 628);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(400, 168);
+            this.groupBox2.Size = new System.Drawing.Size(400, 221);
             this.groupBox2.TabIndex = 18;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Принадлежность точки полигону";
+            // 
+            // polygonPositionRelationLabel
+            // 
+            this.polygonPositionRelationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.polygonPositionRelationLabel.AutoSize = true;
+            this.polygonPositionRelationLabel.Location = new System.Drawing.Point(14, 130);
+            this.polygonPositionRelationLabel.Name = "polygonPositionRelationLabel";
+            this.polygonPositionRelationLabel.Size = new System.Drawing.Size(70, 25);
+            this.polygonPositionRelationLabel.TabIndex = 1;
+            this.polygonPositionRelationLabel.Text = "label5";
             // 
             // button9
             // 
@@ -339,20 +349,11 @@
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.buttonPrinadlegit_Click);
             // 
-            // polygonPositionRelationLabel
-            // 
-            this.polygonPositionRelationLabel.AutoSize = true;
-            this.polygonPositionRelationLabel.Location = new System.Drawing.Point(14, 130);
-            this.polygonPositionRelationLabel.Name = "polygonPositionRelationLabel";
-            this.polygonPositionRelationLabel.Size = new System.Drawing.Size(70, 25);
-            this.polygonPositionRelationLabel.TabIndex = 1;
-            this.polygonPositionRelationLabel.Text = "label5";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1270, 836);
+            this.ClientSize = new System.Drawing.Size(1274, 861);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.turnEdge90DegreesButton);
