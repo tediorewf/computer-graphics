@@ -38,7 +38,7 @@ namespace AffineTransformations
             End = new Point(mid.X - normal.X / 2, mid.Y - normal.Y / 2);
         }
 
-        public static bool DoesIntersect(Point a, Point b, Point c, Point d)
+        public static bool AreIntersect(Point a, Point b, Point c, Point d)
         {
             try
             {
