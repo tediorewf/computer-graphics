@@ -22,14 +22,15 @@ namespace AffineTransformations
                     var currentEdge = q.Dequeue().First;
                     currentStepEdges.Add(currentEdge);
 
-                    if (i+1 < iterations)
+                    int nextI = i + 1;
+                    if (nextI < iterations)
                     {
                         var midPoint = CalculateMidPoint(currentEdge, roughness, random);
 
                         var leftEdge = new Edge(currentEdge.Begin, midPoint);
                         var rightEdge = new Edge(midPoint, currentEdge.End);
-                        q.Enqueue(new IterationPair(leftEdge, i + 1));
-                        q.Enqueue(new IterationPair(rightEdge, i + 1));
+                        q.Enqueue(new IterationPair(leftEdge, nextI));
+                        q.Enqueue(new IterationPair(rightEdge, nextI));
                     }
                 }
                 yield return currentStepEdges;
