@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AffineTransformationException.cs" />
     <Compile Include="BresenhamAlgorithm.cs" />
     <Compile Include="Edge.cs" />
+    <Compile Include="EdgesDontIntersectException.cs" />
     <Compile Include="FastBitmap.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

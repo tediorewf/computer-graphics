@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace AffineTransformations
 {
@@ -24,7 +25,7 @@ namespace AffineTransformations
             foreach (var item in Edges)
                 item.Red = false;
         }
-        // TODO: реализовать методы для полигона. При необходимости реализовать методы для ребра и вызавать в полигоне
+        // TODO: реализовать методы для полигона. При необходимости реализовать методы для ребра и вызывать в полигоне
         // (например, для поворота полигона нужно реализовать поворот ребра).
     }
 }
