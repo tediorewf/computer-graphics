@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AffineTransformations
@@ -20,34 +15,30 @@ namespace AffineTransformations
     {
         private List<List<Edge>> _edges;
         private int _currentIteration;
-        private int _iterationsTotal = 5;
+        private int _iterationsCount;
         private WindowsFormsTimer _timer;
 
         public Form2()
         {
             InitializeComponent();
-        }
-
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            var size = pictureBox1.Size;
-            _edges = GetMidpointDisplacementEdgesStepByStep(new Point(0, size.Height / 2), new Point(size.Width, size.Height / 2), 0.4, _iterationsTotal).ToList();
-            _currentIteration = 0;
 
             _timer = new WindowsFormsTimer();
             _timer.Interval = 1000;
             _timer.Tick += new EventHandler(DrawEdge);
-            _timer.Start();
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            _edges = null;
+            _currentIteration = 0;
+            _iterationsCount = 5;
         }
 
         private void DrawEdge(object sender, EventArgs e)
         {
             var size = pictureBox1.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            if (_currentIteration == _iterationsTotal)
-            {
-                _timer.Stop();
-            } else
+            if (_currentIteration != _iterationsCount)
             {
                 using (var fastDrawingSurface = new FastBitmap(drawingSurface))
                 {
@@ -58,7 +49,45 @@ namespace AffineTransformations
                     _currentIteration += 1;
                 }
                 pictureBox1.Image = drawingSurface;
+            } 
+            else
+            {
+                _timer.Stop();
+                SwitchEnabled();
             }
+        }
+
+        private void buildButton_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(iterationsCountTextBox.Text, out int iterationsCount))
+            {
+                _iterationsCount = iterationsCount;
+            } 
+            else
+            {
+                MessageBox.Show("Некорректное значение для числа итераций!");
+                return;
+            }
+
+            _currentIteration = 0;
+            var size = pictureBox1.Size;
+            var p1 = new Point(0, size.Height * beginHeightTrackBar.Value / 100);
+            var p2 = new Point(size.Width, size.Height * endHeightTrackBar.Value / 100);
+
+            SwitchEnabled();
+
+            _edges = GetMidpointDisplacementEdgesStepByStep(p1, p2, (double)roughnessTrackBar.Value / 100, _iterationsCount).ToList();
+
+            _timer.Start();
+        }
+
+        private void SwitchEnabled()
+        {
+            beginHeightTrackBar.Enabled = !beginHeightTrackBar.Enabled;
+            endHeightTrackBar.Enabled = !endHeightTrackBar.Enabled;
+            roughnessTrackBar.Enabled = !roughnessTrackBar.Enabled;
+            iterationsCountTextBox.Enabled = !iterationsCountTextBox.Enabled;
+            buildButton.Enabled = !buildButton.Enabled;
         }
     }
 }
