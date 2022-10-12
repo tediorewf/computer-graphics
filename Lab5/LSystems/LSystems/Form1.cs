@@ -18,7 +18,7 @@ namespace AffineTransformations
     public partial class Form1 : Form
     {
         //Ссылка на файл с описанием фрактала
-        private string path = "Fractal.txt";
+        private string path = "";
         //Цвет для рисования
         private static readonly Color DrawingColor = Color.Blue;
         //Цвета для рисования дерева
@@ -72,6 +72,12 @@ namespace AffineTransformations
                 textBox1.Text = "";
                 return;
             }
+            if (path == "")
+            {
+                MessageBox.Show("Выберете файл!");
+                textBox1.Text = "";
+                return;
+            }
             using (StreamReader reader = new StreamReader(path))
             {
                 string line;
@@ -82,7 +88,6 @@ namespace AffineTransformations
                     rules.Add(line);
             }
             mainstr = BuildFractal(mainstr, rules, iteration);
-
             PaintFractal(mainstr, corner);
         }
         //Создание описания фрактала
@@ -360,6 +365,14 @@ namespace AffineTransformations
                 }
             }
             scenePictureBox.Image = drawingSurface;
+        }
+        //выбрать файл
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "(*.txt)|*.txt";
+            if (ofd.ShowDialog() == DialogResult.OK)
+                path = ofd.FileName;
         }
     }
 }
