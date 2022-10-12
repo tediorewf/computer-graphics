@@ -14,19 +14,45 @@ namespace RasterAlgorithms
                 fastDrawingSurface.DrawBresenhamLine(p1, p2, color);
         }
 
+        public static void DrawBresenhamLineSafely(this Bitmap drawingSurface, Point p1, Point p2, Color color)
+        {
+            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+                fastDrawingSurface.DrawBresenhamLineSafely(p1, p2, color);
+        }
+
         public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color)
         {
             fastDrawingSurface.DrawPoints(GetBresenhamPoints(p1, p2), color);
+        }
+
+        public static void DrawBresenhamLineSafely(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color)
+        {
+            fastDrawingSurface.DrawPointsSafely(GetBresenhamPoints(p1, p2), color);
+        }
+
+        public static void DrawPointsSafely(this FastBitmap fastDrawingSurface, IEnumerable<Point> points, Color color)
+        {
+            foreach (var p in points)
+            {
+                if (fastDrawingSurface.IsPointOnSurface(p))
+                {
+                    fastDrawingSurface[p.X, p.Y] = color;
+                }
+            }
+        }
+
+        public static bool IsPointOnSurface(this FastBitmap fastDrawingSurface, Point p)
+        {
+            bool isOnX = 0 <= p.X && p.X <= fastDrawingSurface.Width;
+            bool isOnY = 0 <= p.Y && p.Y <= fastDrawingSurface.Height;
+            return isOnX && isOnY;
         }
 
         public static void DrawPoints(this FastBitmap fastDrawingSurface, IEnumerable<Point> points, Color color)
         {
             foreach (var p in points)
             {
-                if (0 <= p.X && p.X <= fastDrawingSurface.Width && 0 <= p.Y && p.Y <= fastDrawingSurface.Height)
-                {
-                    fastDrawingSurface[p.X, p.Y] = color;
-                }
+                fastDrawingSurface[p.X, p.Y] = color;
             }
         }
 

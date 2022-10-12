@@ -44,7 +44,7 @@ namespace AffineTransformations
                 {
                     foreach (var edge in _edges[_currentIteration])
                     {
-                        fastDrawingSurface.DrawBresenhamLine(edge.Begin, edge.End, Color.Black);
+                        fastDrawingSurface.DrawBresenhamLineSafely(edge.Begin, edge.End, Color.Black);
                     }
                     _currentIteration += 1;
                 }
