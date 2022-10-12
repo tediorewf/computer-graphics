@@ -14,7 +14,6 @@ namespace AffineTransformations
     using RasterAlgorithms;
     using System.IO;
 
-
     public partial class Form1 : Form
     {
         //Ссылка на файл с описанием фрактала
