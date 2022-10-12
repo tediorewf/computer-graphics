@@ -93,11 +93,15 @@ namespace AffineTransformations
         //Создание описания фрактала
         private string BuildFractal(string mainstr, List<string> rules,int iteration) {
             for (int i = 0; i < iteration; i++)
+            {
                 foreach (string item in rules)
                 {
-                    string c = ""+item[0];
-                    mainstr = mainstr.Replace(c, item.Substring(2));
+                    string c = "" + item[0];
+                    string t = item.Substring(2);
+                    mainstr = mainstr.Replace(c, t.ToLower());
                 }
+                mainstr = mainstr.ToUpper();
+            }
             return mainstr;
         }
         //Рисование фрактала
