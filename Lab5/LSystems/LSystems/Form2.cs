@@ -73,10 +73,11 @@ namespace AffineTransformations
             var size = pictureBox1.Size;
             var p1 = new Point(0, size.Height * beginHeightTrackBar.Value / 100);
             var p2 = new Point(size.Width, size.Height * endHeightTrackBar.Value / 100);
+            double roughness = (double)roughnessTrackBar.Value / 100;
 
             SwitchEnabled();
 
-            _edges = GetMidpointDisplacementEdgesStepByStep(p1, p2, (double)roughnessTrackBar.Value / 100, _iterationsCount).ToList();
+            _edges = GetMidpointDisplacementEdgesStepByStep(p1, p2, roughness, _iterationsCount).ToList();
 
             _timer.Start();
         }
