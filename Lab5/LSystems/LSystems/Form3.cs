@@ -125,13 +125,13 @@ namespace AffineTransformations
             pointsBezier = new List<PointF>();
             pointsBezier.Add(points[0]);
             int ct = 1;
-            while (ct < points.Count - 3)
+            while (ct <= points.Count - 3)
             {
                 pointsBezier.Add(points[ct]);
                 ct += 1;
                 pointsBezier.Add(points[ct]);
                 ct += 1;
-                pointsBezier.Add(find_btw_point(points[ct - 1], points[ct]));
+                pointsBezier.Add( points[ct]);
             }
             int bez_ct = 4;
             while (bez_ct <= pointsBezier.Count)
