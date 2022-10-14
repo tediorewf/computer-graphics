@@ -60,6 +60,7 @@ namespace AffineTransformations
             points.Clear();
             counter = 0;
             pointsBezier.Clear();
+            comboBox1.Items.Clear();
         }
 
         private void button1_Click(object sender, EventArgs e)
