@@ -74,7 +74,7 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
-        public static Matrix MakeIsometricProjectionMatrix()
+        public static Matrix MakeAxonometricProjectionMatrix()
         {
             // TODO: доделать (пока не нашел подходящую матрицу)
             var elements = new double[,] {

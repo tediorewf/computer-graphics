@@ -53,6 +53,7 @@
     <Compile Include="Edge3D.cs" />
     <Compile Include="Facet3D.cs" />
     <Compile Include="FastBitmap.cs" />
+    <Compile Include="IIdentifiable.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,7 +67,7 @@
     <Compile Include="RegularPolyhedrons.cs" />
     <Compile Include="Vector3D.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Projection.cs" />
+    <Compile Include="ProjectionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

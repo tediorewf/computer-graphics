@@ -39,9 +39,9 @@ namespace AffineTransformations3D
             elements[row, column] = value;
         }
 
-        public static Matrix operator *(Matrix lhs, Vector3D rhs)
+        public static Matrix operator*(Vector3D lhs, Matrix rhs)
         {
-            return lhs * rhs.ToMatrix();
+            return lhs.ToMatrix() * rhs;
         }
 
         public static Matrix operator *(Matrix lhs, Matrix rhs)
@@ -91,7 +91,7 @@ namespace AffineTransformations3D
 
         private static void EnsureMatricesAreMultipliable(Matrix lhs, Matrix rhs)
         {
-            if (lhs.Rows != rhs.Columns)
+            if (lhs.Columns != rhs.Rows)
             {
                 throw new ArgumentException("Aren't multipliable");
             }
