@@ -1,7 +1,3 @@
-﻿namespace AffineTransformations3D
-{
-public enum ProjectionType
-{
-    Perspective, Axonometrix
-}
+﻿namespace AffineTransformations3D {
+public enum ProjectionType { Perspective, Axonometrix }
 }
