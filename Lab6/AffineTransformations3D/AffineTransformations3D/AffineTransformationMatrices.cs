@@ -52,6 +52,18 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
+        public static Matrix MakeMashtabMatrix(double d)
+        {
+
+            var elements = new double[,] {
+                { d, 0, 0, 0 },
+                { 0, d, 0, 0 },
+                { 0, 0, d, 0 },
+                { 0, 0, 0, 1 }
+            };
+            return new Matrix(elements);
+        }
+
         public static Matrix MakeTranslationMatrix(double dx, double dy, double dz)
         {
             var elements = new double[,] {

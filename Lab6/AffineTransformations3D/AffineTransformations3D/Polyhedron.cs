@@ -138,6 +138,23 @@ namespace AffineTransformations3D
             }
         }
 
+        public void Mashtab(double d)
+        {
+            var xRotationMatrix = MakeMashtabMatrix(d);
+            Point3D P = Centr();
+            for (int i = 0; i < Vertices.Count; i++)
+            {
+                var product = Vertices[i].ToVector3D(P) * xRotationMatrix;
+                double x = product[0, 0];
+                double y = product[0, 1];
+                double z = product[0, 2];
+                double w = product[0, 3];
+                var transformedPoint = new Point3D(x / w + P.X, y / w + P.Y, z / w + P.Z);
+                Vertices[i].X = transformedPoint.X;
+                Vertices[i].Y = transformedPoint.Y;
+            }
+        }
+
         public Point3D Centr()
         {
             double x = 0;
