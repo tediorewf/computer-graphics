@@ -13,20 +13,14 @@ namespace AffineTransformations3D
         public MainForm()
         {
             InitializeComponent();
-            //currentPolyhedron = RegularPolyhedrons.MakeTetrahedron();
-            //currentPolyhedron.Translate(0, 0, 1);
-            //currentPolyhedron.RotateX(30);
-            //currentPolyhedron.RotateY(20);
-            //Proection();
         }
 
         private void Proection() {
             // Перед проецированием обязателбно создается копия т.к.
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
-            var projectedPolyhedron = currentPolyhedron.Project();
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            drawingSurface.DrawPolyhedron(projectedPolyhedron, Color.Blue);
+            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(), Color.Blue);
             polyhedronPictureBox.Image = drawingSurface;
         }
 
@@ -50,13 +44,13 @@ namespace AffineTransformations3D
 
         private void MashtabMinus(object sender, System.EventArgs e)
         {
-            currentPolyhedron.Mashtab(MashtabM);
+            currentPolyhedron.ScaleCentered(MashtabM);
             Proection();
         }
 
         private void MashtabPlus(object sender, System.EventArgs e)
         {
-            currentPolyhedron.Mashtab(MashtabP);
+            currentPolyhedron.ScaleCentered(MashtabP);
             Proection();
         }
 
@@ -93,6 +87,24 @@ namespace AffineTransformations3D
         private void TranslateZMinus(object sender, System.EventArgs e)
         {
             currentPolyhedron.Translate(0, 0, -TranslateD);
+            Proection();
+        }
+
+        private void ReflectXY(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectXY();
+            Proection();
+        }
+
+        private void ReflectYZButton(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectYZ();
+            Proection();
+        }
+
+        private void ReflectZXButton(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectZX();
             Proection();
         }
 
