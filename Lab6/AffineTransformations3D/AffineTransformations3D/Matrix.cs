@@ -44,16 +44,16 @@ namespace AffineTransformations3D
             return lhs.ToMatrix() * rhs;
         }
 
-        public static Matrix operator *(Matrix lhs, Matrix rhs)
+        public static Matrix operator*(Matrix lhs, Matrix rhs)
         {
             EnsureMatricesAreMultipliable(lhs, rhs);
             var result = new Matrix(lhs.Rows, rhs.Columns);
-            for (int i = 0; i < lhs.Rows; i++)
+            for (int i = 0; i < lhs.Rows; i += 1)
             {
-                for (int j = 0; j < rhs.Columns; j++)
+                for (int j = 0; j < rhs.Columns; j += 1)
                 {
                     double dotProduct = 0;
-                    for (int r = 0; r < rhs.Rows; r++)
+                    for (int r = 0; r < rhs.Rows; r += 1)
                     {
                         dotProduct += lhs[i, r] * rhs[r, j];
                     }
