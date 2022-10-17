@@ -98,6 +98,24 @@ namespace AffineTransformations3D
             ApplyTransformationInplace(this, centeredScalingTransformation);
         }
 
+        public void ReflectXY()
+        {
+            var xYReflectionTransformation = MakeXYReflectionMatrix();
+            ApplyTransformationInplace(this, xYReflectionTransformation);
+        }
+
+        public void ReflectYZ()
+        {
+            var yZReflectionTransformation = MakeYZReflectionMatrix();
+            ApplyTransformationInplace(this, yZReflectionTransformation);
+        }
+
+        public void ReflectZX()
+        {
+            var zXReflectionTransformation = MakeZXReflectionMatrix();
+            ApplyTransformationInplace(this, zXReflectionTransformation);
+        }
+
         public object Clone()
         {
             var vertices = Vertices.Select(v => v.Clone() as Point3D).ToList();

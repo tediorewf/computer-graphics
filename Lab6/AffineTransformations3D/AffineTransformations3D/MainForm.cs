@@ -90,6 +90,24 @@ namespace AffineTransformations3D
             Proection();
         }
 
+        private void ReflectXY(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectXY();
+            Proection();
+        }
+
+        private void ReflectYZButton(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectYZ();
+            Proection();
+        }
+
+        private void ReflectZXButton(object sender, System.EventArgs e)
+        {
+            currentPolyhedron.ReflectZX();
+            Proection();
+        }
+
         private void Tetrahedron(object sender, System.EventArgs e)
         {
             currentPolyhedron = RegularPolyhedrons.MakeTetrahedron();

@@ -96,5 +96,38 @@ namespace AffineTransformations3D
             };
             return new Matrix(elements);
         }
+
+        public static Matrix MakeXYReflectionMatrix()
+        {
+            var elements = new double[,] {
+                { 1, 0, 0, 0 },
+                { 0, 1, 0, 0 },
+                { 0, 0, -1, 0 },
+                { 0, 0, 0, 1 }
+            };
+            return new Matrix(elements);
+        }
+
+        public static Matrix MakeYZReflectionMatrix()
+        {
+            var elements = new double[,] {
+                { -1, 0, 0, 0 },
+                { 0, 1, 0, 0 },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+            };
+            return new Matrix(elements);
+        }
+
+        public static Matrix MakeZXReflectionMatrix()
+        {
+            var elements = new double[,] {
+                { 1, 0, 0, 0 },
+                { 0, -1, 0, 0 },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+            };
+            return new Matrix(elements);
+        }
     }
 }
