@@ -34,10 +34,10 @@ namespace AffineTransformations3D
 
         // TODO: мне надо будет доделать это
         // Не меняет исходную фигуру, создает копию
-        public Polyhedron ComputeProjection(ProjectionType projectionType = ProjectionType.Perspective)
+        public Polyhedron ComputeProjection(ProjectionType projectionType)
         {
             var clone = Clone() as Polyhedron;
-            var perspectiveProjectionMatrix = MakePerspectiveProjectionMatrix(1000);
+            var perspectiveProjectionMatrix = projectionType.GetMatrix();
             ApplyTransformationInplace(clone, perspectiveProjectionMatrix);
             return clone;
         }
