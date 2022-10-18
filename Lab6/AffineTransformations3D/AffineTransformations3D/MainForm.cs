@@ -131,5 +131,11 @@ namespace AffineTransformations3D
             currentPolyhedron = RegularPolyhedrons.MakeIkosahedron();
             Proection();
         }
+
+        private void Dodahedron(object sender, System.EventArgs e)
+        {
+            currentPolyhedron = RegularPolyhedrons.MakeDodahedron();
+            Proection();
+        }
     }
 }
