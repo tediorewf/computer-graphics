@@ -8,14 +8,23 @@ namespace AffineTransformations3D
 {
     public static class RegularPolyhedrons
     {
+        private static int longg = 300;
+        private static int longg2 = 100;
         private static Point3D Middle(Point3D P1, Point3D P2)
         {
             return new Point3D((P1.X + P2.X) / 2, (P1.Y + P2.Y) / 2, (P1.Z + P2.Z) / 2);
         }
-
+        private static Point3D NewPointIkosahedron(Point3D PFCentr, double r, double h,int i) {
+            Point3D P = new Point3D(0, 0, 0);
+            double alpha = 0.6283*i;
+            P.X = (0 - PFCentr.X) * Math.Cos(alpha) - (r - PFCentr.Y) *Math.Sin(alpha) + PFCentr.X;
+            P.Y = (0 - PFCentr.X) *Math.Sin(alpha) + (r - PFCentr.Y) *Math.Cos(alpha) + PFCentr.Y;
+            if (i % 2 == 0)
+                P.Z = h;
+            return P;
+        }
         public static Polyhedron MakeGeksahedron()
         {
-            int longg = 300;
             var vertices = new List<Point3D>();
             var p0 = new Point3D(0, 0, 0);
             var p1 = new Point3D(0, 0, longg);
@@ -116,6 +125,45 @@ namespace AffineTransformations3D
             var facet0 = new Facet3D();*/
 
             return new Polyhedron(vertices, edges, facets);
+        }
+        public static Polyhedron MakeIkosahedron()
+        {
+            var vertices = new List<Point3D>();
+            Point3D PFCentr = new Point3D(longg2, longg2, 0);
+            double l = 1.17557 * longg2;
+            double h = 0.86603 * l;
+            double H = 1.902 * l;
+            double k = (H - h) / 2;
+            for (int i = 0; i < 10; i++)
+                vertices.Add(NewPointIkosahedron(PFCentr,longg2, h,i));
+            vertices.Add(new Point3D(longg2, longg2, h + k));
+            vertices.Add(new Point3D(longg2, longg2, -k));
+
+            var edges = new List<Edge3D>();
+            for (int i = 0; i <= 7; i++)
+            {
+                edges.Add(new Edge3D(vertices[i], vertices[i+1]));
+                edges.Add(new Edge3D(vertices[i], vertices[i+2]));
+            }
+            edges.Add(new Edge3D(vertices[8], vertices[9]));
+            edges.Add(new Edge3D(vertices[8], vertices[0]));
+            edges.Add(new Edge3D(vertices[9], vertices[0]));
+            edges.Add(new Edge3D(vertices[9], vertices[1]));
+
+            for (int i = 0; i <= 8; i+=2)
+                edges.Add(new Edge3D(vertices[10], vertices[i]));
+            for (int i = 1; i <= 9; i += 2)
+                edges.Add(new Edge3D(vertices[11], vertices[i]));
+            
+
+            var facets = new List<Facet3D>();
+            // TODO: добавить поверхности когда они реально понадобятся
+            /*var edges0 = new List<Edge3D>();
+            edges0.Add();
+            var facet0 = new Facet3D();*/
+
+            return new Polyhedron(vertices, edges, facets);
+
         }
     }
 }

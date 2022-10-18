@@ -125,5 +125,11 @@ namespace AffineTransformations3D
             currentPolyhedron = RegularPolyhedrons.MakeOktahedron();
             Proection();
         }
+
+        private void Ikosahedron(object sender, System.EventArgs e)
+        {
+            currentPolyhedron = RegularPolyhedrons.MakeIkosahedron();
+            Proection();
+        }
     }
 }
