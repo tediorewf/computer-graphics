@@ -1,4 +1,5 @@
 ﻿using System;
+using static AffineTransformations3D.MathConstants;
 
 namespace AffineTransformations3D
 {
@@ -85,13 +86,13 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
-        public static Matrix MakeAxonometricProjectionMatrix()
+        // Изометрическая проекция
+        public static Matrix MakeIsometricProjectionMatrix()
         {
-            // TODO: доделать (пока не нашел подходящую матрицу)
             var elements = new double[,] {
-                { 1, 0, 0, 0 },
-                { 0, 1, 0, 0 },
-                { 0, 0, 1, 1 },
+                { 1 / SquareRoot2, 1 / SquareRoot6, 1 / SquareRoot3, 0 },
+                { 0, 2 / SquareRoot6, -1 / SquareRoot3, 0 },
+                { -1 / SquareRoot2, 1 / SquareRoot6, 1 / SquareRoot3, 0 },
                 { 0, 0, 0, 1 }
             };
             return new Matrix(elements);

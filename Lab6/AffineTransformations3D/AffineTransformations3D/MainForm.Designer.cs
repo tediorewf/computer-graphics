@@ -30,7 +30,7 @@
         {
             this.polyhedronPictureBox = new System.Windows.Forms.PictureBox();
             this.switchProjectionButton = new System.Windows.Forms.Button();
-            this.projectionLabel = new System.Windows.Forms.Label();
+            this.currentProjectionLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -55,39 +55,40 @@
             // 
             // polyhedronPictureBox
             // 
-            this.polyhedronPictureBox.Location = new System.Drawing.Point(6, 73);
-            this.polyhedronPictureBox.Margin = new System.Windows.Forms.Padding(2);
+            this.polyhedronPictureBox.Location = new System.Drawing.Point(12, 140);
+            this.polyhedronPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.polyhedronPictureBox.Name = "polyhedronPictureBox";
-            this.polyhedronPictureBox.Size = new System.Drawing.Size(568, 315);
+            this.polyhedronPictureBox.Size = new System.Drawing.Size(1136, 606);
             this.polyhedronPictureBox.TabIndex = 0;
             this.polyhedronPictureBox.TabStop = false;
             // 
             // switchProjectionButton
             // 
-            this.switchProjectionButton.Location = new System.Drawing.Point(6, 6);
-            this.switchProjectionButton.Margin = new System.Windows.Forms.Padding(2);
+            this.switchProjectionButton.Location = new System.Drawing.Point(12, 12);
+            this.switchProjectionButton.Margin = new System.Windows.Forms.Padding(4);
             this.switchProjectionButton.Name = "switchProjectionButton";
-            this.switchProjectionButton.Size = new System.Drawing.Size(97, 41);
+            this.switchProjectionButton.Size = new System.Drawing.Size(194, 79);
             this.switchProjectionButton.TabIndex = 1;
             this.switchProjectionButton.Text = "Переключить проекцию";
             this.switchProjectionButton.UseVisualStyleBackColor = true;
+            this.switchProjectionButton.Click += new System.EventHandler(this.SwitchProjection);
             // 
-            // projectionLabel
+            // currentProjectionLabel
             // 
-            this.projectionLabel.AutoSize = true;
-            this.projectionLabel.Location = new System.Drawing.Point(12, 49);
-            this.projectionLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.projectionLabel.Name = "projectionLabel";
-            this.projectionLabel.Size = new System.Drawing.Size(79, 13);
-            this.projectionLabel.TabIndex = 2;
-            this.projectionLabel.Text = "projectionLabel";
+            this.currentProjectionLabel.AutoSize = true;
+            this.currentProjectionLabel.Location = new System.Drawing.Point(24, 94);
+            this.currentProjectionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.currentProjectionLabel.Name = "currentProjectionLabel";
+            this.currentProjectionLabel.Size = new System.Drawing.Size(228, 25);
+            this.currentProjectionLabel.TabIndex = 2;
+            this.currentProjectionLabel.Text = "currentProjectionLabel";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(585, 6);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(1170, 12);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(97, 41);
+            this.button1.Size = new System.Drawing.Size(194, 79);
             this.button1.TabIndex = 3;
             this.button1.Text = "Повернуть по X";
             this.button1.UseVisualStyleBackColor = true;
@@ -95,10 +96,10 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(686, 6);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Location = new System.Drawing.Point(1372, 12);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(97, 41);
+            this.button2.Size = new System.Drawing.Size(194, 79);
             this.button2.TabIndex = 4;
             this.button2.Text = "Повернуть по Y";
             this.button2.UseVisualStyleBackColor = true;
@@ -106,10 +107,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(787, 6);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Location = new System.Drawing.Point(1574, 12);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(97, 41);
+            this.button3.Size = new System.Drawing.Size(194, 79);
             this.button3.TabIndex = 5;
             this.button3.Text = "Повернуть по Z";
             this.button3.UseVisualStyleBackColor = true;
@@ -117,10 +118,10 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(628, 73);
-            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Location = new System.Drawing.Point(1256, 140);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(97, 41);
+            this.button4.Size = new System.Drawing.Size(194, 79);
             this.button4.TabIndex = 6;
             this.button4.Text = "-";
             this.button4.UseVisualStyleBackColor = true;
@@ -128,10 +129,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(738, 73);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Location = new System.Drawing.Point(1476, 140);
+            this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(97, 41);
+            this.button5.Size = new System.Drawing.Size(194, 79);
             this.button5.TabIndex = 7;
             this.button5.Text = "+";
             this.button5.UseVisualStyleBackColor = true;
@@ -139,10 +140,10 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(787, 128);
-            this.button6.Margin = new System.Windows.Forms.Padding(2);
+            this.button6.Location = new System.Drawing.Point(1574, 246);
+            this.button6.Margin = new System.Windows.Forms.Padding(4);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(97, 41);
+            this.button6.Size = new System.Drawing.Size(194, 79);
             this.button6.TabIndex = 10;
             this.button6.Text = "Смещение по Z  -";
             this.button6.UseVisualStyleBackColor = true;
@@ -150,10 +151,10 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(686, 128);
-            this.button7.Margin = new System.Windows.Forms.Padding(2);
+            this.button7.Location = new System.Drawing.Point(1372, 246);
+            this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(97, 41);
+            this.button7.Size = new System.Drawing.Size(194, 79);
             this.button7.TabIndex = 9;
             this.button7.Text = "Смещение по Y  -";
             this.button7.UseVisualStyleBackColor = true;
@@ -161,10 +162,10 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(585, 128);
-            this.button8.Margin = new System.Windows.Forms.Padding(2);
+            this.button8.Location = new System.Drawing.Point(1170, 246);
+            this.button8.Margin = new System.Windows.Forms.Padding(4);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(97, 41);
+            this.button8.Size = new System.Drawing.Size(194, 79);
             this.button8.TabIndex = 8;
             this.button8.Text = "Смещение по X  -";
             this.button8.UseVisualStyleBackColor = true;
@@ -172,10 +173,10 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(787, 173);
-            this.button9.Margin = new System.Windows.Forms.Padding(2);
+            this.button9.Location = new System.Drawing.Point(1574, 333);
+            this.button9.Margin = new System.Windows.Forms.Padding(4);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(97, 41);
+            this.button9.Size = new System.Drawing.Size(194, 79);
             this.button9.TabIndex = 13;
             this.button9.Text = "Смещение по Z  +";
             this.button9.UseVisualStyleBackColor = true;
@@ -183,10 +184,10 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(686, 173);
-            this.button10.Margin = new System.Windows.Forms.Padding(2);
+            this.button10.Location = new System.Drawing.Point(1372, 333);
+            this.button10.Margin = new System.Windows.Forms.Padding(4);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(97, 41);
+            this.button10.Size = new System.Drawing.Size(194, 79);
             this.button10.TabIndex = 12;
             this.button10.Text = "Смещение по Y +";
             this.button10.UseVisualStyleBackColor = true;
@@ -194,10 +195,10 @@
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(585, 173);
-            this.button11.Margin = new System.Windows.Forms.Padding(2);
+            this.button11.Location = new System.Drawing.Point(1170, 333);
+            this.button11.Margin = new System.Windows.Forms.Padding(4);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(97, 41);
+            this.button11.Size = new System.Drawing.Size(194, 79);
             this.button11.TabIndex = 11;
             this.button11.Text = "Смещение по X  +";
             this.button11.UseVisualStyleBackColor = true;
@@ -205,10 +206,10 @@
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(240, 404);
-            this.button12.Margin = new System.Windows.Forms.Padding(2);
+            this.button12.Location = new System.Drawing.Point(480, 777);
+            this.button12.Margin = new System.Windows.Forms.Padding(4);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(97, 41);
+            this.button12.Size = new System.Drawing.Size(194, 79);
             this.button12.TabIndex = 16;
             this.button12.Text = "Октаэдр";
             this.button12.UseVisualStyleBackColor = true;
@@ -216,10 +217,10 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(139, 404);
-            this.button13.Margin = new System.Windows.Forms.Padding(2);
+            this.button13.Location = new System.Drawing.Point(278, 777);
+            this.button13.Margin = new System.Windows.Forms.Padding(4);
             this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(97, 41);
+            this.button13.Size = new System.Drawing.Size(194, 79);
             this.button13.TabIndex = 15;
             this.button13.Text = "Гексаэдр";
             this.button13.UseVisualStyleBackColor = true;
@@ -227,10 +228,10 @@
             // 
             // button14
             // 
-            this.button14.Location = new System.Drawing.Point(38, 404);
-            this.button14.Margin = new System.Windows.Forms.Padding(2);
+            this.button14.Location = new System.Drawing.Point(76, 777);
+            this.button14.Margin = new System.Windows.Forms.Padding(4);
             this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(97, 41);
+            this.button14.Size = new System.Drawing.Size(194, 79);
             this.button14.TabIndex = 14;
             this.button14.Text = "Тетраэдр";
             this.button14.UseVisualStyleBackColor = true;
@@ -238,10 +239,10 @@
             // 
             // reflectXYButton
             // 
-            this.reflectXYButton.Location = new System.Drawing.Point(585, 218);
-            this.reflectXYButton.Margin = new System.Windows.Forms.Padding(2);
+            this.reflectXYButton.Location = new System.Drawing.Point(1170, 419);
+            this.reflectXYButton.Margin = new System.Windows.Forms.Padding(4);
             this.reflectXYButton.Name = "reflectXYButton";
-            this.reflectXYButton.Size = new System.Drawing.Size(98, 42);
+            this.reflectXYButton.Size = new System.Drawing.Size(196, 81);
             this.reflectXYButton.TabIndex = 17;
             this.reflectXYButton.Text = "Отразить по XY";
             this.reflectXYButton.UseVisualStyleBackColor = true;
@@ -249,10 +250,10 @@
             // 
             // reflectYZButton
             // 
-            this.reflectYZButton.Location = new System.Drawing.Point(686, 218);
-            this.reflectYZButton.Margin = new System.Windows.Forms.Padding(2);
+            this.reflectYZButton.Location = new System.Drawing.Point(1372, 419);
+            this.reflectYZButton.Margin = new System.Windows.Forms.Padding(4);
             this.reflectYZButton.Name = "reflectYZButton";
-            this.reflectYZButton.Size = new System.Drawing.Size(97, 42);
+            this.reflectYZButton.Size = new System.Drawing.Size(194, 81);
             this.reflectYZButton.TabIndex = 18;
             this.reflectYZButton.Text = "Отразить по YZ";
             this.reflectYZButton.UseVisualStyleBackColor = true;
@@ -260,10 +261,10 @@
             // 
             // reflectZXButton
             // 
-            this.reflectZXButton.Location = new System.Drawing.Point(787, 218);
-            this.reflectZXButton.Margin = new System.Windows.Forms.Padding(2);
+            this.reflectZXButton.Location = new System.Drawing.Point(1574, 419);
+            this.reflectZXButton.Margin = new System.Windows.Forms.Padding(4);
             this.reflectZXButton.Name = "reflectZXButton";
-            this.reflectZXButton.Size = new System.Drawing.Size(97, 42);
+            this.reflectZXButton.Size = new System.Drawing.Size(194, 81);
             this.reflectZXButton.TabIndex = 19;
             this.reflectZXButton.Text = "Отразить по ZX";
             this.reflectZXButton.UseVisualStyleBackColor = true;
@@ -271,10 +272,10 @@
             // 
             // button15
             // 
-            this.button15.Location = new System.Drawing.Point(341, 404);
-            this.button15.Margin = new System.Windows.Forms.Padding(2);
+            this.button15.Location = new System.Drawing.Point(682, 777);
+            this.button15.Margin = new System.Windows.Forms.Padding(4);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(97, 41);
+            this.button15.Size = new System.Drawing.Size(194, 79);
             this.button15.TabIndex = 20;
             this.button15.Text = "Икосаэдр";
             this.button15.UseVisualStyleBackColor = true;
@@ -282,10 +283,10 @@
             // 
             // button16
             // 
-            this.button16.Location = new System.Drawing.Point(442, 404);
-            this.button16.Margin = new System.Windows.Forms.Padding(2);
+            this.button16.Location = new System.Drawing.Point(884, 777);
+            this.button16.Margin = new System.Windows.Forms.Padding(4);
             this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(97, 41);
+            this.button16.Size = new System.Drawing.Size(194, 79);
             this.button16.TabIndex = 21;
             this.button16.Text = "Додекаэдр";
             this.button16.UseVisualStyleBackColor = true;
@@ -293,9 +294,9 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(955, 475);
+            this.ClientSize = new System.Drawing.Size(1910, 913);
             this.Controls.Add(this.button16);
             this.Controls.Add(this.button15);
             this.Controls.Add(this.reflectZXButton);
@@ -315,10 +316,10 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.projectionLabel);
+            this.Controls.Add(this.currentProjectionLabel);
             this.Controls.Add(this.switchProjectionButton);
             this.Controls.Add(this.polyhedronPictureBox);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Аффинные преобразования в пространстве. Проецирование";
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).EndInit();
@@ -331,7 +332,7 @@
 
         private System.Windows.Forms.PictureBox polyhedronPictureBox;
         private System.Windows.Forms.Button switchProjectionButton;
-        private System.Windows.Forms.Label projectionLabel;
+        private System.Windows.Forms.Label currentProjectionLabel;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;

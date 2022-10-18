@@ -6,6 +6,7 @@ namespace AffineTransformations3D
     public partial class MainForm : Form
     {
         private Polyhedron currentPolyhedron;
+        private ProjectionType currentProjectionType = ProjectionType.Isometric;
         private int RotateLength = 20;
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
@@ -13,14 +14,16 @@ namespace AffineTransformations3D
         public MainForm()
         {
             InitializeComponent();
+            currentProjectionLabel.Text = "";
         }
 
         private void Proection() {
             // Перед проецированием обязателбно создается копия т.к.
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
+            currentProjectionLabel.Text = currentProjectionType.GetText();
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(), Color.Blue);
+            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Blue);
             polyhedronPictureBox.Image = drawingSurface;
         }
 
@@ -135,6 +138,12 @@ namespace AffineTransformations3D
         private void Dodahedron(object sender, System.EventArgs e)
         {
             currentPolyhedron = RegularPolyhedrons.MakeDodahedron();
+            Proection();
+        }
+
+        private void SwitchProjection(object sender, System.EventArgs e)
+        {
+            currentProjectionType = currentProjectionType.GetNext();
             Proection();
         }
     }
