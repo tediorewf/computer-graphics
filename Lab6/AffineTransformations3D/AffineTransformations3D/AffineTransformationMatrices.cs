@@ -21,6 +21,31 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
+        public static Matrix MakeEdgeRotationMatrix(double l, double m, double n, double angle)
+        {
+            double rad_angle = (angle / 180.0 * Math.PI);
+            double cos_ang = Math.Cos(rad_angle);
+            double sin_ang = Math.Sin(rad_angle);
+
+            double[,] afin_matrix = new double[4, 4];
+            afin_matrix[0, 0] = l * l + cos_ang * (1 - l * l);
+            afin_matrix[0, 1] = l * (1 - cos_ang) * m + n * sin_ang;
+            afin_matrix[0, 2] = l * (1 - cos_ang) * n - m * sin_ang;
+            afin_matrix[1, 0] = l * (1 - cos_ang) * m - n * sin_ang;
+            afin_matrix[1, 1] = m * m + cos_ang * (1 - m * m);
+            afin_matrix[1, 2] = m * (1 - cos_ang) * n + l * sin_ang;
+            afin_matrix[2, 0] = l * (1 - cos_ang) * n + m * sin_ang;
+            afin_matrix[2, 1] = m * (1 - cos_ang) * n - l * sin_ang;
+            afin_matrix[2, 2] = n * n + cos_ang * (1 - n * n);
+            for (int i = 0; i < 3; ++i)
+            {
+                afin_matrix[i, 3] = 0;
+                afin_matrix[3, i] = 0;
+            }
+            afin_matrix[3, 3] = 1;
+            return new Matrix(afin_matrix);
+        }
+
         public static Matrix MakeYRotationMatrix(double degrees)
         {
             double radians = degrees * Math.PI / 180;

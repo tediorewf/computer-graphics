@@ -187,5 +187,12 @@ namespace AffineTransformations3D
             point.Y = transformedPoint.Y;
             point.Z = transformedPoint.Z;
         }
+
+
+        private void RotateAroundEdge(Point3D a, Point3D b, Point3D c, double phi)
+        {
+            var translationTransformation = MakeEdgeRotationMatrix();
+           ApplyTransformationInplace(this, translationTransformation);
+        }
     }
 }
