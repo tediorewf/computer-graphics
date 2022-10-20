@@ -188,11 +188,12 @@ namespace AffineTransformations3D
             point.Z = transformedPoint.Z;
         }
 
-
-        private void RotateAroundEdge(Point3D a, Point3D b, Point3D c, double phi)
+        public void RotateAroundEdgeCentered(Edge3D edge, double degrees)
         {
-            var translationTransformation = MakeEdgeRotationMatrix();
-           ApplyTransformationInplace(this, translationTransformation);
+            var rotationAroundEdgeCenteredTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
+                * MakeRotateAroundEdgeMatrix(edge, degrees)
+                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            ApplyTransformationInplace(this, rotationAroundEdgeCenteredTransformation);
         }
     }
 }

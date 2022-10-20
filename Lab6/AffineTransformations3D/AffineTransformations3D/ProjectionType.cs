@@ -4,7 +4,7 @@ namespace AffineTransformations3D
 {
     public enum ProjectionType
     {
-        Perspective, Isometric
+        Perspective, Axonometric
     }
 
     public static class ProjectionTypeExtensionMethods
@@ -14,9 +14,9 @@ namespace AffineTransformations3D
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
-                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(500);
-                case ProjectionType.Isometric:
-                    return AffineTransformationMatrices.MakeIsometricProjectionMatrix();
+                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(1500);
+                case ProjectionType.Axonometric:
+                    return AffineTransformationMatrices.MakeAxonometricProjectionMatrix();
                 default:
                     throw new ArgumentException("Unknown projection type");
             }
@@ -27,8 +27,8 @@ namespace AffineTransformations3D
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
-                    return ProjectionType.Isometric;
-                case ProjectionType.Isometric:
+                    return ProjectionType.Axonometric;
+                case ProjectionType.Axonometric:
                     return ProjectionType.Perspective;
                 default:
                     throw new ArgumentException("Unknown projection type");
@@ -41,8 +41,8 @@ namespace AffineTransformations3D
             {
                 case ProjectionType.Perspective:
                     return "Перспективная";
-                case ProjectionType.Isometric:
-                    return "Изометрическая";
+                case ProjectionType.Axonometric:
+                    return "Аксонометрическая";
                 default:
                     throw new ArgumentException("Unknown projection type");
             }

@@ -1,17 +1,36 @@
-﻿namespace AffineTransformations3D
+﻿using System;
+
+namespace AffineTransformations3D
 {
     public class Vector3D
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        private double _x;
+        private double _y;
+        private double _z; 
+        private double? _length;
+
+        public double X { get => _x; set => SetX(value); }
+        public double Y { get => _y; set => SetY(value); }
+        public double Z { get => _z; set => SetZ(value); }
         public double W { get; set; }
+        // Отложенная инициализация длины вектора
+        public double Length
+        {
+            get
+            {
+                if (_length == null)
+                {
+                    _length = ComputeLength();
+                }
+                return _length.Value;
+            }
+        }
 
         public Vector3D(double x, double y, double z, double w = 0)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            _x = x;
+            _y = y;
+            _z = z;
             W = w;
         }
 
@@ -19,6 +38,35 @@
         {
             var elements = new double[,] { { X, Y, Z, W } };
             return new Matrix(elements);
+        }
+
+
+        private double ComputeLength() => ComputeLength(this);
+
+        private static double ComputeLength(Vector3D vector3D) => Math.Sqrt(
+            vector3D.X*vector3D.X + vector3D.Y*vector3D.Y + vector3D.Z*vector3D.Z);
+
+        private void SetX(double x)
+        {
+            _x = x;
+            ResetLength();
+        }
+
+        private void SetY(double y)
+        {
+            _y = y;
+            ResetLength();
+        }
+
+        private void SetZ(double z)
+        {
+            _z = z;
+            ResetLength();
+        }
+
+        private void ResetLength()
+        {
+            _length = null;
         }
     }
 }

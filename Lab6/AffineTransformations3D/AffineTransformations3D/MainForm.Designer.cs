@@ -50,6 +50,7 @@
             this.reflectZXButton = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
+            this.rotateAroundEdgeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -292,11 +293,22 @@
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.Dodahedron);
             // 
+            // rotateAroundEdgeButton
+            // 
+            this.rotateAroundEdgeButton.Location = new System.Drawing.Point(1170, 507);
+            this.rotateAroundEdgeButton.Name = "rotateAroundEdgeButton";
+            this.rotateAroundEdgeButton.Size = new System.Drawing.Size(196, 81);
+            this.rotateAroundEdgeButton.TabIndex = 22;
+            this.rotateAroundEdgeButton.Text = "Повернуть вокруг прямой";
+            this.rotateAroundEdgeButton.UseVisualStyleBackColor = true;
+            this.rotateAroundEdgeButton.Click += new System.EventHandler(this.RotateAroundEdgeCentered);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1910, 913);
+            this.Controls.Add(this.rotateAroundEdgeButton);
             this.Controls.Add(this.button16);
             this.Controls.Add(this.button15);
             this.Controls.Add(this.reflectZXButton);
@@ -352,6 +364,7 @@
         private System.Windows.Forms.Button reflectZXButton;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Button rotateAroundEdgeButton;
     }
 }
 

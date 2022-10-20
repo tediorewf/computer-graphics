@@ -6,7 +6,7 @@ namespace AffineTransformations3D
     public partial class MainForm : Form
     {
         private Polyhedron currentPolyhedron;
-        private ProjectionType currentProjectionType = ProjectionType.Isometric;
+        private ProjectionType currentProjectionType = ProjectionType.Axonometric;
         private int RotateLength = 20;
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
@@ -144,6 +144,13 @@ namespace AffineTransformations3D
         private void SwitchProjection(object sender, System.EventArgs e)
         {
             currentProjectionType = currentProjectionType.GetNext();
+            Proection();
+        }
+
+        private void RotateAroundEdgeCentered(object sender, System.EventArgs e)
+        {
+            var edge3D = new Edge3D(new Point3D(0, 0, 0), new Point3D(1, 1, 1));
+            currentPolyhedron.RotateAroundEdgeCentered(edge3D, 60);
             Proection();
         }
     }
