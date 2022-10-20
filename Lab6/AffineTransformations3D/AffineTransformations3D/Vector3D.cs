@@ -48,20 +48,30 @@ namespace AffineTransformations3D
 
         private void SetX(double x)
         {
+            if (_x != x)
+            {
+                ResetLength();
+            }
             _x = x;
-            ResetLength();
         }
 
         private void SetY(double y)
         {
+            if (_y != y)
+            {
+                ResetLength();
+            }
             _y = y;
-            ResetLength();
+
         }
 
         private void SetZ(double z)
         {
+            if (_z != z)
+            {
+                ResetLength();
+            }
             _z = z;
-            ResetLength();
         }
 
         private void ResetLength()
