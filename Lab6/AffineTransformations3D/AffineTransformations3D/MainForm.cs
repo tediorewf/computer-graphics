@@ -29,7 +29,8 @@ namespace AffineTransformations3D
         private CoordinatePlaneType currentRotationCoordinatePlaneType;
         private CoordinatePlaneType currentReflectionCoordinatePlaneType;
 
-        private int RotateLength = 1;
+        private Edge3D rotateAroundEdge;
+
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
 
@@ -126,7 +127,7 @@ namespace AffineTransformations3D
         private void RotateAroundEdgeCentered(object sender, System.EventArgs e)
         {
             var edge3D = new Edge3D(new Point3D(0, 0, 0), new Point3D(1, 1, 1));
-            currentPolyhedron.RotateAroundEdgeCentered(edge3D, 60);
+            currentPolyhedron.RotateAroundEdge(edge3D, 60);
             Project();
         }
 
@@ -205,7 +206,7 @@ namespace AffineTransformations3D
                 WarnInvalidInput();
                 return;
             }
-            if (!double.TryParse(rotationAroundEdgeEndPointZTextBox.Text, out var z1))
+            if (!double.TryParse(rotationAroundEdgeBeginPointZTextBox.Text, out var z1))
             {
                 WarnInvalidInput();
                 return;
@@ -233,9 +234,9 @@ namespace AffineTransformations3D
                 return;
             }
 
-            var edge3D = new Edge3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+            rotateAroundEdge = new Edge3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
 
-            currentPolyhedron.RotateAroundEdgeCentered(edge3D, degrees);
+            currentPolyhedron.RotateAroundEdge(rotateAroundEdge, degrees);
             Project();
         }
 
