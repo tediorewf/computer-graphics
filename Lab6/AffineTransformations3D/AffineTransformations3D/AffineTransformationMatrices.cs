@@ -5,6 +5,13 @@ namespace AffineTransformations3D
 {
     public static class AffineTransformationMatrices
     {
+        public static Matrix MakeXYZRotationMatrix(double degreesX, double degreesY, double degreesZ)
+        {
+            return MakeXRotationMatrix(degreesX) 
+                * MakeYRotationMatrix(degreesY) 
+                * MakeZRotationMatrix(degreesZ);
+        }
+
         public static Matrix MakeXRotationMatrix(double degrees)
         {
             double radians = degrees * Math.PI / 180;
@@ -13,37 +20,12 @@ namespace AffineTransformations3D
             double angleSin = Math.Sin(radians);
 
             var elements = new double[,] {
-                { 1, 0, 0, 0},
-                { 0, angleCos, -angleSin, 0},
-                { 0, angleSin, angleCos, 0},
-                { 0, 0, 0, 1}
+                { 1, 0, 0, 0 },
+                { 0, angleCos, -angleSin, 0 },
+                { 0, angleSin, angleCos, 0 },
+                { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
-        }
-
-        public static Matrix MakeEdgeRotationMatrix(double l, double m, double n, double angle)
-        {
-            double rad_angle = (angle / 180.0 * Math.PI);
-            double cos_ang = Math.Cos(rad_angle);
-            double sin_ang = Math.Sin(rad_angle);
-
-            double[,] afin_matrix = new double[4, 4];
-            afin_matrix[0, 0] = l * l + cos_ang * (1 - l * l);
-            afin_matrix[0, 1] = l * (1 - cos_ang) * m + n * sin_ang;
-            afin_matrix[0, 2] = l * (1 - cos_ang) * n - m * sin_ang;
-            afin_matrix[1, 0] = l * (1 - cos_ang) * m - n * sin_ang;
-            afin_matrix[1, 1] = m * m + cos_ang * (1 - m * m);
-            afin_matrix[1, 2] = m * (1 - cos_ang) * n + l * sin_ang;
-            afin_matrix[2, 0] = l * (1 - cos_ang) * n + m * sin_ang;
-            afin_matrix[2, 1] = m * (1 - cos_ang) * n - l * sin_ang;
-            afin_matrix[2, 2] = n * n + cos_ang * (1 - n * n);
-            for (int i = 0; i < 3; ++i)
-            {
-                afin_matrix[i, 3] = 0;
-                afin_matrix[3, i] = 0;
-            }
-            afin_matrix[3, 3] = 1;
-            return new Matrix(afin_matrix);
         }
 
         public static Matrix MakeYRotationMatrix(double degrees)
@@ -54,10 +36,10 @@ namespace AffineTransformations3D
             double angleSin = Math.Sin(radians);
 
             var elements = new double[,] {
-                { angleCos, 0, angleSin, 0},
-                { 0, 1, 0, 0},
-                { -angleSin, 0, angleCos, 0},
-                { 0, 0, 0, 1}
+                { angleCos, 0, angleSin, 0 },
+                { 0, 1, 0, 0 },
+                { -angleSin, 0, angleCos, 0 },
+                { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
         }
@@ -70,20 +52,47 @@ namespace AffineTransformations3D
             double angleSin = Math.Sin(radians);
 
             var elements = new double[,] {
-                { angleCos, -angleSin, 0, 0},
-                { angleSin,  angleCos, 0, 0},
-                {  0, 0, 1, 0},
-                { 0, 0, 0, 1}
+                { angleCos, -angleSin, 0, 0 },
+                { angleSin,  angleCos, 0, 0 },
+                {  0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
         }
 
-        public static Matrix MakeScalingMatrix(double d)
+        public static Matrix MakeRotateAroundEdgeMatrix(Edge3D edge3D, double angle)
+        {
+            double radians = angle * Math.PI / 180;
+
+            double angleCos = Math.Cos(radians);
+            double angleSin = Math.Sin(radians);
+
+            var vector3D = edge3D.ToVector3D();
+
+            double t = vector3D.X / vector3D.Length;  // t - чтобы не путать l с единицей :)
+            double m = vector3D.Y / vector3D.Length;
+            double n = vector3D.Z / vector3D.Length;
+
+            double tSqr = t * t;  // мелкие оптимизации
+            double mSqr = m * m;
+            double nSqr = n * n;
+
+            var elements = new double[,]
+            {
+                { tSqr + angleCos*(1 - tSqr), t*(1 - angleCos)*m + n * angleSin, t*(1 - angleCos)*n - m * angleSin, 0 },
+                { t * (1 - angleCos)*m - n*angleSin, mSqr + angleCos*(1 - mSqr), m*(1 - angleCos)*n + t*angleSin, 0 },
+                { t*(1 - angleCos)*n+m*angleSin, m*(1 - angleCos)*n - t*angleSin, nSqr + angleCos*(1 - nSqr), 0 },
+                { 0, 0, 0, 1 }
+            };
+            return new Matrix(elements);
+        }
+
+        public static Matrix MakeScalingMatrix(double mx, double my, double mz)
         {
             var elements = new double[,] {
-                { d, 0, 0, 0 },
-                { 0, d, 0, 0 },
-                { 0, 0, d, 0 },
+                { mx, 0, 0, 0 },
+                { 0, my, 0, 0 },
+                { 0, 0, mz, 0 },
                 { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
@@ -112,7 +121,7 @@ namespace AffineTransformations3D
         }
 
         // Изометрическая проекция
-        public static Matrix MakeIsometricProjectionMatrix()
+        public static Matrix MakeAxonometricProjectionMatrix()
         {
             var elements = new double[,] {
                 { 1 / SquareRoot2, 1 / SquareRoot6, 1 / SquareRoot3, 0 },

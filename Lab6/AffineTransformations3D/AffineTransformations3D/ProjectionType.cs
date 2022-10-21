@@ -4,45 +4,32 @@ namespace AffineTransformations3D
 {
     public enum ProjectionType
     {
-        Perspective, Isometric
+        Perspective, Axonometric
     }
 
     public static class ProjectionTypeExtensionMethods
     {
-        public static Matrix GetMatrix(this ProjectionType projectionType)
+        public static Matrix CreateMatrix(this ProjectionType projectionType)
         {
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
-                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(500);
-                case ProjectionType.Isometric:
-                    return AffineTransformationMatrices.MakeIsometricProjectionMatrix();
+                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(2000);
+                case ProjectionType.Axonometric:
+                    return AffineTransformationMatrices.MakeAxonometricProjectionMatrix();
                 default:
                     throw new ArgumentException("Unknown projection type");
             }
         }
 
-        public static ProjectionType GetNext(this ProjectionType projectionType)
-        {
-            switch (projectionType)
-            {
-                case ProjectionType.Perspective:
-                    return ProjectionType.Isometric;
-                case ProjectionType.Isometric:
-                    return ProjectionType.Perspective;
-                default:
-                    throw new ArgumentException("Unknown projection type");
-            }
-        }
-
-        public static string GetText(this ProjectionType projectionType)
+        public static string GetProjectionName(this ProjectionType projectionType)
         {
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
                     return "Перспективная";
-                case ProjectionType.Isometric:
-                    return "Изометрическая";
+                case ProjectionType.Axonometric:
+                    return "Аксонометрическая";
                 default:
                     throw new ArgumentException("Unknown projection type");
             }

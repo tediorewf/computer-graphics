@@ -37,7 +37,7 @@ namespace AffineTransformations3D
         public Polyhedron ComputeProjection(ProjectionType projectionType)
         {
             var clone = Clone() as Polyhedron;
-            var perspectiveProjectionMatrix = projectionType.GetMatrix();
+            var perspectiveProjectionMatrix = projectionType.CreateMatrix();
             ApplyTransformationInplace(clone, perspectiveProjectionMatrix);
             return clone;
         }
@@ -48,52 +48,34 @@ namespace AffineTransformations3D
             ApplyTransformationInplace(this, translationTransformation);
         }
 
-        public void RotateXAxis(double degrees) 
+        public void RotateAxis(double xDegrees, double yDegrees, double zDegrees)
         {
-            var xAxisRotationTransformation = MakeXRotationMatrix(degrees);
-            ApplyTransformationInplace(this, xAxisRotationTransformation);
+            var axisRotationTransformation = MakeXRotationMatrix(xDegrees) 
+                * MakeXRotationMatrix(yDegrees) 
+                * MakeXRotationMatrix(zDegrees);
+            ApplyTransformationInplace(this, axisRotationTransformation);
         }
 
-        public void RotateYAxis(double degrees)
+        public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
         {
-            var yAxisRotationTransformation = MakeYRotationMatrix(degrees);
-            ApplyTransformationInplace(this, yAxisRotationTransformation);
-        }
-
-        public void RotateZAxis(double degrees)
-        {
-            var zAxisRotationTransformation = MakeZRotationMatrix(degrees);
-            ApplyTransformationInplace(this, zAxisRotationTransformation);
-        }
-
-        public void RotateXCenter(double degrees)
-        {
-            var xCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeXRotationMatrix(degrees)
+            var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+                * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, xCenteredRotationTransformation);
+            ApplyTransformationInplace(this, centeredRotationTransformation);
         }
 
-        public void RotateYCenter(double degrees)
+        public void Scale(double mx, double my, double mz)
         {
-            var yCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeYRotationMatrix(degrees)
+            var scalingTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+                * MakeScalingMatrix(mx, my, mz)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, yCenteredRotationTransformation);
-        }
-
-        public void RotateZCenter(double degrees)
-        {
-            var zCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
-                * MakeZRotationMatrix(degrees)
-                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, zCenteredRotationTransformation);
+            ApplyTransformationInplace(this, scalingTransformation);
         }
 
         public void ScaleCentered(double factor)
         {
             var centeredScalingTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
-                * MakeScalingMatrix(factor)
+                * MakeScalingMatrix(factor, factor, factor)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
             ApplyTransformationInplace(this, centeredScalingTransformation);
         }
@@ -188,11 +170,12 @@ namespace AffineTransformations3D
             point.Z = transformedPoint.Z;
         }
 
-
-        private void RotateAroundEdge(Point3D a, Point3D b, Point3D c, double phi)
+        public void RotateAroundEdgeCentered(Edge3D edge, double degrees)
         {
-            var translationTransformation = MakeEdgeRotationMatrix();
-           ApplyTransformationInplace(this, translationTransformation);
+            var rotationAroundEdgeCenteredTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
+                * MakeRotateAroundEdgeMatrix(edge, degrees)
+                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            ApplyTransformationInplace(this, rotationAroundEdgeCenteredTransformation);
         }
     }
 }
