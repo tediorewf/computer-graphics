@@ -79,9 +79,9 @@ namespace AffineTransformations3D
 
             var elements = new double[,]
             {
-                { tSqr + angleCos*(1 - tSqr), t*(1 - angleCos)*m + n * angleSin, t*(1 - angleCos)*n - m * angleSin, 0 },
-                { t * (1 - angleCos)*m - n*angleSin, mSqr + angleCos*(1 - mSqr), m*(1 - angleCos)*n + t*angleSin, 0 },
-                { t*(1 - angleCos)*n+m*angleSin, m*(1 - angleCos)*n - t*angleSin, nSqr + angleCos*(1 - nSqr), 0 },
+                { tSqr + angleCos*(1 - tSqr), t * (1 - angleCos)*m - n*angleSin, t*(1 - angleCos)*n+m*angleSin, 0 },
+                { t*(1 - angleCos)*m + n * angleSin,  mSqr + angleCos*(1 - mSqr), m*(1 - angleCos)*n - t*angleSin, 0 },
+                {t*(1 - angleCos)*n - m * angleSin, m*(1 - angleCos)*n + t*angleSin, nSqr + angleCos*(1 - nSqr), 0 },
                 { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
