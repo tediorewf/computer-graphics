@@ -37,7 +37,7 @@ namespace AffineTransformations3D
         public Polyhedron ComputeProjection(ProjectionType projectionType)
         {
             var clone = Clone() as Polyhedron;
-            var perspectiveProjectionMatrix = projectionType.GetMatrix();
+            var perspectiveProjectionMatrix = projectionType.CreateMatrix();
             ApplyTransformationInplace(clone, perspectiveProjectionMatrix);
             return clone;
         }
@@ -64,6 +64,14 @@ namespace AffineTransformations3D
         {
             var zAxisRotationTransformation = MakeZRotationMatrix(degrees);
             ApplyTransformationInplace(this, zAxisRotationTransformation);
+        }
+
+        public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
+        {
+            var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+                * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
+                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            ApplyTransformationInplace(this, centeredRotationTransformation);
         }
 
         public void RotateXCenter(double degrees)
@@ -93,7 +101,7 @@ namespace AffineTransformations3D
         public void ScaleCentered(double factor)
         {
             var centeredScalingTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
-                * MakeScalingMatrix(factor)
+                * MakeScalingMatrix(factor, factor, factor)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
             ApplyTransformationInplace(this, centeredScalingTransformation);
         }

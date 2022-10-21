@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="AffineTransformationMatrices.cs" />
     <Compile Include="BresenhamAlgorithm.cs" />
+    <Compile Include="CoordinatePlaneType.cs" />
     <Compile Include="Edge3D.cs" />
     <Compile Include="Facet3D.cs" />
     <Compile Include="FastBitmap.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Point3D.cs" />
     <Compile Include="Polyhedron.cs" />
     <Compile Include="PolyhedronDrawing.cs" />
+    <Compile Include="PolyhedronType.cs" />
     <Compile Include="RegularPolyhedrons.cs" />
     <Compile Include="Vector3D.cs" />
     <Compile Include="Program.cs" />

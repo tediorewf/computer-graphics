@@ -9,12 +9,12 @@ namespace AffineTransformations3D
 
     public static class ProjectionTypeExtensionMethods
     {
-        public static Matrix GetMatrix(this ProjectionType projectionType)
+        public static Matrix CreateMatrix(this ProjectionType projectionType)
         {
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
-                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(1500);
+                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(2000);
                 case ProjectionType.Axonometric:
                     return AffineTransformationMatrices.MakeAxonometricProjectionMatrix();
                 default:
@@ -22,20 +22,7 @@ namespace AffineTransformations3D
             }
         }
 
-        public static ProjectionType GetNext(this ProjectionType projectionType)
-        {
-            switch (projectionType)
-            {
-                case ProjectionType.Perspective:
-                    return ProjectionType.Axonometric;
-                case ProjectionType.Axonometric:
-                    return ProjectionType.Perspective;
-                default:
-                    throw new ArgumentException("Unknown projection type");
-            }
-        }
-
-        public static string GetText(this ProjectionType projectionType)
+        public static string GetProjectionName(this ProjectionType projectionType)
         {
             switch (projectionType)
             {

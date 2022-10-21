@@ -5,6 +5,13 @@ namespace AffineTransformations3D
 {
     public static class AffineTransformationMatrices
     {
+        public static Matrix MakeXYZRotationMatrix(double degreesX, double degreesY, double degreesZ)
+        {
+            return MakeXRotationMatrix(degreesX) 
+                * MakeYRotationMatrix(degreesY) 
+                * MakeZRotationMatrix(degreesZ);
+        }
+
         public static Matrix MakeXRotationMatrix(double degrees)
         {
             double radians = degrees * Math.PI / 180;
@@ -80,12 +87,12 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
-        public static Matrix MakeScalingMatrix(double d)
+        public static Matrix MakeScalingMatrix(double mx, double my, double mz)
         {
             var elements = new double[,] {
-                { d, 0, 0, 0 },
-                { 0, d, 0, 0 },
-                { 0, 0, d, 0 },
+                { mx, 0, 0, 0 },
+                { 0, my, 0, 0 },
+                { 0, 0, mz, 0 },
                 { 0, 0, 0, 1 }
             };
             return new Matrix(elements);
