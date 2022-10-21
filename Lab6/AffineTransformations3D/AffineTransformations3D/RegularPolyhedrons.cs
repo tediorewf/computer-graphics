@@ -243,17 +243,17 @@ namespace AffineTransformations3D
             edges.Add(new Edge3D(vertices[4], vertices[0]));
             edges.Add(new Edge3D(vertices[4], vertices[13]));
 
-            facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[2], vertices[3], vertices[4], }, new List<Edge3D> { edges[0], edges[2], edges[4], edges[6], edges[8] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[2], vertices[3], vertices[4] }, new List<Edge3D> { edges[0], edges[2], edges[4], edges[6], edges[8] }));
 
             for (int i = 5; i <= 13; i++)
                 edges.Add(new Edge3D(vertices[i], vertices[i + 1]));
             edges.Add(new Edge3D(vertices[14], vertices[5]));
 
-            facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[7], vertices[6], vertices[5], }, new List<Edge3D> { edges[0], edges[3], edges[11], edges[10], edges[1] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[1], vertices[2], vertices[9], vertices[8], vertices[7], }, new List<Edge3D> { edges[2], edges[5], edges[13], edges[12], edges[3] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[2], vertices[3], vertices[11], vertices[10], vertices[9], }, new List<Edge3D> { edges[4], edges[7], edges[15], edges[14], edges[5] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[3], vertices[4], vertices[13], vertices[12], vertices[1], }, new List<Edge3D> { edges[6], edges[9], edges[17], edges[16], edges[7] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[4], vertices[0], vertices[5], vertices[14], vertices[3], }, new List<Edge3D> { edges[8], edges[1], edges[19], edges[18], edges[9] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[7], vertices[6], vertices[5] }, new List<Edge3D> { edges[0], edges[3], edges[11], edges[10], edges[1] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[1], vertices[2], vertices[9], vertices[8], vertices[7] }, new List<Edge3D> { edges[2], edges[5], edges[13], edges[12], edges[3] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[2], vertices[3], vertices[11], vertices[10], vertices[9] }, new List<Edge3D> { edges[4], edges[7], edges[15], edges[14], edges[5] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[3], vertices[4], vertices[13], vertices[12], vertices[1] }, new List<Edge3D> { edges[6], edges[9], edges[17], edges[16], edges[7] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[4], vertices[0], vertices[5], vertices[14], vertices[3] }, new List<Edge3D> { edges[8], edges[1], edges[19], edges[18], edges[9] }));
 
             j = 4;
             for (int i = 15; i <= 18; i++)
@@ -265,11 +265,11 @@ namespace AffineTransformations3D
             edges.Add(new Edge3D(vertices[19], vertices[15]));
             edges.Add(new Edge3D(vertices[19], vertices[14]));
 
-            facets.Add(new Facet3D(new List<Point3D> { vertices[15], vertices[6], vertices[5], vertices[14], vertices[19], }, new List<Edge3D> { edges[21], edges[10], edges[19], edges[29], edges[28] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[19], vertices[14], vertices[13], vertices[12], vertices[18], }, new List<Edge3D> { edges[29], edges[18], edges[17], edges[27], edges[26] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[18], vertices[12], vertices[11], vertices[10], vertices[17], }, new List<Edge3D> { edges[27], edges[16], edges[15], edges[25], edges[24] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[17], vertices[10], vertices[9], vertices[8], vertices[16], }, new List<Edge3D> { edges[25], edges[14], edges[13], edges[23], edges[22] }));
-            facets.Add(new Facet3D(new List<Point3D> { vertices[16], vertices[8], vertices[7], vertices[6], vertices[15], }, new List<Edge3D> { edges[23], edges[12], edges[11], edges[21], edges[20] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[15], vertices[6], vertices[5], vertices[14], vertices[19] }, new List<Edge3D> { edges[21], edges[10], edges[19], edges[29], edges[28] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[19], vertices[14], vertices[13], vertices[12], vertices[18] }, new List<Edge3D> { edges[29], edges[18], edges[17], edges[27], edges[26] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[18], vertices[12], vertices[11], vertices[10], vertices[17] }, new List<Edge3D> { edges[27], edges[16], edges[15], edges[25], edges[24] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[17], vertices[10], vertices[9], vertices[8], vertices[16] }, new List<Edge3D> { edges[25], edges[14], edges[13], edges[23], edges[22] }));
+            facets.Add(new Facet3D(new List<Point3D> { vertices[16], vertices[8], vertices[7], vertices[6], vertices[15] }, new List<Edge3D> { edges[23], edges[12], edges[11], edges[21], edges[20] }));
 
             facets.Add(new Facet3D(new List<Point3D> { vertices[15], vertices[16], vertices[17], vertices[18], vertices[19], }, new List<Edge3D> { edges[20], edges[22], edges[24], edges[26], edges[28] }));
 
