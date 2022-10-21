@@ -30,7 +30,7 @@ namespace AffineTransformations3D
             }
         }
 
-        public static string GetCoordinatePlaneTypeName(this CoordinatePlaneType coordinatePlaneType)
+        public static string GetCoordinatePlaneName(this CoordinatePlaneType coordinatePlaneType)
         {
             switch (coordinatePlaneType)
             {

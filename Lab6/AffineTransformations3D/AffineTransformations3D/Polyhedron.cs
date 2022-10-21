@@ -48,22 +48,12 @@ namespace AffineTransformations3D
             ApplyTransformationInplace(this, translationTransformation);
         }
 
-        public void RotateXAxis(double degrees) 
+        public void RotateAxis(double xDegrees, double yDegrees, double zDegrees)
         {
-            var xAxisRotationTransformation = MakeXRotationMatrix(degrees);
-            ApplyTransformationInplace(this, xAxisRotationTransformation);
-        }
-
-        public void RotateYAxis(double degrees)
-        {
-            var yAxisRotationTransformation = MakeYRotationMatrix(degrees);
-            ApplyTransformationInplace(this, yAxisRotationTransformation);
-        }
-
-        public void RotateZAxis(double degrees)
-        {
-            var zAxisRotationTransformation = MakeZRotationMatrix(degrees);
-            ApplyTransformationInplace(this, zAxisRotationTransformation);
+            var axisRotationTransformation = MakeXRotationMatrix(xDegrees) 
+                * MakeXRotationMatrix(yDegrees) 
+                * MakeXRotationMatrix(zDegrees);
+            ApplyTransformationInplace(this, axisRotationTransformation);
         }
 
         public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
@@ -74,28 +64,12 @@ namespace AffineTransformations3D
             ApplyTransformationInplace(this, centeredRotationTransformation);
         }
 
-        public void RotateXCenter(double degrees)
+        public void Scale(double mx, double my, double mz)
         {
-            var xCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeXRotationMatrix(degrees)
+            var scalingTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+                * MakeScalingMatrix(mx, my, mz)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, xCenteredRotationTransformation);
-        }
-
-        public void RotateYCenter(double degrees)
-        {
-            var yCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeYRotationMatrix(degrees)
-                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, yCenteredRotationTransformation);
-        }
-
-        public void RotateZCenter(double degrees)
-        {
-            var zCenteredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z) 
-                * MakeZRotationMatrix(degrees)
-                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, zCenteredRotationTransformation);
+            ApplyTransformationInplace(this, scalingTransformation);
         }
 
         public void ScaleCentered(double factor)

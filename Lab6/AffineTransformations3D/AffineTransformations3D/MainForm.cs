@@ -16,12 +16,19 @@ namespace AffineTransformations3D
         private string[] polyhedronNames;
         private ProjectionType[] projectionTypes;
         private string[] projectionNames;
+        private CoordinatePlaneType[] rotationCoordinatePlaneTypes;
+        private string[] rotationCcoordinatePlaneNames;
+        private CoordinatePlaneType[] reflectionCoordinatePlaneTypes;
+        private string[] reflectionCoordinatePlaneNames;
 
         private Point previousMousePosition;
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
 
         private ProjectionType currentProjectionType;
+        private CoordinatePlaneType currentRotationCoordinatePlaneType;
+        private CoordinatePlaneType currentReflectionCoordinatePlaneType;
+
         private int RotateLength = 1;
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
@@ -31,6 +38,8 @@ namespace AffineTransformations3D
             InitializeComponent();
             InitializePolyhedronStuff();
             InitializeProjectionStuff();
+            InitializeRotationCoordinatePlaneStuff();
+            InitializeReflectionCoordinatePlaneStuff();
             Size = new Size(735, 455);
         }
 
@@ -50,6 +59,24 @@ namespace AffineTransformations3D
             projectionSelectionComboBox.Items.AddRange(projectionNames);
             projectionSelectionComboBox.SelectedIndex = 0;
             currentProjectionType = projectionTypes[projectionSelectionComboBox.SelectedIndex];
+        }
+
+        private void InitializeRotationCoordinatePlaneStuff()
+        {
+            rotationCoordinatePlaneTypes = Enum.GetValues(typeof(CoordinatePlaneType)).Cast<CoordinatePlaneType>().ToArray();
+            rotationCcoordinatePlaneNames = rotationCoordinatePlaneTypes.Select(cpt => cpt.GetCoordinatePlaneName()).ToArray();
+            rotationCoordinatePlaneComboBox.Items.AddRange(rotationCcoordinatePlaneNames);
+            rotationCoordinatePlaneComboBox.SelectedIndex = 0;
+            currentRotationCoordinatePlaneType = rotationCoordinatePlaneTypes[rotationCoordinatePlaneComboBox.SelectedIndex];
+        }
+
+        private void InitializeReflectionCoordinatePlaneStuff()
+        {
+            reflectionCoordinatePlaneTypes = Enum.GetValues(typeof(CoordinatePlaneType)).Cast<CoordinatePlaneType>().ToArray();
+            reflectionCoordinatePlaneNames = reflectionCoordinatePlaneTypes.Select(cpt => cpt.GetCoordinatePlaneName()).ToArray();
+            reflectionCoordinatePlaneComboBox.Items.AddRange(reflectionCoordinatePlaneNames);
+            reflectionCoordinatePlaneComboBox.SelectedIndex = 0;
+            currentReflectionCoordinatePlaneType = rotationCoordinatePlaneTypes[reflectionCoordinatePlaneComboBox.SelectedIndex];
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -115,9 +142,30 @@ namespace AffineTransformations3D
                 previousMousePosition = e.Location;
             }
 
-            currentPolyhedron.RotateAroundCenter(previousMousePosition.X - e.Location.X, 
-                previousMousePosition.Y - e.Location.Y, 
-                0);
+            double degreesX, degreesY, degreesZ;
+
+            switch(currentRotationCoordinatePlaneType)
+            {
+                case CoordinatePlaneType.XY:
+                    degreesX = previousMousePosition.X - e.Location.X;
+                    degreesY = previousMousePosition.Y - e.Location.Y;
+                    degreesZ = 0;
+                    break;
+                case CoordinatePlaneType.YZ:
+                    degreesX = 0;
+                    degreesY = previousMousePosition.Y - e.Location.Y;
+                    degreesZ = previousMousePosition.X - e.Location.X;
+                    break;
+                case CoordinatePlaneType.ZX:
+                    degreesX = previousMousePosition.X - e.Location.X;
+                    degreesY = 0;
+                    degreesZ = previousMousePosition.Y - e.Location.Y;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown coordinate plane type");
+            }
+
+            currentPolyhedron.RotateAroundCenter(degreesX, degreesY, degreesZ);
             Project();
 
             previousMousePosition = e.Location;
@@ -147,7 +195,48 @@ namespace AffineTransformations3D
 
         private void rotationAroundEdgeAngleButton_Click(object sender, EventArgs e)
         {
+            if (!double.TryParse(rotationAroundEdgeBeginPointXTextBox.Text, out var x1))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationAroundEdgeBeginPointYTextBox.Text, out var y1))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationAroundEdgeEndPointZTextBox.Text, out var z1))
+            {
+                WarnInvalidInput();
+                return;
+            }
 
+            if (!double.TryParse(rotationAroundEdgeEndPointXTextBox.Text, out var x2))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationAroundEdgeEndPointYTextBox.Text, out var y2))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationAroundEdgeEndPointZTextBox.Text, out var z2))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!double.TryParse(rotationAroundEdgeAngleTextBox.Text, out var degrees))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            var edge3D = new Edge3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+
+            currentPolyhedron.RotateAroundEdgeCentered(edge3D, degrees);
+            Project();
         }
 
         private void resetButton_Click(object sender, EventArgs e)
@@ -157,7 +246,109 @@ namespace AffineTransformations3D
 
         private void ResetScene()
         {
+            var size = polyhedronPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            polyhedronPictureBox.Image = drawingSurface;
+        }
 
+        private void translateButton_Click(object sender, EventArgs e)
+        {
+            if (!double.TryParse(translationXTextBox.Text, out var dx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(translationYTextBox.Text, out var dy))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(translationZTextBox.Text, out var dz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            currentPolyhedron.Translate(dx, dy, dz);
+            Project();
+        }
+
+        private void WarnInvalidInput()
+        {
+            MessageBox.Show("Некорректный ввод");
+        }
+
+        private void rotateButton_Click(object sender, EventArgs e)
+        {
+            if (!double.TryParse(rotationXTextBox.Text, out var xDegrees))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationYTextBox.Text, out var yDegrees))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(rotationZTextBox.Text, out var zDegrees))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            currentPolyhedron.RotateAxis(xDegrees, yDegrees, zDegrees);
+            Project();
+        }
+
+        private void scalingButton_Click(object sender, EventArgs e)
+        {
+            if (!double.TryParse(scalingXTextBox.Text, out var mx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(scalingYTextBox.Text, out var my))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            if (!double.TryParse(scalingZTextBox.Text, out var mz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            currentPolyhedron.Scale(mx, my, mz);
+            Project();
+        }
+
+        private void rotationCoordinatePlaneComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            currentRotationCoordinatePlaneType = rotationCoordinatePlaneTypes[rotationCoordinatePlaneComboBox.SelectedIndex];
+        }
+
+        private void reflectionCoordinatePlaneComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            currentReflectionCoordinatePlaneType = reflectionCoordinatePlaneTypes[reflectionCoordinatePlaneComboBox.SelectedIndex];
+        }
+
+        private void reflectButton_Click(object sender, EventArgs e)
+        {
+            switch (currentReflectionCoordinatePlaneType)
+            {
+                case CoordinatePlaneType.XY:
+                    currentPolyhedron.ReflectXY();
+                    break;
+                case CoordinatePlaneType.YZ:
+                    currentPolyhedron.ReflectYZ();
+                    break;
+                case CoordinatePlaneType.ZX:
+                    currentPolyhedron.ReflectZX();
+                    break;
+                default:
+                    throw new ArgumentException("Unknown coordinate plane type");
+            }
+            Project();
         }
     }
 }
