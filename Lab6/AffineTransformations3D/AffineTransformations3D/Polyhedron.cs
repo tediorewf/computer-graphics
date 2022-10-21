@@ -66,9 +66,7 @@ namespace AffineTransformations3D
 
         public void Scale(double mx, double my, double mz)
         {
-            var scalingTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeScalingMatrix(mx, my, mz)
-                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            var scalingTransformation = MakeScalingMatrix(mx, my, mz);
             ApplyTransformationInplace(this, scalingTransformation);
         }
 
