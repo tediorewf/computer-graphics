@@ -94,6 +94,8 @@
             this.y1TextBox = new System.Windows.Forms.TextBox();
             this.splittingTextBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.FtextBox = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -103,6 +105,7 @@
             this.reflectionGroupBox.SuspendLayout();
             this.centeredScalingGroupBox.SuspendLayout();
             this.rotatingGroupBox.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // polyhedronPictureBox
@@ -684,7 +687,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(749, 16);
+            this.label1.Location = new System.Drawing.Point(17, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(28, 13);
             this.label1.TabIndex = 35;
@@ -693,7 +696,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(840, 16);
+            this.label2.Location = new System.Drawing.Point(108, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(19, 13);
             this.label2.TabIndex = 36;
@@ -702,7 +705,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(840, 41);
+            this.label3.Location = new System.Drawing.Point(108, 49);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(19, 13);
             this.label3.TabIndex = 37;
@@ -711,7 +714,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(749, 41);
+            this.label4.Location = new System.Drawing.Point(17, 49);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(28, 13);
             this.label4.TabIndex = 38;
@@ -720,7 +723,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(749, 78);
+            this.label5.Location = new System.Drawing.Point(17, 86);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 39;
@@ -729,7 +732,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(749, 110);
+            this.label6.Location = new System.Drawing.Point(17, 118);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(26, 13);
             this.label6.TabIndex = 40;
@@ -737,42 +740,42 @@
             // 
             // x0TextBox
             // 
-            this.x0TextBox.Location = new System.Drawing.Point(783, 12);
+            this.x0TextBox.Location = new System.Drawing.Point(51, 20);
             this.x0TextBox.Name = "x0TextBox";
             this.x0TextBox.Size = new System.Drawing.Size(51, 20);
             this.x0TextBox.TabIndex = 8;
             // 
             // y0TextBox
             // 
-            this.y0TextBox.Location = new System.Drawing.Point(783, 41);
+            this.y0TextBox.Location = new System.Drawing.Point(51, 49);
             this.y0TextBox.Name = "y0TextBox";
             this.y0TextBox.Size = new System.Drawing.Size(51, 20);
             this.y0TextBox.TabIndex = 41;
             // 
             // x1TextBox
             // 
-            this.x1TextBox.Location = new System.Drawing.Point(865, 12);
+            this.x1TextBox.Location = new System.Drawing.Point(133, 20);
             this.x1TextBox.Name = "x1TextBox";
             this.x1TextBox.Size = new System.Drawing.Size(51, 20);
             this.x1TextBox.TabIndex = 42;
             // 
             // y1TextBox
             // 
-            this.y1TextBox.Location = new System.Drawing.Point(865, 41);
+            this.y1TextBox.Location = new System.Drawing.Point(133, 49);
             this.y1TextBox.Name = "y1TextBox";
             this.y1TextBox.Size = new System.Drawing.Size(51, 20);
             this.y1TextBox.TabIndex = 43;
             // 
             // splittingTextBox
             // 
-            this.splittingTextBox.Location = new System.Drawing.Point(808, 75);
+            this.splittingTextBox.Location = new System.Drawing.Point(76, 83);
             this.splittingTextBox.Name = "splittingTextBox";
             this.splittingTextBox.Size = new System.Drawing.Size(51, 20);
             this.splittingTextBox.TabIndex = 44;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(752, 140);
+            this.button1.Location = new System.Drawing.Point(20, 148);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 45;
@@ -780,23 +783,41 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.building_function);
             // 
+            // FtextBox
+            // 
+            this.FtextBox.Location = new System.Drawing.Point(49, 111);
+            this.FtextBox.Name = "FtextBox";
+            this.FtextBox.Size = new System.Drawing.Size(135, 20);
+            this.FtextBox.TabIndex = 46;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.FtextBox);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.splittingTextBox);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.y1TextBox);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.x1TextBox);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.y0TextBox);
+            this.groupBox1.Controls.Add(this.x0TextBox);
+            this.groupBox1.Location = new System.Drawing.Point(740, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 191);
+            this.groupBox1.TabIndex = 47;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Построение поверхности";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(980, 422);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.splittingTextBox);
-            this.Controls.Add(this.y1TextBox);
-            this.Controls.Add(this.x1TextBox);
-            this.Controls.Add(this.y0TextBox);
-            this.Controls.Add(this.x0TextBox);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.rotatingGroupBox);
             this.Controls.Add(this.centeredScalingGroupBox);
@@ -808,7 +829,6 @@
             this.Controls.Add(this.polyhedronSelectionLabel);
             this.Controls.Add(this.polyhedronSelectionComboBox);
             this.Controls.Add(this.polyhedronPictureBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
@@ -830,6 +850,8 @@
             this.centeredScalingGroupBox.ResumeLayout(false);
             this.rotatingGroupBox.ResumeLayout(false);
             this.rotatingGroupBox.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -903,6 +925,8 @@
         private System.Windows.Forms.TextBox y1TextBox;
         private System.Windows.Forms.TextBox splittingTextBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox FtextBox;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

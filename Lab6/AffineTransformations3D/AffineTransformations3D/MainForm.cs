@@ -352,6 +352,27 @@ namespace AffineTransformations3D
             Project();
         }
 
+        private double f(double x,double y)
+        {
+            string str = FtextBox.Text;
+            string s1 = "" + x;
+            string s2 = "" + y;
+            str = str.Replace("x", s1);
+            str = str.Replace("y", s2);
+            double d;
+            try
+            {
+                string result = new DataTable().Compute(str, null).ToString();
+                d = double.Parse(result);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Введите функцию корректно!");
+                return double.MaxValue;
+                throw;
+            }
+            return d;
+        }
         private void building_function(object sender, EventArgs e)
         {
             bool b;
@@ -383,7 +404,9 @@ namespace AffineTransformations3D
                 {
                     double x_0 = x0 + i * x;
                     double y_0 = y0 + j * y;
-                    double z = 50;  // f(x_0, y_0);
+                    double z = f(x_0, y_0);
+                    if (z == double.MaxValue)
+                        return;
                     Point3D P = new Point3D(x_0, y_0, z);
                     vertices.Add(P);
                     L.Add(P);
@@ -409,18 +432,17 @@ namespace AffineTransformations3D
                 edges.Add(edge0);
             }
 
-            //дописать поверхности
             for (int i = 0; i < splitting-1; i++)
                 for (int j = 0; j < splitting-1; j++)
-                    facets.Add(new Facet3D(new List<Point3D> { Arr[i][j], Arr[i+1][j], Arr[i][j+1], Arr[i+1][j+1] }, new List<Edge3D> { }));
+                    facets.Add(new Facet3D(new List<Point3D> { Arr[i][j], Arr[i+1][j], Arr[i][j+1], Arr[i+1][j+1] }, new List<Edge3D> { edges[2* (splitting*i+j)], edges[2 * (splitting * i + j) + 1], edges[2 * (splitting * i + j) + 2], edges[2 * (splitting * (i+1) + j) + 1] }));
             int t = 2*splitting * splitting;
             for (int i = 0; i < splitting - 1; i++)
-                facets.Add(new Facet3D(new List<Point3D> { Arr[i][splitting-1], Arr[i + 1][splitting-1], Arr[i][splitting], Arr[i + 1][splitting] }, new List<Edge3D> {  }));
-            t += 2*splitting-1;
+                facets.Add(new Facet3D(new List<Point3D> { Arr[i][splitting-1], Arr[i + 1][splitting-1], Arr[i][splitting], Arr[i + 1][splitting] }, new List<Edge3D> { edges[2 * (splitting * i + (splitting - 1))], edges[2 * (splitting * i + (splitting - 1)) + 1], edges[t+i], edges[2 * (splitting * (i + 1) + (splitting - 1)) + 1] }));
+            t += splitting;
             for (int j = 0; j < splitting - 1; j++)
-                facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][j], Arr[splitting ][j], Arr[splitting - 1][j + 1], Arr[splitting ][j + 1] }, new List<Edge3D> {  }));
-            int k = 2 * splitting * splitting + splitting - 1;
-            facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][splitting - 1], Arr[splitting][splitting - 1], Arr[splitting - 1][splitting], Arr[splitting][splitting] }, new List<Edge3D> { }));
+                facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][j], Arr[splitting ][j], Arr[splitting - 1][j + 1], Arr[splitting ][j + 1] }, new List<Edge3D> { edges[2 * (splitting * (splitting - 1) + j)], edges[2 * (splitting * (splitting - 1) + j) + 1], edges[2 * (splitting * (splitting - 1) + j) + 2], edges[t+j] }));
+            t--;
+            facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][splitting - 1], Arr[splitting][splitting - 1], Arr[splitting - 1][splitting], Arr[splitting][splitting] }, new List<Edge3D> { edges[2 * (splitting * (splitting - 1) + (splitting - 1))], edges[2 * (splitting * (splitting - 1) + (splitting - 1)) + 1], edges[t], edges[t+ splitting] }));
 
             currentPolyhedron =  new Polyhedron(vertices, edges, facets);
             Project();
