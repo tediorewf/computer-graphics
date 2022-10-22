@@ -41,7 +41,7 @@ namespace AffineTransformations3D
             InitializeProjectionStuff();
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
-            Size = new Size(735, 455);
+            Size = new Size(1000, 455);
         }
 
         private void InitializePolyhedronStuff()
