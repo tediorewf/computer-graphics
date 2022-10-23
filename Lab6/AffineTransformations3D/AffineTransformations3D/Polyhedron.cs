@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +32,86 @@ namespace AffineTransformations3D
             Vertices = vertices;
             Edges = edges;
             Facets = facets;
+        }
+
+        public void SaveToFile(string path)
+        {
+            var sb = new StringBuilder();
+            foreach (var v in Vertices)
+            {
+                sb.Append($"v {v.X} {v.Y} {v.Z}\n");
+            }
+            foreach (var e in Edges)
+            {
+                int beginIndex = Vertices.FindIndex(v => v == e.Begin);
+                int endIndex = Vertices.FindIndex(v => v == e.End);
+                sb.Append($"e {beginIndex} {endIndex}\n");
+            }
+            foreach (var facet in Facets)
+            {
+                sb.Append("facet\n");
+                foreach (var p in facet.Points)
+                {
+                    int pointIndex = Vertices.FindIndex(v => p == v);
+                    sb.Append($"vi {pointIndex}\n");
+                }
+                foreach (var edge in facet.Edges)
+                {
+                    int edgeIndex = Edges.FindIndex(e => e == edge);
+                    sb.Append($"ei {edgeIndex}\n");
+                }
+                sb.Append("endfacet\n");
+            }
+            File.WriteAllText(path, sb.ToString());
+        }
+
+        public static Polyhedron ReadFromFile(string path)
+        {
+            var vertices = new List<Point3D>();
+            var edges = new List<Edge3D>();
+            var facets = new List<Facet3D>();
+            Facet3D currentFacet = null;
+            foreach (var line in File.ReadLines(path))
+            {
+                var splited = line.Split();
+
+                if (currentFacet != null)
+                {
+                    if (splited[0] == "vi")
+                    {
+                        int vertexIndex = int.Parse(splited[1]);
+                        currentFacet.AddPoint(vertices[vertexIndex]);
+                    }
+                    else if (splited[0] == "ei")
+                    {
+                        int edgeIndex = int.Parse(splited[1]);
+                        currentFacet.AddEdge(edges[edgeIndex]);
+                    }
+                } 
+                else if (splited[0] == "v")
+                {
+                    double x = double.Parse(splited[1]);
+                    double y = double.Parse(splited[2]);
+                    double z = double.Parse(splited[3]);
+                    vertices.Add(new Point3D(x, y, z));
+                }
+                else if (splited[0] == "e")
+                {
+                    int beginIndex = int.Parse(splited[1]);
+                    int endIndex = int.Parse(splited[2]);
+                    edges.Add(new Edge3D(vertices[beginIndex], vertices[endIndex]));
+                }
+                else if (splited[0] == "facet")
+                {
+                    currentFacet = new Facet3D();
+                }
+                else if (splited[0] == "endfacet")
+                {
+                    facets.Add(currentFacet);
+                    currentFacet = null;
+                }
+            }
+            return new Polyhedron(vertices, edges, facets);
         }
 
         // TODO: мне надо будет доделать это

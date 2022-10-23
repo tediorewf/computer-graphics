@@ -41,7 +41,7 @@ namespace AffineTransformations3D
             InitializeProjectionStuff();
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
-            Size = new Size(1000, 455);
+            Size = new Size(950, 455);
         }
 
         private void InitializePolyhedronStuff()
@@ -240,18 +240,6 @@ namespace AffineTransformations3D
             Project();
         }
 
-        private void resetButton_Click(object sender, EventArgs e)
-        {
-            ResetScene();
-        }
-
-        private void ResetScene()
-        {
-            var size = polyhedronPictureBox.Size;
-            var drawingSurface = new Bitmap(size.Width, size.Height);
-            polyhedronPictureBox.Image = drawingSurface;
-        }
-
         private void translateButton_Click(object sender, EventArgs e)
         {
             if (!double.TryParse(translationXTextBox.Text, out var dx))
@@ -447,6 +435,27 @@ namespace AffineTransformations3D
             currentPolyhedron =  new Polyhedron(vertices, edges, facets);
             Project();
 
+        }
+
+        private void saveModelIntoFileButton_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            sfd.Filter = "All files (*.*)|*.*";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                currentPolyhedron.SaveToFile(sfd.FileName);
+            }
+        }
+
+        private void loadModelronFromFileButton_Click(object sender, EventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "All files (*.*)|*.*";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                currentPolyhedron = Polyhedron.ReadFromFile(ofd.FileName);
+                Project();
+            }
         }
     }
 }
