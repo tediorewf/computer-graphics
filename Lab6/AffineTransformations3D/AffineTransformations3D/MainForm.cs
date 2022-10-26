@@ -457,5 +457,84 @@ namespace AffineTransformations3D
                 Project();
             }
         }
+
+        ////// ЗАДАНИЕ 2
+        int countRazbieny;
+        private void textBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (textBoxCountPoints.Text == "Введите количество разбиений")
+                textBoxCountPoints.Text = "";
+        }
+
+        //поиск центра
+        public void find_center(List<Point3D> pol, ref double x, ref double y, ref double z)
+        {
+            x = 0; y = 0; z = 0;
+
+            foreach (var p in pol)
+            {
+                x += p.X;
+                y += p.Y;
+                z += p.Z;
+            }
+
+            x /= pol.Count();
+            y /= pol.Count();
+            z /= pol.Count();
+        }
+
+        private void buttonDoTask2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                countRazbieny = int.Parse(textBoxCountPoints.Text);
+            }
+            catch (Exception exc)
+            {
+                countRazbieny = 10;
+                textBoxCountPoints.Text = exc.Message;
+            }
+
+
+        }
+        public void write_axes()
+        {
+            Point3D p0 = new Point3D(0, 0, 0);
+            Point3D p1 = new Point3D(polyhedronPictureBox.Width / 2, 0, 0);
+            Point3D p2 = new Point3D(0, polyhedronPictureBox.Width / 2, 0);
+            Point3D p3 = new Point3D(0, 0, polyhedronPictureBox.Width / 2);
+            Graphics g = Graphics.FromImage(polyhedronPictureBox.Image);
+
+            /*Point o = p0.To2D();
+            Point x = p1.To2D();
+            Point y = p2.To2D();
+            Point z = p3.To2D();
+
+            Font font = new Font("Arial", 8);
+            SolidBrush brush = new SolidBrush(Color.Black);
+
+            g.DrawString("X", font, brush, x);
+            g.DrawString("Y", font, brush, y);
+            g.DrawString("Z", font, brush, z);
+
+            Pen my_pen = new Pen(Color.Blue);
+            g.DrawLine(my_pen, o, x);
+            my_pen.Color = Color.Red;
+            g.DrawLine(my_pen, o, y);
+            my_pen.Color = Color.Green;
+            g.DrawLine(my_pen, o, z);*/
+
+            polyhedronPictureBox.Image = polyhedronPictureBox.Image;
+        }
+
+       /* public Point To2D()
+        {
+            var temp = matrix_multiplication(displayMatrix, getP1());
+            int x = Convert.ToInt32(temp[0, 0]);
+            int y = Convert.ToInt32(temp[1, 0]);
+   
+            var temp2d = new Point(x, y);
+            return temp2d;
+        }*/
     }
 }
