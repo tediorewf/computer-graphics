@@ -7,6 +7,7 @@ using System.Linq;
 namespace AffineTransformations3D
 {
     using static AffineTransformationMatrices;
+    using static TransformationHelper;
 
     public class Polyhedron : ICloneable
     {
@@ -14,24 +15,14 @@ namespace AffineTransformations3D
         public List<Edge3D> Edges { get; set; }
         public List<Facet3D> Facets { get; set; }
         private Point3D _center;
-        // Отложенная инициализация центра многогранника
-        public Point3D Center
-        {
-            get 
-            { 
-                if (_center == null)
-                {
-                    _center = ComputeCenter();
-                }
-                return _center; 
-            }
-        }
+        public Point3D Center => _center;
 
         public Polyhedron(List<Point3D> vertices, List<Edge3D> edges, List<Facet3D> facets)
         {
             Vertices = vertices;
             Edges = edges;
             Facets = facets;
+            _center = ComputeCenter();
         }
 
         public void SaveToFile(string path)
@@ -114,8 +105,6 @@ namespace AffineTransformations3D
             return new Polyhedron(vertices, edges, facets);
         }
 
-        // TODO: мне надо будет доделать это
-        // Не меняет исходную фигуру, создает копию
         public Polyhedron ComputeProjection(ProjectionType projectionType)
         {
             var clone = Clone() as Polyhedron;
@@ -223,37 +212,14 @@ namespace AffineTransformations3D
             double x = 0;
             double y = 0;
             double z = 0;
-            int pointsTotal = 0;
+            int pointsTotal = polyhedron.Vertices.Count;
             foreach (var vertex in polyhedron.Vertices)
             {
                 x += vertex.X;
                 y += vertex.Y;
                 z += vertex.Z;
-                pointsTotal += 1;
             }
             return new Point3D(x / pointsTotal, y / pointsTotal, z / pointsTotal);
-        }
-
-        private static void ApplyTransformationInplace(Polyhedron polyhedron, Matrix transformation)
-        {
-            for (int i = 0; i < polyhedron.Vertices.Count; i++)
-            {
-                TransformPointInplace(polyhedron.Vertices[i], transformation);
-            }
-            TransformPointInplace(polyhedron.Center, transformation);
-        }
-
-        private static void TransformPointInplace(Point3D point, Matrix transformation)
-        {
-            var product = point.ToVector3D() * transformation;
-            double x = product[0, 0];
-            double y = product[0, 1];
-            double z = product[0, 2];
-            double w = product[0, 3];
-            var transformedPoint = new Point3D(x / w, y / w, z / w);
-            point.X = transformedPoint.X;
-            point.Y = transformedPoint.Y;
-            point.Z = transformedPoint.Z;
         }
     }
 }

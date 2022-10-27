@@ -15,7 +15,9 @@ namespace AffineTransformations3D
         public static void DrawPolyhedron(this Bitmap drawingSurface, Polyhedron polyhedron, Color color)
         {
             using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+            {
                 fastDrawingSurface.DrawPolyhedron(polyhedron, color);
+            }
         }
 
         public static void DrawPolyhedron(this FastBitmap fastDrawingSurface, Polyhedron polyhedron, Color color)

@@ -96,8 +96,16 @@
             this.FtextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.modelFromFileFroupBox = new System.Windows.Forms.GroupBox();
-            this.loadModelronFromFileButton = new System.Windows.Forms.Button();
             this.saveModelIntoFileButton = new System.Windows.Forms.Button();
+            this.loadModelronFromFileButton = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chooseAxisLabel = new System.Windows.Forms.Label();
+            this.chooseRotationBodyAxisComboBox = new System.Windows.Forms.ComboBox();
+            this.setGeneratrixLabel = new System.Windows.Forms.Label();
+            this.setGeneratrixTextBox = new System.Windows.Forms.TextBox();
+            this.partirionsCountLabel = new System.Windows.Forms.Label();
+            this.buildRotationBodyButton = new System.Windows.Forms.Button();
+            this.partitionsCountTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -109,16 +117,17 @@
             this.rotatingGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.modelFromFileFroupBox.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // polyhedronPictureBox
             // 
             this.polyhedronPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.polyhedronPictureBox.Location = new System.Drawing.Point(12, 13);
-            this.polyhedronPictureBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.polyhedronPictureBox.Location = new System.Drawing.Point(12, 12);
+            this.polyhedronPictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.polyhedronPictureBox.Name = "polyhedronPictureBox";
-            this.polyhedronPictureBox.Size = new System.Drawing.Size(788, 787);
+            this.polyhedronPictureBox.Size = new System.Drawing.Size(788, 788);
             this.polyhedronPictureBox.TabIndex = 0;
             this.polyhedronPictureBox.TabStop = false;
             this.polyhedronPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.polyhedronPictureBox_MouseClick);
@@ -128,16 +137,16 @@
             // 
             this.polyhedronSelectionComboBox.FormattingEnabled = true;
             this.polyhedronSelectionComboBox.Location = new System.Drawing.Point(814, 38);
-            this.polyhedronSelectionComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.polyhedronSelectionComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.polyhedronSelectionComboBox.Name = "polyhedronSelectionComboBox";
-            this.polyhedronSelectionComboBox.Size = new System.Drawing.Size(303, 33);
+            this.polyhedronSelectionComboBox.Size = new System.Drawing.Size(302, 33);
             this.polyhedronSelectionComboBox.TabIndex = 23;
             this.polyhedronSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.polyhedronComboBox_SelectionChangeCommitted);
             // 
             // polyhedronSelectionLabel
             // 
             this.polyhedronSelectionLabel.AutoSize = true;
-            this.polyhedronSelectionLabel.Location = new System.Drawing.Point(820, 13);
+            this.polyhedronSelectionLabel.Location = new System.Drawing.Point(820, 12);
             this.polyhedronSelectionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.polyhedronSelectionLabel.Name = "polyhedronSelectionLabel";
             this.polyhedronSelectionLabel.Size = new System.Drawing.Size(233, 25);
@@ -148,7 +157,7 @@
             // 
             this.projectionSelectionComboBox.FormattingEnabled = true;
             this.projectionSelectionComboBox.Location = new System.Drawing.Point(1148, 38);
-            this.projectionSelectionComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.projectionSelectionComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.projectionSelectionComboBox.Name = "projectionSelectionComboBox";
             this.projectionSelectionComboBox.Size = new System.Drawing.Size(292, 33);
             this.projectionSelectionComboBox.TabIndex = 25;
@@ -157,7 +166,7 @@
             // projectionSelectionLabel
             // 
             this.projectionSelectionLabel.AutoSize = true;
-            this.projectionSelectionLabel.Location = new System.Drawing.Point(1152, 13);
+            this.projectionSelectionLabel.Location = new System.Drawing.Point(1152, 12);
             this.projectionSelectionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.projectionSelectionLabel.Name = "projectionSelectionLabel";
             this.projectionSelectionLabel.Size = new System.Drawing.Size(178, 25);
@@ -168,7 +177,7 @@
             // 
             this.reflectionCoordinatePlaneComboBox.FormattingEnabled = true;
             this.reflectionCoordinatePlaneComboBox.Location = new System.Drawing.Point(16, 56);
-            this.reflectionCoordinatePlaneComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reflectionCoordinatePlaneComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.reflectionCoordinatePlaneComboBox.Name = "reflectionCoordinatePlaneComboBox";
             this.reflectionCoordinatePlaneComboBox.Size = new System.Drawing.Size(172, 33);
             this.reflectionCoordinatePlaneComboBox.TabIndex = 27;
@@ -197,11 +206,11 @@
             this.rotationAroundEdgeGroupBox.Controls.Add(this.rotationAroundEdgeBeginPointLabel);
             this.rotationAroundEdgeGroupBox.Controls.Add(this.rotationAroundEdgeAngleTextBox);
             this.rotationAroundEdgeGroupBox.Controls.Add(this.rotationAroundEdgeAngleLabel);
-            this.rotationAroundEdgeGroupBox.Location = new System.Drawing.Point(808, 635);
-            this.rotationAroundEdgeGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeGroupBox.Location = new System.Drawing.Point(808, 634);
+            this.rotationAroundEdgeGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeGroupBox.Name = "rotationAroundEdgeGroupBox";
-            this.rotationAroundEdgeGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.rotationAroundEdgeGroupBox.Size = new System.Drawing.Size(628, 163);
+            this.rotationAroundEdgeGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.rotationAroundEdgeGroupBox.Size = new System.Drawing.Size(628, 162);
             this.rotationAroundEdgeGroupBox.TabIndex = 29;
             this.rotationAroundEdgeGroupBox.TabStop = false;
             this.rotationAroundEdgeGroupBox.Text = "Поворот вокруг произвольной прямой на заданный угол";
@@ -209,7 +218,7 @@
             // rotationAroundEdgeEndPointZTextBox
             // 
             this.rotationAroundEdgeEndPointZTextBox.Location = new System.Drawing.Point(284, 117);
-            this.rotationAroundEdgeEndPointZTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeEndPointZTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeEndPointZTextBox.Name = "rotationAroundEdgeEndPointZTextBox";
             this.rotationAroundEdgeEndPointZTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeEndPointZTextBox.TabIndex = 9;
@@ -217,23 +226,23 @@
             // rotationAroundEdgeEndPointYTextBox
             // 
             this.rotationAroundEdgeEndPointYTextBox.Location = new System.Drawing.Point(148, 117);
-            this.rotationAroundEdgeEndPointYTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeEndPointYTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeEndPointYTextBox.Name = "rotationAroundEdgeEndPointYTextBox";
             this.rotationAroundEdgeEndPointYTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeEndPointYTextBox.TabIndex = 8;
             // 
             // rotationAroundEdgeBeginPointZTextBox
             // 
-            this.rotationAroundEdgeBeginPointZTextBox.Location = new System.Drawing.Point(280, 60);
-            this.rotationAroundEdgeBeginPointZTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeBeginPointZTextBox.Location = new System.Drawing.Point(280, 59);
+            this.rotationAroundEdgeBeginPointZTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeBeginPointZTextBox.Name = "rotationAroundEdgeBeginPointZTextBox";
             this.rotationAroundEdgeBeginPointZTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeBeginPointZTextBox.TabIndex = 6;
             // 
             // rotationAroundEdgeBeginPointYTextBox
             // 
-            this.rotationAroundEdgeBeginPointYTextBox.Location = new System.Drawing.Point(144, 60);
-            this.rotationAroundEdgeBeginPointYTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeBeginPointYTextBox.Location = new System.Drawing.Point(144, 59);
+            this.rotationAroundEdgeBeginPointYTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeBeginPointYTextBox.Name = "rotationAroundEdgeBeginPointYTextBox";
             this.rotationAroundEdgeBeginPointYTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeBeginPointYTextBox.TabIndex = 5;
@@ -241,7 +250,7 @@
             // rotationAroundEdgeAngleButton
             // 
             this.rotationAroundEdgeAngleButton.Location = new System.Drawing.Point(428, 48);
-            this.rotationAroundEdgeAngleButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeAngleButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeAngleButton.Name = "rotationAroundEdgeAngleButton";
             this.rotationAroundEdgeAngleButton.Size = new System.Drawing.Size(184, 38);
             this.rotationAroundEdgeAngleButton.TabIndex = 11;
@@ -252,7 +261,7 @@
             // rotationAroundEdgeEndPointXTextBox
             // 
             this.rotationAroundEdgeEndPointXTextBox.Location = new System.Drawing.Point(8, 117);
-            this.rotationAroundEdgeEndPointXTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeEndPointXTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeEndPointXTextBox.Name = "rotationAroundEdgeEndPointXTextBox";
             this.rotationAroundEdgeEndPointXTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeEndPointXTextBox.TabIndex = 7;
@@ -260,8 +269,8 @@
             // 
             // rotationAroundEdgeBeginPointXTextBox
             // 
-            this.rotationAroundEdgeBeginPointXTextBox.Location = new System.Drawing.Point(8, 60);
-            this.rotationAroundEdgeBeginPointXTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeBeginPointXTextBox.Location = new System.Drawing.Point(8, 59);
+            this.rotationAroundEdgeBeginPointXTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeBeginPointXTextBox.Name = "rotationAroundEdgeBeginPointXTextBox";
             this.rotationAroundEdgeBeginPointXTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationAroundEdgeBeginPointXTextBox.TabIndex = 4;
@@ -269,7 +278,7 @@
             // rotationAroundEdgeEndPointLabel
             // 
             this.rotationAroundEdgeEndPointLabel.AutoSize = true;
-            this.rotationAroundEdgeEndPointLabel.Location = new System.Drawing.Point(12, 90);
+            this.rotationAroundEdgeEndPointLabel.Location = new System.Drawing.Point(12, 91);
             this.rotationAroundEdgeEndPointLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rotationAroundEdgeEndPointLabel.Name = "rotationAroundEdgeEndPointLabel";
             this.rotationAroundEdgeEndPointLabel.Size = new System.Drawing.Size(170, 25);
@@ -289,7 +298,7 @@
             // rotationAroundEdgeAngleTextBox
             // 
             this.rotationAroundEdgeAngleTextBox.Location = new System.Drawing.Point(428, 117);
-            this.rotationAroundEdgeAngleTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationAroundEdgeAngleTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationAroundEdgeAngleTextBox.Name = "rotationAroundEdgeAngleTextBox";
             this.rotationAroundEdgeAngleTextBox.Size = new System.Drawing.Size(184, 31);
             this.rotationAroundEdgeAngleTextBox.TabIndex = 10;
@@ -297,7 +306,7 @@
             // rotationAroundEdgeAngleLabel
             // 
             this.rotationAroundEdgeAngleLabel.AutoSize = true;
-            this.rotationAroundEdgeAngleLabel.Location = new System.Drawing.Point(428, 90);
+            this.rotationAroundEdgeAngleLabel.Location = new System.Drawing.Point(428, 91);
             this.rotationAroundEdgeAngleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rotationAroundEdgeAngleLabel.Name = "rotationAroundEdgeAngleLabel";
             this.rotationAroundEdgeAngleLabel.Size = new System.Drawing.Size(183, 25);
@@ -310,10 +319,10 @@
             this.affineTransformationsGroupBox.Controls.Add(this.rotationGroupBox);
             this.affineTransformationsGroupBox.Controls.Add(this.translationGroupBox);
             this.affineTransformationsGroupBox.Controls.Add(this.translationLabel);
-            this.affineTransformationsGroupBox.Location = new System.Drawing.Point(806, 79);
-            this.affineTransformationsGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.affineTransformationsGroupBox.Location = new System.Drawing.Point(806, 80);
+            this.affineTransformationsGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.affineTransformationsGroupBox.Name = "affineTransformationsGroupBox";
-            this.affineTransformationsGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.affineTransformationsGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.affineTransformationsGroupBox.Size = new System.Drawing.Size(634, 383);
             this.affineTransformationsGroupBox.TabIndex = 30;
             this.affineTransformationsGroupBox.TabStop = false;
@@ -331,18 +340,18 @@
             this.scalingGroupBox.Controls.Add(this.scalingYLabel);
             this.scalingGroupBox.Controls.Add(this.scalingXLabel);
             this.scalingGroupBox.Location = new System.Drawing.Point(8, 267);
-            this.scalingGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scalingGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scalingGroupBox.Name = "scalingGroupBox";
-            this.scalingGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.scalingGroupBox.Size = new System.Drawing.Size(624, 96);
+            this.scalingGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.scalingGroupBox.Size = new System.Drawing.Size(624, 95);
             this.scalingGroupBox.TabIndex = 7;
             this.scalingGroupBox.TabStop = false;
             this.scalingGroupBox.Text = "Масштаб";
             // 
             // scalingButton
             // 
-            this.scalingButton.Location = new System.Drawing.Point(412, 46);
-            this.scalingButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scalingButton.Location = new System.Drawing.Point(412, 45);
+            this.scalingButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scalingButton.Name = "scalingButton";
             this.scalingButton.Size = new System.Drawing.Size(196, 38);
             this.scalingButton.TabIndex = 7;
@@ -353,7 +362,7 @@
             // scalingZTextBox
             // 
             this.scalingZTextBox.Location = new System.Drawing.Point(280, 56);
-            this.scalingZTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scalingZTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scalingZTextBox.Name = "scalingZTextBox";
             this.scalingZTextBox.Size = new System.Drawing.Size(124, 31);
             this.scalingZTextBox.TabIndex = 5;
@@ -361,7 +370,7 @@
             // scalingYTextBox
             // 
             this.scalingYTextBox.Location = new System.Drawing.Point(140, 56);
-            this.scalingYTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scalingYTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scalingYTextBox.Name = "scalingYTextBox";
             this.scalingYTextBox.Size = new System.Drawing.Size(130, 31);
             this.scalingYTextBox.TabIndex = 4;
@@ -369,7 +378,7 @@
             // scalingXTextBox
             // 
             this.scalingXTextBox.Location = new System.Drawing.Point(4, 56);
-            this.scalingXTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scalingXTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scalingXTextBox.Name = "scalingXTextBox";
             this.scalingXTextBox.Size = new System.Drawing.Size(130, 31);
             this.scalingXTextBox.TabIndex = 3;
@@ -415,10 +424,10 @@
             this.rotationGroupBox.Controls.Add(this.rotaionDegreesZLabel);
             this.rotationGroupBox.Controls.Add(this.rotaionDegreesYLabel);
             this.rotationGroupBox.Controls.Add(this.rotaionDegreesXLabel);
-            this.rotationGroupBox.Location = new System.Drawing.Point(6, 163);
-            this.rotationGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationGroupBox.Location = new System.Drawing.Point(6, 162);
+            this.rotationGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationGroupBox.Name = "rotationGroupBox";
-            this.rotationGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationGroupBox.Size = new System.Drawing.Size(624, 98);
             this.rotationGroupBox.TabIndex = 6;
             this.rotationGroupBox.TabStop = false;
@@ -426,8 +435,8 @@
             // 
             // rotateButton
             // 
-            this.rotateButton.Location = new System.Drawing.Point(414, 46);
-            this.rotateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotateButton.Location = new System.Drawing.Point(414, 45);
+            this.rotateButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotateButton.Name = "rotateButton";
             this.rotateButton.Size = new System.Drawing.Size(196, 38);
             this.rotateButton.TabIndex = 6;
@@ -438,7 +447,7 @@
             // rotationZTextBox
             // 
             this.rotationZTextBox.Location = new System.Drawing.Point(282, 56);
-            this.rotationZTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationZTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationZTextBox.Name = "rotationZTextBox";
             this.rotationZTextBox.Size = new System.Drawing.Size(124, 31);
             this.rotationZTextBox.TabIndex = 5;
@@ -446,7 +455,7 @@
             // rotationYTextBox
             // 
             this.rotationYTextBox.Location = new System.Drawing.Point(140, 56);
-            this.rotationYTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationYTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationYTextBox.Name = "rotationYTextBox";
             this.rotationYTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationYTextBox.TabIndex = 4;
@@ -454,7 +463,7 @@
             // rotationXTextBox
             // 
             this.rotationXTextBox.Location = new System.Drawing.Point(4, 56);
-            this.rotationXTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationXTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationXTextBox.Name = "rotationXTextBox";
             this.rotationXTextBox.Size = new System.Drawing.Size(130, 31);
             this.rotationXTextBox.TabIndex = 3;
@@ -500,11 +509,11 @@
             this.translationGroupBox.Controls.Add(this.translateButton);
             this.translationGroupBox.Controls.Add(this.translationYTextBox);
             this.translationGroupBox.Controls.Add(this.translationZTextBox);
-            this.translationGroupBox.Location = new System.Drawing.Point(6, 37);
-            this.translationGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.translationGroupBox.Location = new System.Drawing.Point(6, 38);
+            this.translationGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.translationGroupBox.Name = "translationGroupBox";
-            this.translationGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.translationGroupBox.Size = new System.Drawing.Size(624, 121);
+            this.translationGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.translationGroupBox.Size = new System.Drawing.Size(624, 120);
             this.translationGroupBox.TabIndex = 5;
             this.translationGroupBox.TabStop = false;
             this.translationGroupBox.Text = "Смещение";
@@ -512,7 +521,7 @@
             // translationZLabel
             // 
             this.translationZLabel.AutoSize = true;
-            this.translationZLabel.Location = new System.Drawing.Point(278, 35);
+            this.translationZLabel.Location = new System.Drawing.Point(278, 34);
             this.translationZLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.translationZLabel.Name = "translationZLabel";
             this.translationZLabel.Size = new System.Drawing.Size(138, 25);
@@ -522,7 +531,7 @@
             // translationYLabel
             // 
             this.translationYLabel.AutoSize = true;
-            this.translationYLabel.Location = new System.Drawing.Point(140, 35);
+            this.translationYLabel.Location = new System.Drawing.Point(140, 34);
             this.translationYLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.translationYLabel.Name = "translationYLabel";
             this.translationYLabel.Size = new System.Drawing.Size(140, 25);
@@ -532,7 +541,7 @@
             // translationXLabel
             // 
             this.translationXLabel.AutoSize = true;
-            this.translationXLabel.Location = new System.Drawing.Point(6, 35);
+            this.translationXLabel.Location = new System.Drawing.Point(6, 34);
             this.translationXLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.translationXLabel.Name = "translationXLabel";
             this.translationXLabel.Size = new System.Drawing.Size(139, 25);
@@ -542,15 +551,15 @@
             // translationXTextBox
             // 
             this.translationXTextBox.Location = new System.Drawing.Point(4, 75);
-            this.translationXTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.translationXTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.translationXTextBox.Name = "translationXTextBox";
             this.translationXTextBox.Size = new System.Drawing.Size(130, 31);
             this.translationXTextBox.TabIndex = 1;
             // 
             // translateButton
             // 
-            this.translateButton.Location = new System.Drawing.Point(414, 71);
-            this.translateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.translateButton.Location = new System.Drawing.Point(414, 70);
+            this.translateButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.translateButton.Name = "translateButton";
             this.translateButton.Size = new System.Drawing.Size(196, 38);
             this.translateButton.TabIndex = 4;
@@ -561,7 +570,7 @@
             // translationYTextBox
             // 
             this.translationYTextBox.Location = new System.Drawing.Point(140, 75);
-            this.translationYTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.translationYTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.translationYTextBox.Name = "translationYTextBox";
             this.translationYTextBox.Size = new System.Drawing.Size(130, 31);
             this.translationYTextBox.TabIndex = 2;
@@ -569,7 +578,7 @@
             // translationZTextBox
             // 
             this.translationZTextBox.Location = new System.Drawing.Point(276, 75);
-            this.translationZTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.translationZTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.translationZTextBox.Name = "translationZTextBox";
             this.translationZTextBox.Size = new System.Drawing.Size(128, 31);
             this.translationZTextBox.TabIndex = 3;
@@ -577,7 +586,7 @@
             // translationLabel
             // 
             this.translationLabel.AutoSize = true;
-            this.translationLabel.Location = new System.Drawing.Point(14, 37);
+            this.translationLabel.Location = new System.Drawing.Point(14, 38);
             this.translationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.translationLabel.Name = "translationLabel";
             this.translationLabel.Size = new System.Drawing.Size(0, 25);
@@ -588,11 +597,11 @@
             this.reflectionGroupBox.Controls.Add(this.reflectButton);
             this.reflectionGroupBox.Controls.Add(this.reflectionCoordinatePlaneLabel);
             this.reflectionGroupBox.Controls.Add(this.reflectionCoordinatePlaneComboBox);
-            this.reflectionGroupBox.Location = new System.Drawing.Point(806, 465);
-            this.reflectionGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reflectionGroupBox.Location = new System.Drawing.Point(806, 466);
+            this.reflectionGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.reflectionGroupBox.Name = "reflectionGroupBox";
-            this.reflectionGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.reflectionGroupBox.Size = new System.Drawing.Size(220, 163);
+            this.reflectionGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.reflectionGroupBox.Size = new System.Drawing.Size(220, 162);
             this.reflectionGroupBox.TabIndex = 31;
             this.reflectionGroupBox.TabStop = false;
             this.reflectionGroupBox.Text = "Отражение";
@@ -600,7 +609,7 @@
             // reflectButton
             // 
             this.reflectButton.Location = new System.Drawing.Point(16, 106);
-            this.reflectButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reflectButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.reflectButton.Name = "reflectButton";
             this.reflectButton.Size = new System.Drawing.Size(172, 38);
             this.reflectButton.TabIndex = 29;
@@ -613,9 +622,9 @@
             this.centeredScalingGroupBox.Controls.Add(this.decreaseScaleButton);
             this.centeredScalingGroupBox.Controls.Add(this.increaseScaleButton);
             this.centeredScalingGroupBox.Location = new System.Drawing.Point(1032, 552);
-            this.centeredScalingGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.centeredScalingGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.centeredScalingGroupBox.Name = "centeredScalingGroupBox";
-            this.centeredScalingGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.centeredScalingGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.centeredScalingGroupBox.Size = new System.Drawing.Size(406, 77);
             this.centeredScalingGroupBox.TabIndex = 32;
             this.centeredScalingGroupBox.TabStop = false;
@@ -624,9 +633,9 @@
             // decreaseScaleButton
             // 
             this.decreaseScaleButton.Location = new System.Drawing.Point(200, 31);
-            this.decreaseScaleButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.decreaseScaleButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.decreaseScaleButton.Name = "decreaseScaleButton";
-            this.decreaseScaleButton.Size = new System.Drawing.Size(192, 40);
+            this.decreaseScaleButton.Size = new System.Drawing.Size(192, 41);
             this.decreaseScaleButton.TabIndex = 31;
             this.decreaseScaleButton.Text = "-";
             this.decreaseScaleButton.UseVisualStyleBackColor = true;
@@ -635,9 +644,9 @@
             // increaseScaleButton
             // 
             this.increaseScaleButton.Location = new System.Drawing.Point(6, 31);
-            this.increaseScaleButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.increaseScaleButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.increaseScaleButton.Name = "increaseScaleButton";
-            this.increaseScaleButton.Size = new System.Drawing.Size(180, 40);
+            this.increaseScaleButton.Size = new System.Drawing.Size(180, 41);
             this.increaseScaleButton.TabIndex = 30;
             this.increaseScaleButton.Text = "+";
             this.increaseScaleButton.UseVisualStyleBackColor = true;
@@ -647,10 +656,10 @@
             // 
             this.rotatingGroupBox.Controls.Add(this.rotationCoordinatePlaneLabel);
             this.rotatingGroupBox.Controls.Add(this.rotationCoordinatePlaneComboBox);
-            this.rotatingGroupBox.Location = new System.Drawing.Point(1032, 465);
-            this.rotatingGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotatingGroupBox.Location = new System.Drawing.Point(1032, 466);
+            this.rotatingGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotatingGroupBox.Name = "rotatingGroupBox";
-            this.rotatingGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotatingGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotatingGroupBox.Size = new System.Drawing.Size(408, 81);
             this.rotatingGroupBox.TabIndex = 33;
             this.rotatingGroupBox.TabStop = false;
@@ -669,8 +678,8 @@
             // rotationCoordinatePlaneComboBox
             // 
             this.rotationCoordinatePlaneComboBox.FormattingEnabled = true;
-            this.rotationCoordinatePlaneComboBox.Location = new System.Drawing.Point(164, 35);
-            this.rotationCoordinatePlaneComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rotationCoordinatePlaneComboBox.Location = new System.Drawing.Point(164, 34);
+            this.rotationCoordinatePlaneComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rotationCoordinatePlaneComboBox.Name = "rotationCoordinatePlaneComboBox";
             this.rotationCoordinatePlaneComboBox.Size = new System.Drawing.Size(172, 33);
             this.rotationCoordinatePlaneComboBox.TabIndex = 0;
@@ -679,7 +688,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 46);
+            this.label1.Location = new System.Drawing.Point(34, 45);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 25);
@@ -689,7 +698,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(216, 46);
+            this.label2.Location = new System.Drawing.Point(216, 45);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 25);
@@ -719,7 +728,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(34, 165);
+            this.label5.Location = new System.Drawing.Point(34, 166);
             this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(103, 25);
@@ -739,7 +748,7 @@
             // x0TextBox
             // 
             this.x0TextBox.Location = new System.Drawing.Point(102, 38);
-            this.x0TextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.x0TextBox.Margin = new System.Windows.Forms.Padding(6);
             this.x0TextBox.Name = "x0TextBox";
             this.x0TextBox.Size = new System.Drawing.Size(98, 31);
             this.x0TextBox.TabIndex = 8;
@@ -747,7 +756,7 @@
             // y0TextBox
             // 
             this.y0TextBox.Location = new System.Drawing.Point(102, 94);
-            this.y0TextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.y0TextBox.Margin = new System.Windows.Forms.Padding(6);
             this.y0TextBox.Name = "y0TextBox";
             this.y0TextBox.Size = new System.Drawing.Size(98, 31);
             this.y0TextBox.TabIndex = 41;
@@ -755,7 +764,7 @@
             // x1TextBox
             // 
             this.x1TextBox.Location = new System.Drawing.Point(266, 38);
-            this.x1TextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.x1TextBox.Margin = new System.Windows.Forms.Padding(6);
             this.x1TextBox.Name = "x1TextBox";
             this.x1TextBox.Size = new System.Drawing.Size(98, 31);
             this.x1TextBox.TabIndex = 42;
@@ -763,23 +772,23 @@
             // y1TextBox
             // 
             this.y1TextBox.Location = new System.Drawing.Point(266, 94);
-            this.y1TextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.y1TextBox.Margin = new System.Windows.Forms.Padding(6);
             this.y1TextBox.Name = "y1TextBox";
             this.y1TextBox.Size = new System.Drawing.Size(98, 31);
             this.y1TextBox.TabIndex = 43;
             // 
             // splittingTextBox
             // 
-            this.splittingTextBox.Location = new System.Drawing.Point(152, 160);
-            this.splittingTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.splittingTextBox.Location = new System.Drawing.Point(152, 159);
+            this.splittingTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.splittingTextBox.Name = "splittingTextBox";
             this.splittingTextBox.Size = new System.Drawing.Size(98, 31);
             this.splittingTextBox.TabIndex = 44;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(40, 285);
-            this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.button1.Location = new System.Drawing.Point(40, 284);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(150, 44);
             this.button1.TabIndex = 45;
@@ -789,8 +798,8 @@
             // 
             // FtextBox
             // 
-            this.FtextBox.Location = new System.Drawing.Point(98, 213);
-            this.FtextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.FtextBox.Location = new System.Drawing.Point(98, 212);
+            this.FtextBox.Margin = new System.Windows.Forms.Padding(6);
             this.FtextBox.Name = "FtextBox";
             this.FtextBox.Size = new System.Drawing.Size(266, 31);
             this.FtextBox.TabIndex = 46;
@@ -810,10 +819,10 @@
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.y0TextBox);
             this.groupBox1.Controls.Add(this.x0TextBox);
-            this.groupBox1.Location = new System.Drawing.Point(1450, 15);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Location = new System.Drawing.Point(1450, 16);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox1.Size = new System.Drawing.Size(400, 367);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
@@ -830,6 +839,16 @@
             this.modelFromFileFroupBox.TabStop = false;
             this.modelFromFileFroupBox.Text = "Модель из файла";
             // 
+            // saveModelIntoFileButton
+            // 
+            this.saveModelIntoFileButton.Location = new System.Drawing.Point(220, 30);
+            this.saveModelIntoFileButton.Name = "saveModelIntoFileButton";
+            this.saveModelIntoFileButton.Size = new System.Drawing.Size(162, 44);
+            this.saveModelIntoFileButton.TabIndex = 1;
+            this.saveModelIntoFileButton.Text = "Сохранить";
+            this.saveModelIntoFileButton.UseVisualStyleBackColor = true;
+            this.saveModelIntoFileButton.Click += new System.EventHandler(this.saveModelIntoFileButton_Click);
+            // 
             // loadModelronFromFileButton
             // 
             this.loadModelronFromFileButton.Location = new System.Drawing.Point(22, 30);
@@ -840,21 +859,92 @@
             this.loadModelronFromFileButton.UseVisualStyleBackColor = true;
             this.loadModelronFromFileButton.Click += new System.EventHandler(this.loadModelronFromFileButton_Click);
             // 
-            // saveModelIntoFileButton
+            // groupBox2
             // 
-            this.saveModelIntoFileButton.Location = new System.Drawing.Point(221, 30);
-            this.saveModelIntoFileButton.Name = "saveModelIntoFileButton";
-            this.saveModelIntoFileButton.Size = new System.Drawing.Size(162, 44);
-            this.saveModelIntoFileButton.TabIndex = 1;
-            this.saveModelIntoFileButton.Text = "Сохранить";
-            this.saveModelIntoFileButton.UseVisualStyleBackColor = true;
-            this.saveModelIntoFileButton.Click += new System.EventHandler(this.saveModelIntoFileButton_Click);
+            this.groupBox2.Controls.Add(this.chooseAxisLabel);
+            this.groupBox2.Controls.Add(this.chooseRotationBodyAxisComboBox);
+            this.groupBox2.Controls.Add(this.setGeneratrixLabel);
+            this.groupBox2.Controls.Add(this.setGeneratrixTextBox);
+            this.groupBox2.Controls.Add(this.partirionsCountLabel);
+            this.groupBox2.Controls.Add(this.buildRotationBodyButton);
+            this.groupBox2.Controls.Add(this.partitionsCountTextBox);
+            this.groupBox2.Location = new System.Drawing.Point(1450, 503);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox2.Size = new System.Drawing.Size(400, 293);
+            this.groupBox2.TabIndex = 49;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Построение фигуры вращения";
+            // 
+            // chooseAxisLabel
+            // 
+            this.chooseAxisLabel.AutoSize = true;
+            this.chooseAxisLabel.Location = new System.Drawing.Point(19, 131);
+            this.chooseAxisLabel.Name = "chooseAxisLabel";
+            this.chooseAxisLabel.Size = new System.Drawing.Size(118, 25);
+            this.chooseAxisLabel.TabIndex = 7;
+            this.chooseAxisLabel.Text = "Выбор оси";
+            // 
+            // chooseRotationBodyAxisComboBox
+            // 
+            this.chooseRotationBodyAxisComboBox.FormattingEnabled = true;
+            this.chooseRotationBodyAxisComboBox.Location = new System.Drawing.Point(22, 159);
+            this.chooseRotationBodyAxisComboBox.Name = "chooseRotationBodyAxisComboBox";
+            this.chooseRotationBodyAxisComboBox.Size = new System.Drawing.Size(178, 33);
+            this.chooseRotationBodyAxisComboBox.TabIndex = 6;
+            this.chooseRotationBodyAxisComboBox.SelectionChangeCommitted += new System.EventHandler(this.chooseRotationBodyAxisComboBox_SelectionChangeCommitted);
+            // 
+            // setGeneratrixLabel
+            // 
+            this.setGeneratrixLabel.AutoSize = true;
+            this.setGeneratrixLabel.Location = new System.Drawing.Point(20, 29);
+            this.setGeneratrixLabel.Name = "setGeneratrixLabel";
+            this.setGeneratrixLabel.Size = new System.Drawing.Size(230, 25);
+            this.setGeneratrixLabel.TabIndex = 5;
+            this.setGeneratrixLabel.Text = "Задание образующей";
+            // 
+            // setGeneratrixTextBox
+            // 
+            this.setGeneratrixTextBox.Location = new System.Drawing.Point(19, 69);
+            this.setGeneratrixTextBox.Name = "setGeneratrixTextBox";
+            this.setGeneratrixTextBox.Size = new System.Drawing.Size(363, 31);
+            this.setGeneratrixTextBox.TabIndex = 4;
+            // 
+            // partirionsCountLabel
+            // 
+            this.partirionsCountLabel.AutoSize = true;
+            this.partirionsCountLabel.Location = new System.Drawing.Point(196, 131);
+            this.partirionsCountLabel.Name = "partirionsCountLabel";
+            this.partirionsCountLabel.Size = new System.Drawing.Size(186, 25);
+            this.partirionsCountLabel.TabIndex = 3;
+            this.partirionsCountLabel.Text = "Число разбиений";
+            // 
+            // buildRotationBodyButton
+            // 
+            this.buildRotationBodyButton.Location = new System.Drawing.Point(19, 234);
+            this.buildRotationBodyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buildRotationBodyButton.Name = "buildRotationBodyButton";
+            this.buildRotationBodyButton.Size = new System.Drawing.Size(363, 49);
+            this.buildRotationBodyButton.TabIndex = 2;
+            this.buildRotationBodyButton.Text = "Построить";
+            this.buildRotationBodyButton.UseVisualStyleBackColor = true;
+            this.buildRotationBodyButton.Click += new System.EventHandler(this.buttonDoTask2_Click);
+            // 
+            // partitionsCountTextBox
+            // 
+            this.partitionsCountTextBox.Location = new System.Drawing.Point(220, 161);
+            this.partitionsCountTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.partitionsCountTextBox.Name = "partitionsCountTextBox";
+            this.partitionsCountTextBox.Size = new System.Drawing.Size(162, 31);
+            this.partitionsCountTextBox.TabIndex = 1;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1859, 812);
+            this.ClientSize = new System.Drawing.Size(1858, 812);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.modelFromFileFroupBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.rotatingGroupBox);
@@ -867,8 +957,10 @@
             this.Controls.Add(this.polyhedronSelectionLabel);
             this.Controls.Add(this.polyhedronSelectionComboBox);
             this.Controls.Add(this.polyhedronPictureBox);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MainForm";
             this.Text = "Аффинные преобразования в пространстве. Проецирование";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -891,6 +983,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.modelFromFileFroupBox.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -968,6 +1062,14 @@
         private System.Windows.Forms.GroupBox modelFromFileFroupBox;
         private System.Windows.Forms.Button saveModelIntoFileButton;
         private System.Windows.Forms.Button loadModelronFromFileButton;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox partitionsCountTextBox;
+        private System.Windows.Forms.Button buildRotationBodyButton;
+        private System.Windows.Forms.Label partirionsCountLabel;
+        private System.Windows.Forms.TextBox setGeneratrixTextBox;
+        private System.Windows.Forms.Label setGeneratrixLabel;
+        private System.Windows.Forms.Label chooseAxisLabel;
+        private System.Windows.Forms.ComboBox chooseRotationBodyAxisComboBox;
     }
 }
 

@@ -12,6 +12,10 @@ namespace AffineTransformations3D
         private long _identifier;
         public long Identifier => _identifier;
 
+        public Point3D(Point3D other) : this(other.X, other.Y, other.Z)
+        {
+        }
+
         public Point3D(double x, double y, double z) : this(x, y, z, nextIdentifier)
         {
             nextIdentifier += 1;
@@ -25,19 +29,10 @@ namespace AffineTransformations3D
             _identifier = identifier;
         }
 
-        public Vector3D ToVector3D() 
-        {
-            return new Vector3D(X, Y, Z, 1);
-        }
+        public Vector3D ToVector3D() => new Vector3D(X, Y, Z, 1);
 
-        public Point ToPoint()
-        {
-            return new Point((int)X, (int)Y);
-        }
+        public Point ToPoint() => new Point((int)X, (int)Y);
 
-        public object Clone()
-        {
-            return new Point3D(X, Y, Z, _identifier);
-        }
+        public object Clone() => new Point3D(X, Y, Z, _identifier);
     }
 }

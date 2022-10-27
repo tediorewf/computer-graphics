@@ -1,4 +1,6 @@
-﻿namespace AffineTransformations3D
+﻿using System;
+
+namespace AffineTransformations3D
 {
     public class Edge3D
     {

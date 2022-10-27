@@ -21,6 +21,10 @@ namespace AffineTransformations3D
         private CoordinatePlaneType[] reflectionCoordinatePlaneTypes;
         private string[] reflectionCoordinatePlaneNames;
 
+        private AxisType[] axisTypes;
+        private string[] axisNames;
+        private AxisType currentAxisType;
+
         private Point previousMousePosition;
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
@@ -41,6 +45,7 @@ namespace AffineTransformations3D
             InitializeProjectionStuff();
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
+            InitializeRotationBodyStuff();
             Size = new Size(950, 455);
         }
 
@@ -78,6 +83,15 @@ namespace AffineTransformations3D
             reflectionCoordinatePlaneComboBox.Items.AddRange(reflectionCoordinatePlaneNames);
             reflectionCoordinatePlaneComboBox.SelectedIndex = 0;
             currentReflectionCoordinatePlaneType = rotationCoordinatePlaneTypes[reflectionCoordinatePlaneComboBox.SelectedIndex];
+        }
+
+        private void InitializeRotationBodyStuff()
+        {
+            axisTypes = Enum.GetValues(typeof(AxisType)).Cast<AxisType>().ToArray();
+            axisNames = axisTypes.Select(at => at.GetAxisName()).ToArray();
+            chooseRotationBodyAxisComboBox.Items.AddRange(axisNames);
+            chooseRotationBodyAxisComboBox.SelectedIndex = 0;
+            currentAxisType = axisTypes[chooseRotationBodyAxisComboBox.SelectedIndex];
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -456,6 +470,51 @@ namespace AffineTransformations3D
                 currentPolyhedron = Polyhedron.ReadFromFile(ofd.FileName);
                 Project();
             }
+        }
+
+        private void buttonDoTask2_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(partitionsCountTextBox.Text, out int partitionsCount))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            var splitted = setGeneratrixTextBox.Text.Split();
+            var points = new List<Point3D>();
+            foreach (var p in splitted)
+            {
+                var coordinates = p.Split(';');
+
+                if (!double.TryParse(coordinates[0], out var x)) {
+                    WarnInvalidInput();
+                    return;
+                }
+
+                if (!double.TryParse(coordinates[1], out var y))
+                {
+                    WarnInvalidInput();
+                    return;
+                }
+
+                if (!double.TryParse(coordinates[2], out var z))
+                {
+                    WarnInvalidInput();
+                    return;
+                }
+
+                points.Add(new Point3D(x, y, z));
+            }
+
+            var generatrix = new Generatrix3D(points, currentAxisType);
+
+            currentPolyhedron = generatrix.CreateRotationBody(partitionsCount);
+            Project();
+        }
+
+        private void chooseRotationBodyAxisComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            currentAxisType = axisTypes[chooseRotationBodyAxisComboBox.SelectedIndex];
         }
     }
 }
