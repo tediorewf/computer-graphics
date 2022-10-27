@@ -101,6 +101,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ModelFileExamples\cone.txt" />
+    <Content Include="ModelFileExamples\cylinder.txt" />
+    <Content Include="ModelFileExamples\hexahedron.txt" />
     <Content Include="ModelFileExamples\tetrahedron.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
