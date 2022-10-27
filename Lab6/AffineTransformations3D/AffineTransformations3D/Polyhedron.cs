@@ -15,24 +15,14 @@ namespace AffineTransformations3D
         public List<Edge3D> Edges { get; set; }
         public List<Facet3D> Facets { get; set; }
         private Point3D _center;
-        // Отложенная инициализация центра многогранника
-        public Point3D Center
-        {
-            get 
-            { 
-                if (_center == null)
-                {
-                    _center = ComputeCenter();
-                }
-                return _center; 
-            }
-        }
+        public Point3D Center => _center;
 
         public Polyhedron(List<Point3D> vertices, List<Edge3D> edges, List<Facet3D> facets)
         {
             Vertices = vertices;
             Edges = edges;
             Facets = facets;
+            _center = ComputeCenter();
         }
 
         public void SaveToFile(string path)
@@ -222,13 +212,12 @@ namespace AffineTransformations3D
             double x = 0;
             double y = 0;
             double z = 0;
-            int pointsTotal = 0;
+            int pointsTotal = polyhedron.Vertices.Count;
             foreach (var vertex in polyhedron.Vertices)
             {
                 x += vertex.X;
                 y += vertex.Y;
                 z += vertex.Z;
-                pointsTotal += 1;
             }
             return new Point3D(x / pointsTotal, y / pointsTotal, z / pointsTotal);
         }
