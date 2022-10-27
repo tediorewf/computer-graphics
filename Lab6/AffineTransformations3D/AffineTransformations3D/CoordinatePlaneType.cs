@@ -15,7 +15,7 @@ namespace AffineTransformations3D
 
     public static class CoordinatePlaneTypeExtensionMethods
     {
-        public static Matrix CreateMatrix(this CoordinatePlaneType coordinatePlaneType)
+        public static Matrix CreateReflectionMatrix(this CoordinatePlaneType coordinatePlaneType)
         {
             switch (coordinatePlaneType)
             {

@@ -7,6 +7,7 @@ using System.Linq;
 namespace AffineTransformations3D
 {
     using static AffineTransformationMatrices;
+    using static TransformationHelper;
 
     public class Polyhedron : ICloneable
     {
@@ -114,8 +115,6 @@ namespace AffineTransformations3D
             return new Polyhedron(vertices, edges, facets);
         }
 
-        // TODO: мне надо будет доделать это
-        // Не меняет исходную фигуру, создает копию
         public Polyhedron ComputeProjection(ProjectionType projectionType)
         {
             var clone = Clone() as Polyhedron;
@@ -232,28 +231,6 @@ namespace AffineTransformations3D
                 pointsTotal += 1;
             }
             return new Point3D(x / pointsTotal, y / pointsTotal, z / pointsTotal);
-        }
-
-        private static void ApplyTransformationInplace(Polyhedron polyhedron, Matrix transformation)
-        {
-            for (int i = 0; i < polyhedron.Vertices.Count; i++)
-            {
-                TransformPointInplace(polyhedron.Vertices[i], transformation);
-            }
-            TransformPointInplace(polyhedron.Center, transformation);
-        }
-
-        private static void TransformPointInplace(Point3D point, Matrix transformation)
-        {
-            var product = point.ToVector3D() * transformation;
-            double x = product[0, 0];
-            double y = product[0, 1];
-            double z = product[0, 2];
-            double w = product[0, 3];
-            var transformedPoint = new Point3D(x / w, y / w, z / w);
-            point.X = transformedPoint.X;
-            point.Y = transformedPoint.Y;
-            point.Z = transformedPoint.Z;
         }
     }
 }
