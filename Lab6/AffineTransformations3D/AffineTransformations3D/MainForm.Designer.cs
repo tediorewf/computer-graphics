@@ -108,6 +108,7 @@
             this.partitionsCountTextBox = new System.Windows.Forms.TextBox();
             this.ChoiceComboBox = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.ZbuferButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -820,9 +821,9 @@
             this.modelFromFileFroupBox.Controls.Add(this.saveModelIntoFileButton);
             this.modelFromFileFroupBox.Controls.Add(this.loadModelronFromFileButton);
             this.modelFromFileFroupBox.Location = new System.Drawing.Point(725, 204);
-            this.modelFromFileFroupBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.modelFromFileFroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.modelFromFileFroupBox.Name = "modelFromFileFroupBox";
-            this.modelFromFileFroupBox.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.modelFromFileFroupBox.Padding = new System.Windows.Forms.Padding(2);
             this.modelFromFileFroupBox.Size = new System.Drawing.Size(200, 47);
             this.modelFromFileFroupBox.TabIndex = 48;
             this.modelFromFileFroupBox.TabStop = false;
@@ -831,7 +832,7 @@
             // saveModelIntoFileButton
             // 
             this.saveModelIntoFileButton.Location = new System.Drawing.Point(110, 16);
-            this.saveModelIntoFileButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.saveModelIntoFileButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveModelIntoFileButton.Name = "saveModelIntoFileButton";
             this.saveModelIntoFileButton.Size = new System.Drawing.Size(81, 23);
             this.saveModelIntoFileButton.TabIndex = 1;
@@ -842,7 +843,7 @@
             // loadModelronFromFileButton
             // 
             this.loadModelronFromFileButton.Location = new System.Drawing.Point(11, 16);
-            this.loadModelronFromFileButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.loadModelronFromFileButton.Margin = new System.Windows.Forms.Padding(2);
             this.loadModelronFromFileButton.Name = "loadModelronFromFileButton";
             this.loadModelronFromFileButton.Size = new System.Drawing.Size(89, 23);
             this.loadModelronFromFileButton.TabIndex = 0;
@@ -882,7 +883,7 @@
             // 
             this.chooseRotationBodyAxisComboBox.FormattingEnabled = true;
             this.chooseRotationBodyAxisComboBox.Location = new System.Drawing.Point(11, 83);
-            this.chooseRotationBodyAxisComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chooseRotationBodyAxisComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.chooseRotationBodyAxisComboBox.Name = "chooseRotationBodyAxisComboBox";
             this.chooseRotationBodyAxisComboBox.Size = new System.Drawing.Size(91, 21);
             this.chooseRotationBodyAxisComboBox.TabIndex = 6;
@@ -901,7 +902,7 @@
             // setGeneratrixTextBox
             // 
             this.setGeneratrixTextBox.Location = new System.Drawing.Point(10, 36);
-            this.setGeneratrixTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.setGeneratrixTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.setGeneratrixTextBox.Name = "setGeneratrixTextBox";
             this.setGeneratrixTextBox.Size = new System.Drawing.Size(184, 20);
             this.setGeneratrixTextBox.TabIndex = 4;
@@ -955,11 +956,23 @@
             this.label7.TabIndex = 51;
             this.label7.Text = "Выбрать многогранник";
             // 
+            // ZbuferButton
+            // 
+            this.ZbuferButton.Location = new System.Drawing.Point(930, 16);
+            this.ZbuferButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.ZbuferButton.Name = "ZbuferButton";
+            this.ZbuferButton.Size = new System.Drawing.Size(182, 25);
+            this.ZbuferButton.TabIndex = 52;
+            this.ZbuferButton.Text = "Удаление граней z-буфер";
+            this.ZbuferButton.UseVisualStyleBackColor = true;
+            this.ZbuferButton.Click += new System.EventHandler(this.ZbuferButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(929, 488);
+            this.ClientSize = new System.Drawing.Size(1135, 488);
+            this.Controls.Add(this.ZbuferButton);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.ChoiceComboBox);
             this.Controls.Add(this.groupBox2);
@@ -1090,6 +1103,7 @@
         private System.Windows.Forms.ComboBox chooseRotationBodyAxisComboBox;
         private System.Windows.Forms.ComboBox ChoiceComboBox;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button ZbuferButton;
     }
 }
 

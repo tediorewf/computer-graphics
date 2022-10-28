@@ -47,7 +47,7 @@ namespace AffineTransformations3D
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
-            Size = new Size(950, 555);
+            Size = new Size(1150, 550);
         }
 
         private void InitializePolyhedronStuff()
@@ -542,6 +542,58 @@ namespace AffineTransformations3D
             int N = ChoiceComboBox.SelectedIndex;
             currentPolyhedron = ListPolyhedron[N];
             Project();
+        }
+
+        List<Facet3D> MakeTriangle(Facet3D f)
+        {
+            List<Facet3D> Lst = new List<Facet3D>{ };
+            Point3D StartPoint = f.Points[0];
+            Point3D SecondPoint = f.Points[1];
+            for (int i = 2; i < f.Points.Count; i++)
+            {
+                Facet3D NewF = new Facet3D(new List<Point3D> { StartPoint, SecondPoint, f.Points[i] }, new List<Edge3D> { new Edge3D(StartPoint, SecondPoint), new Edge3D(SecondPoint, f.Points[i]), new Edge3D(f.Points[i], StartPoint) });
+                SecondPoint = f.Points[i];
+                Lst.Add(NewF);
+            }
+            return Lst;
+        }
+
+        private struct ZBuferStruct
+        {
+            public double Depth;
+            public Color Color;
+        }
+
+        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr)
+        { 
+            
+        }
+
+        private void PaintZBufer(ZBuferStruct[,] ZBuferArr,Bitmap drawingSurface)
+        {
+            for (int i = 0; i < drawingSurface.Width; i++)
+                for (int j = 0; j < drawingSurface.Height; j++)
+                    drawingSurface.SetPixel(i, j, ZBuferArr[i, j].Color);
+        }
+
+        private void ZbuferButton_Click(object sender, EventArgs e)
+        {
+            var size = polyhedronPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            ZBuferStruct[,] ZBuferArr = new ZBuferStruct[size.Width, size.Height];
+            foreach (var item in ListPolyhedron)
+            {
+                Random random = new Random();
+                Color Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                foreach (Facet3D fct in item.Facets)
+                {
+                    List < Facet3D > FctTrngl= MakeTriangle(fct);
+                    foreach (Facet3D t in FctTrngl)
+                        ZBufer(ZBuferArr,t, Clr);
+                }
+            }
+            PaintZBufer(ZBuferArr, drawingSurface);
+            polyhedronPictureBox.Image = drawingSurface;
         }
     }
 }
