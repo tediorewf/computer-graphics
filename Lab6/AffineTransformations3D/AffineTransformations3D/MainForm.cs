@@ -28,6 +28,7 @@ namespace AffineTransformations3D
         private Point previousMousePosition;
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
+        private List<Polyhedron> ListPolyhedron;
 
         private ProjectionType currentProjectionType;
         private CoordinatePlaneType currentRotationCoordinatePlaneType;
@@ -46,7 +47,7 @@ namespace AffineTransformations3D
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
-            Size = new Size(950, 455);
+            Size = new Size(950, 555);
         }
 
         private void InitializePolyhedronStuff()
@@ -56,6 +57,10 @@ namespace AffineTransformations3D
             polyhedronSelectionComboBox.Items.AddRange(polyhedronNames);
             polyhedronSelectionComboBox.SelectedIndex = 0;
             currentPolyhedron = polyhedronTypes[polyhedronSelectionComboBox.SelectedIndex].CreatePolyhedron();
+            ListPolyhedron = new List<Polyhedron> {};
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
         }
 
         private void InitializeProjectionStuff()
@@ -104,7 +109,10 @@ namespace AffineTransformations3D
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Blue);
+            foreach (var item in ListPolyhedron)
+                if (item!= currentPolyhedron)
+                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
+            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
             polyhedronPictureBox.Image = drawingSurface;
         }
 
@@ -194,6 +202,9 @@ namespace AffineTransformations3D
         private void polyhedronComboBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentPolyhedron = polyhedronTypes[polyhedronSelectionComboBox.SelectedIndex].CreatePolyhedron();
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
         }
 
@@ -447,6 +458,9 @@ namespace AffineTransformations3D
             facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][splitting - 1], Arr[splitting][splitting - 1], Arr[splitting - 1][splitting], Arr[splitting][splitting] }, new List<Edge3D> { edges[2 * (splitting * (splitting - 1) + (splitting - 1))], edges[2 * (splitting * (splitting - 1) + (splitting - 1)) + 1], edges[t], edges[t+ splitting] }));
 
             currentPolyhedron =  new Polyhedron(vertices, edges, facets);
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
 
         }
@@ -468,6 +482,9 @@ namespace AffineTransformations3D
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 currentPolyhedron = Polyhedron.ReadFromFile(ofd.FileName);
+                ListPolyhedron.Add(currentPolyhedron);
+                ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+                ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
                 Project();
             }
         }
@@ -509,12 +526,22 @@ namespace AffineTransformations3D
             var generatrix = new Generatrix3D(points, currentAxisType);
 
             currentPolyhedron = generatrix.CreateRotationBody(partitionsCount);
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
         }
 
         private void chooseRotationBodyAxisComboBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentAxisType = axisTypes[chooseRotationBodyAxisComboBox.SelectedIndex];
+        }
+
+        private void ChoiceComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int N = ChoiceComboBox.SelectedIndex;
+            currentPolyhedron = ListPolyhedron[N];
+            Project();
         }
     }
 }
