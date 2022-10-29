@@ -21,7 +21,7 @@ namespace AffineTransformations3D
         {
             var product = point.ToVector3D() * transformation;
             double x = product[0, 0];
-            double y = product[0, 1];
+            double y = product[0, 1]; 
             double z = product[0, 2];
             double w = product[0, 3];
             var transformedPoint = new Point3D(x / w, y / w, z / w);

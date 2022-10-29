@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace AffineTransformations3D
 {
+    using static TransformationHelper;
+    using static ProjectionType;
+
     public partial class MainForm : Form
     {
         private PolyhedronType[] polyhedronTypes;
@@ -560,13 +563,40 @@ namespace AffineTransformations3D
 
         private struct ZBuferStruct
         {
+            public bool IsNotEmpthy;
             public double Depth;
             public Color Color;
         }
 
-        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr)
-        { 
+        List<Point3D> TriangleToListPoint(Facet3D Triangle)
+        {
+            List<Point3D> TriangleListPoint = new List<Point3D> { };
             
+            // TODO:
+            // Создать множество точек треугольника
+
+            return TriangleListPoint;
+        }
+
+        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr,Matrix transformation)
+        {
+            var size = polyhedronPictureBox.Size;
+            List<Point3D> LstPnt = TriangleToListPoint(Triangle);
+            foreach (var item in LstPnt)
+            {
+                TransformPointInplace(item, transformation);
+                Point P = item.ToPoint();
+
+                double depth = item.Z;
+
+                if ((P.X >= 0) && (P.X < size.Width) && (P.Y >= 0) && (P.Y < size.Height))
+                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpthy)||(depth > ZBuferArr[P.X, P.Y].Depth))
+                    {
+                        ZBuferArr[P.X, P.Y].Depth = depth;
+                        ZBuferArr[P.X, P.Y].Color = Clr;
+                        ZBuferArr[P.X, P.Y].IsNotEmpthy = true;
+                    }
+            }
         }
 
         private void PaintZBufer(ZBuferStruct[,] ZBuferArr,Bitmap drawingSurface)
@@ -581,6 +611,9 @@ namespace AffineTransformations3D
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
             ZBuferStruct[,] ZBuferArr = new ZBuferStruct[size.Width, size.Height];
+
+            Matrix transformation = Axonometric.CreateMatrix();
+
             foreach (var item in ListPolyhedron)
             {
                 Random random = new Random();
@@ -589,7 +622,7 @@ namespace AffineTransformations3D
                 {
                     List < Facet3D > FctTrngl= MakeTriangle(fct);
                     foreach (Facet3D t in FctTrngl)
-                        ZBufer(ZBuferArr,t, Clr);
+                        ZBufer(ZBuferArr,t, Clr, transformation);
                 }
             }
             PaintZBufer(ZBuferArr, drawingSurface);

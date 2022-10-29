@@ -961,9 +961,9 @@
             this.ZbuferButton.Location = new System.Drawing.Point(930, 16);
             this.ZbuferButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ZbuferButton.Name = "ZbuferButton";
-            this.ZbuferButton.Size = new System.Drawing.Size(182, 25);
+            this.ZbuferButton.Size = new System.Drawing.Size(182, 39);
             this.ZbuferButton.TabIndex = 52;
-            this.ZbuferButton.Text = "Удаление граней z-буфер";
+            this.ZbuferButton.Text = "Удаление граней z-буфер (Аксонометрическая проекция)";
             this.ZbuferButton.UseVisualStyleBackColor = true;
             this.ZbuferButton.Click += new System.EventHandler(this.ZbuferButton_Click);
             // 
