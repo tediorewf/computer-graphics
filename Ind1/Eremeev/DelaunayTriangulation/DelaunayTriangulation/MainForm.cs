@@ -40,9 +40,31 @@ namespace DelaunayTriangulation
             triangulationPictureBox.Image = drawingSurface;
         }
 
-        private void clearSceneButton_Click(object sender, EventArgs e)
-        {
+        private void clearSceneButton_Click(object sender, EventArgs e) 
+            => ResetScene();
 
+        private void ResetScene()
+        {
+            ResetDrawingSurface();
+            ResetPoints();
+            ResetTriangles();
+        }
+
+        private void ResetDrawingSurface()
+        {
+            var size = triangulationPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            triangulationPictureBox.Image = drawingSurface;
+        }
+
+        private void ResetPoints()
+        {
+            points = new List<Point2D>();
+        }
+
+        private void ResetTriangles()
+        {
+            triangles = new List<Triangle2D>();
         }
 
         private void triangulationPictureBox_MouseClick(object sender, MouseEventArgs e)
