@@ -17,6 +17,10 @@ namespace DelaunayTriangulation
             Y = y;
         }
 
+        public Vector2D(Point2D p) : this(p.X, p.Y)
+        {
+        }
+
         /// <summary>
         /// Скалярное произведение
         /// </summary>
@@ -29,5 +33,19 @@ namespace DelaunayTriangulation
             int y = lhs.Y * rhs.Y;
             return x + y;
         }
+
+        public static Vector2D operator +(Vector2D lhs, Vector2D rhs)
+            => new Vector2D(lhs.X + rhs.X, lhs.Y + rhs.Y);
+
+        public static Vector2D operator -(Vector2D lhs, Vector2D rhs)
+            => new Vector2D(lhs.X - rhs.X, lhs.Y - rhs.Y);
+
+        public static Vector2D operator /(Vector2D vector, int scalar)
+            => new Vector2D(vector.X / scalar, vector.Y / scalar);
+
+        public static Vector2D operator *(int scalar, Vector2D vector)
+            => new Vector2D(scalar * vector.X, scalar * vector.Y);
+
+        public Point2D ToPoint2D() => new Point2D(X, Y);
     }
 }

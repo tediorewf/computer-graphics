@@ -11,11 +11,60 @@ namespace DelaunayTriangulation
         public static List<Triangle2D> Triangulate(List<Point2D> points)
         {
             var triangles = new List<Triangle2D>();
+
             var initialEdge = FindInitialJarvisEdge(points);
 
-            var deads = new HashSet<Edge2D>();
+            var aliveEdges = new SortedSet<Edge2D>();
+            aliveEdges.Add(initialEdge);
+
+            while (aliveEdges.Count != 0)
+            {
+                var currentEdge = aliveEdges.Min();
+                aliveEdges.Remove(currentEdge);
+
+                Point2D mostSuitablePoint = null;
+                double mostSuitableT = double.MaxValue;
+
+                var edge0 = currentEdge.Rotate();
+
+                foreach (var point in points)
+                {
+                    if (currentEdge.IsOnRight(point))
+                    {
+                        var edge1 = new Edge2D(edge0.End, point).Rotate();
+                        double t = edge0.ExtractIntersectionParameter(edge1);
+
+                        if (t < mostSuitableT)
+                        {
+                            mostSuitableT = t;
+                            mostSuitablePoint = point;
+                        }
+                    }
+                }
+
+                if (mostSuitablePoint != null)
+                {
+                    MakeAlive(aliveEdges, mostSuitablePoint, currentEdge.Begin);
+                    MakeAlive(aliveEdges, currentEdge.End, mostSuitablePoint);
+                    triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
+                }
+            }
 
             return triangles;
+        }
+
+        private static void MakeAlive(SortedSet<Edge2D> alives, Point2D p1, Point2D p2)
+        {
+            var edge = new Edge2D(p1, p2);
+            if (alives.Contains(edge))
+            {
+                alives.Remove(edge);
+            }
+            else
+            {
+                edge.Flip();
+                alives.Add(edge);
+            }
         }
 
         private static Edge2D FindInitialJarvisEdge(List<Point2D> points)
@@ -47,8 +96,7 @@ namespace DelaunayTriangulation
             var initialPoint = points.FirstOrDefault();
             foreach (var currentPoint in points)
             {
-                if (currentPoint.X < initialPoint.X 
-                    || currentPoint.X == initialPoint.X & currentPoint.Y < initialPoint.Y)
+                if (currentPoint < initialPoint)
                 {
                     initialPoint = currentPoint;
                 }

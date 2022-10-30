@@ -8,15 +8,15 @@ namespace DelaunayTriangulation
 {
     public class Triangle2D
     {
-        public Edge2D A { get; set; }
-        public Edge2D B { get; set; }
-        public Edge2D C { get; set; }
+        public Point2D P1 { get; private set; }
+        public Point2D P2 { get; private set; }
+        public Point2D P3 { get; private set; }
 
-        public Triangle2D(Edge2D a, Edge2D b, Edge2D c)
+        public Triangle2D(Point2D p1, Point2D p2, Point2D p3)
         {
-            A = a; 
-            B = b; 
-            C = c; 
+            P1 = p1;
+            P2 = p2;
+            P3 = p3;
         }
     }
 }

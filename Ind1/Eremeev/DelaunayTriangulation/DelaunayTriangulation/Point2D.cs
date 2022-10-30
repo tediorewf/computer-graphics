@@ -7,12 +7,16 @@ using System.Drawing;
 
 namespace DelaunayTriangulation
 {
-    public class Point2D
+    public class Point2D : ICloneable
     {
         public int X { get; set; }
         public int Y { get; set; }
 
         public Point2D(Point p) : this(p.X, p.Y)
+        {
+        }
+
+        public Point2D(Point2D other) : this(other.X, other.Y)
         {
         }
 
@@ -31,6 +35,30 @@ namespace DelaunayTriangulation
 
         public Vector2D ToVector() => new Vector2D(X, Y);
 
-        public override int GetHashCode() => (X.GetHashCode() + Y).GetHashCode();
+        public Point ToPoint() => new Point(X, Y);
+
+        public object Clone() => new Point2D(this);
+
+        public Point2D Copy() => Clone() as Point2D;
+
+        public static Point2D operator +(Point2D lhs, Point2D rhs) 
+            => new Point2D(lhs.X + rhs.X, lhs.Y + rhs.Y);
+
+        public static Point2D operator -(Point2D lhs, Point2D rhs)
+            => new Point2D(lhs.X - rhs.X, lhs.Y - rhs.Y);
+
+        public static Point2D operator /(Point2D lhs, int scalar)
+            => new Point2D(lhs.X / scalar, lhs.Y / scalar);
+
+        public static bool operator <(Point2D lhs, Point2D rhs) 
+            => lhs.X < rhs.X || lhs.X == rhs.X && lhs.Y < rhs.Y;
+
+        public static bool operator >(Point2D lhs, Point2D rhs) 
+            => lhs.X > rhs.X || lhs.X == rhs.X && lhs.Y > rhs.Y;
+        /*
+        public static bool operator ==(Point2D lhs, Point2D rhs) 
+            => lhs.X == rhs.X && lhs.Y == rhs.Y;
+
+        public static bool operator !=(Point2D lhs, Point2D rhs) => !(lhs == rhs);*/
     }
 }
