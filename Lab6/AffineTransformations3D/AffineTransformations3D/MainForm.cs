@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace AffineTransformations3D
 {
+    using static TransformationHelper;
+    using static ProjectionType;
+
     public partial class MainForm : Form
     {
         private PolyhedronType[] polyhedronTypes;
@@ -28,6 +31,7 @@ namespace AffineTransformations3D
         private Point previousMousePosition;
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
+        private List<Polyhedron> ListPolyhedron;
 
         private ProjectionType currentProjectionType;
         private CoordinatePlaneType currentRotationCoordinatePlaneType;
@@ -46,7 +50,7 @@ namespace AffineTransformations3D
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
-            Size = new Size(950, 455);
+            Size = new Size(1150, 550);
         }
 
         private void InitializePolyhedronStuff()
@@ -56,6 +60,10 @@ namespace AffineTransformations3D
             polyhedronSelectionComboBox.Items.AddRange(polyhedronNames);
             polyhedronSelectionComboBox.SelectedIndex = 0;
             currentPolyhedron = polyhedronTypes[polyhedronSelectionComboBox.SelectedIndex].CreatePolyhedron();
+            ListPolyhedron = new List<Polyhedron> {};
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
         }
 
         private void InitializeProjectionStuff()
@@ -104,7 +112,10 @@ namespace AffineTransformations3D
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Blue);
+            foreach (var item in ListPolyhedron)
+                if (item!= currentPolyhedron)
+                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
+            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
             polyhedronPictureBox.Image = drawingSurface;
         }
 
@@ -194,6 +205,9 @@ namespace AffineTransformations3D
         private void polyhedronComboBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentPolyhedron = polyhedronTypes[polyhedronSelectionComboBox.SelectedIndex].CreatePolyhedron();
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
         }
 
@@ -447,6 +461,9 @@ namespace AffineTransformations3D
             facets.Add(new Facet3D(new List<Point3D> { Arr[splitting - 1][splitting - 1], Arr[splitting][splitting - 1], Arr[splitting - 1][splitting], Arr[splitting][splitting] }, new List<Edge3D> { edges[2 * (splitting * (splitting - 1) + (splitting - 1))], edges[2 * (splitting * (splitting - 1) + (splitting - 1)) + 1], edges[t], edges[t+ splitting] }));
 
             currentPolyhedron =  new Polyhedron(vertices, edges, facets);
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
 
         }
@@ -468,6 +485,9 @@ namespace AffineTransformations3D
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 currentPolyhedron = Polyhedron.ReadFromFile(ofd.FileName);
+                ListPolyhedron.Add(currentPolyhedron);
+                ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+                ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
                 Project();
             }
         }
@@ -509,12 +529,104 @@ namespace AffineTransformations3D
             var generatrix = new Generatrix3D(points, currentAxisType);
 
             currentPolyhedron = generatrix.CreateRotationBody(partitionsCount);
+            ListPolyhedron.Add(currentPolyhedron);
+            ChoiceComboBox.Items.Add(ListPolyhedron.Count);
+            ChoiceComboBox.SelectedIndex = ListPolyhedron.Count - 1;
             Project();
         }
 
         private void chooseRotationBodyAxisComboBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentAxisType = axisTypes[chooseRotationBodyAxisComboBox.SelectedIndex];
+        }
+
+        private void ChoiceComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int N = ChoiceComboBox.SelectedIndex;
+            currentPolyhedron = ListPolyhedron[N];
+            Project();
+        }
+
+        List<Facet3D> MakeTriangle(Facet3D f)
+        {
+            List<Facet3D> Lst = new List<Facet3D>{ };
+            Point3D StartPoint = f.Points[0];
+            Point3D SecondPoint = f.Points[1];
+            for (int i = 2; i < f.Points.Count; i++)
+            {
+                Facet3D NewF = new Facet3D(new List<Point3D> { StartPoint, SecondPoint, f.Points[i] }, new List<Edge3D> { new Edge3D(StartPoint, SecondPoint), new Edge3D(SecondPoint, f.Points[i]), new Edge3D(f.Points[i], StartPoint) });
+                SecondPoint = f.Points[i];
+                Lst.Add(NewF);
+            }
+            return Lst;
+        }
+
+        private struct ZBuferStruct
+        {
+            public bool IsNotEmpthy;
+            public double Depth;
+            public Color Color;
+        }
+
+        List<Point3D> TriangleToListPoint(Facet3D Triangle)
+        {
+            List<Point3D> TriangleListPoint = new List<Point3D> { };
+            
+            // TODO:
+            // Создать множество точек треугольника
+
+            return TriangleListPoint;
+        }
+
+        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr,Matrix transformation)
+        {
+            var size = polyhedronPictureBox.Size;
+            List<Point3D> LstPnt = TriangleToListPoint(Triangle);
+            foreach (var item in LstPnt)
+            {
+                TransformPointInplace(item, transformation);
+                Point P = item.ToPoint();
+
+                double depth = item.Z;
+
+                if ((P.X >= 0) && (P.X < size.Width) && (P.Y >= 0) && (P.Y < size.Height))
+                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpthy)||(depth > ZBuferArr[P.X, P.Y].Depth))
+                    {
+                        ZBuferArr[P.X, P.Y].Depth = depth;
+                        ZBuferArr[P.X, P.Y].Color = Clr;
+                        ZBuferArr[P.X, P.Y].IsNotEmpthy = true;
+                    }
+            }
+        }
+
+        private void PaintZBufer(ZBuferStruct[,] ZBuferArr,Bitmap drawingSurface)
+        {
+            for (int i = 0; i < drawingSurface.Width; i++)
+                for (int j = 0; j < drawingSurface.Height; j++)
+                    drawingSurface.SetPixel(i, j, ZBuferArr[i, j].Color);
+        }
+
+        private void ZbuferButton_Click(object sender, EventArgs e)
+        {
+            var size = polyhedronPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            ZBuferStruct[,] ZBuferArr = new ZBuferStruct[size.Width, size.Height];
+
+            Matrix transformation = Axonometric.CreateMatrix();
+
+            foreach (var item in ListPolyhedron)
+            {
+                Random random = new Random();
+                Color Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                foreach (Facet3D fct in item.Facets)
+                {
+                    List < Facet3D > FctTrngl= MakeTriangle(fct);
+                    foreach (Facet3D t in FctTrngl)
+                        ZBufer(ZBuferArr,t, Clr, transformation);
+                }
+            }
+            PaintZBufer(ZBuferArr, drawingSurface);
+            polyhedronPictureBox.Image = drawingSurface;
         }
     }
 }
