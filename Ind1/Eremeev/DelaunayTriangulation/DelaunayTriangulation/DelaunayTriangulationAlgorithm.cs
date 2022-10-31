@@ -23,7 +23,7 @@ namespace DelaunayTriangulation
                 aliveEdges.Remove(currentEdge);
 
                 Point2D mostSuitablePoint = null;
-                double mostSuitableT = double.MaxValue;
+                double mostSuitableParameter = double.MaxValue;
 
                 var edge0 = currentEdge.Rotate();
 
@@ -31,12 +31,12 @@ namespace DelaunayTriangulation
                 {
                     if (currentEdge.IsOnRight(point))
                     {
-                        var edge1 = new Edge2D(edge0.End, point).Rotate();
+                        var edge1 = new Edge2D(currentEdge.End, point).Rotate();
                         double t = edge0.ExtractIntersectionParameter(edge1);
 
-                        if (t < mostSuitableT)
+                        if (t < mostSuitableParameter)
                         {
-                            mostSuitableT = t;
+                            mostSuitableParameter = t;
                             mostSuitablePoint = point;
                         }
                     }
