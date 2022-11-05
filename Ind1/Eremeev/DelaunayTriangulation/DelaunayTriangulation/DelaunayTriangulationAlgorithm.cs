@@ -68,11 +68,11 @@ namespace DelaunayTriangulation
                 edges.Add(new Edge2D(triangle.P2, triangle.P3));
                 edges.Add(new Edge2D(triangle.P3, triangle.P1));
             }
-            var boundaryEdges = edges
+            var polygonalHoleBoundaries = edges
                 .GroupBy(e => e)
                 .Where(e => e.Count() == 1)
                 .Select(e => e.First());
-            return boundaryEdges.ToList();
+            return polygonalHoleBoundaries.ToList();
         }
     }
 }
