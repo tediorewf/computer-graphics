@@ -15,7 +15,6 @@ namespace DelaunayTriangulation
         public Triangle2D(Point2D p1, Point2D p2, Point2D p3)
         {
             Vertices = new Point2D[3];
-
             P1 = Vertices[0] = p1;
             P2 = Vertices[1] = p2;
             P3 = Vertices[2] = p3;
