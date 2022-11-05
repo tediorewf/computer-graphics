@@ -8,7 +8,7 @@ namespace DelaunayTriangulation
 {
     using static Utils;
 
-    public class Edge2D : ICloneable, IComparable<Edge2D>
+    public class Edge2D : ICloneable
     {
         private Point2D _begin;
         public Point2D Begin => _begin;
@@ -32,7 +32,7 @@ namespace DelaunayTriangulation
             return normal;
         }
 
-        public int ComputeSquareLength() => ComputeSquareLength(this);
+        public int ComputeSquareLength()=> ComputeSquareLength(this);
 
         public static int ComputeSquareLength(Edge2D e)
         {
@@ -102,23 +102,6 @@ namespace DelaunayTriangulation
             
             var other = (Edge2D)obj;
             return other.Begin.Equals(Begin) && other.End.Equals(End);
-        }
-
-        public int CompareTo(Edge2D other)
-        {
-            int result = 0;
-
-            if (Begin < other.Begin || End < other.End)
-            {
-                result = -1;
-            }
-
-            if (Begin > other.Begin || End > other.End)
-            {
-                result = 1;
-            }
-
-            return result;
         }
     }
 }

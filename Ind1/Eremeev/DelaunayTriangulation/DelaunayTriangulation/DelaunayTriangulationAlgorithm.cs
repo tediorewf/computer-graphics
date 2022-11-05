@@ -65,7 +65,7 @@ namespace DelaunayTriangulation
             foreach (var tr in triangles)
             {
                 if (edge.Equals(new Edge2D(tr.P1, tr.P2)) 
-                    || edge.Equals(new Edge2D(tr.P2, tr.P3))
+                    || edge.Equals(new Edge2D(tr.P2, tr.P3)) 
                     || edge.Equals(new Edge2D(tr.P3, tr.P1)))
                 {
                     return;

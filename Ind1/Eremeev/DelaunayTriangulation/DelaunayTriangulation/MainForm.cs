@@ -70,12 +70,10 @@ namespace DelaunayTriangulation
         private void triangulationPictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             var drawingSurface = triangulationPictureBox.Image as Bitmap;
-            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
-            {
-                fastDrawingSurface[e.X, e.Y] = Color.Black;
-            }
+            var gfx = Graphics.FromImage(drawingSurface);
+            int radius = 5, diameter = radius * 2;
+            gfx.FillEllipse(Brushes.Blue, e.X - radius, e.Y - radius, diameter, diameter);
             triangulationPictureBox.Image = drawingSurface;
-
             points.Add(new Point2D(e.Location));
         }
     }
