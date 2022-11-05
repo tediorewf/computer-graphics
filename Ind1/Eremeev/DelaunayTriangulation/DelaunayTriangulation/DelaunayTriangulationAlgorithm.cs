@@ -17,6 +17,8 @@ namespace DelaunayTriangulation
             var aliveEdges = new List<Edge2D>();
             aliveEdges.Add(initialEdge);
 
+            var deadEdges = new List<Edge2D>();
+
             while (aliveEdges.Count != 0)
             {
                 var currentEdge = aliveEdges.FetchShortestEdge();
@@ -43,8 +45,8 @@ namespace DelaunayTriangulation
 
                 if (mostSuitablePoint != null)
                 {
-                    MakeAlive(aliveEdges, triangles, currentEdge.Begin, mostSuitablePoint);
-                    MakeAlive(aliveEdges, triangles, mostSuitablePoint, currentEdge.End);
+                    MakeAlive(aliveEdges, deadEdges, currentEdge.Begin, mostSuitablePoint);
+                    MakeAlive(aliveEdges, deadEdges, mostSuitablePoint, currentEdge.End);
                     triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
                 }
             }
@@ -52,26 +54,23 @@ namespace DelaunayTriangulation
             return triangles;
         }
 
-        private static void MakeAlive(List<Edge2D> alives, List<Triangle2D> triangles, Point2D p1, Point2D p2)
+        private static void MakeAlive(List<Edge2D> alives, List<Edge2D> deads, Point2D p1, Point2D p2)
         {
             var edge = new Edge2D(p1, p2);
+
+            var deadIndex = deads.FindIndex(e => e.Equals(edge));
+            if (deadIndex != -1)
+            {
+                return;
+            }
+
             var aliveIndex = alives.FindIndex(e => e.Equals(edge));
             if (aliveIndex != -1)
             {
                 alives.RemoveAt(aliveIndex);
+                deads.Add(edge);
                 return;
             }
-
-            foreach (var tr in triangles)
-            {
-                if (edge.Equals(new Edge2D(tr.P1, tr.P2)) 
-                    || edge.Equals(new Edge2D(tr.P2, tr.P3)) 
-                    || edge.Equals(new Edge2D(tr.P3, tr.P1)))
-                {
-                    return;
-                }
-            }
-
 
             alives.Add(edge);
         }
