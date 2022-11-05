@@ -39,7 +39,10 @@ namespace RasterAlgorithms
 
             while (x1 != x2 || y1 != y2)
             {
-                fastDrawingSurface[x1, y1] = color;
+                if (IsPointInBounds(fastDrawingSurface.Width, fastDrawingSurface.Height, x1, y1))
+                {
+                    fastDrawingSurface[x1, y1] = color;
+                }
                 x1 += growthDirectionX * refereeY;  // gradient <= 1
                 y1 -= growthDirectionY * refereeX;  // gradient > 1
 
@@ -55,5 +58,8 @@ namespace RasterAlgorithms
                 }
             }
         }
+
+        private static bool IsPointInBounds(int width, int height, int x, int y) 
+            => 0 <= x && x <= width && 0 <= y && y <= height;
     }
 }

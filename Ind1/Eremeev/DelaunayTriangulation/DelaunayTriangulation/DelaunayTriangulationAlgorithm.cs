@@ -1,119 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DelaunayTriangulation
 {
     public static class DelaunayTriangulationAlgorithm
     {
-        public static List<Triangle2D> Triangulate(List<Point2D> points)
+        // https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
+        public static HashSet<Triangle2D> Triangulate(List<Point2D> points)
         {
-            var triangles = new List<Triangle2D>();
+            var supraTriangle = GenerateSupraTriangle(points);
+            var triangulation = new HashSet<Triangle2D> { supraTriangle };
 
-            var initialEdge = FindInitialJarvisEdge(points);
-
-            var aliveEdges = new List<Edge2D>();
-            aliveEdges.Add(initialEdge);
-
-            var deadEdges = new List<Edge2D>();
-
-            while (aliveEdges.Count != 0)
+            foreach (var point in points)
             {
-                var currentEdge = aliveEdges.FetchFirst();
+                var badTriangles = FindBadTriangles(point, triangulation);
 
-                Point2D mostSuitablePoint = null;
-                double mostSuitableParameter = double.MaxValue;
-
-                var edge0 = currentEdge.Rotate();
-
-                foreach (var point in points)
+                foreach (var triangle in badTriangles)
                 {
-                    if (currentEdge.IsOnRight(point))
+                    foreach (var vertex in triangle.Vertices)
                     {
-                        var edge1 = new Edge2D(currentEdge.End, point).Rotate();
-                        double t = edge0.ExtractIntersectionParameter(edge1);
-
-                        if (t < mostSuitableParameter)
-                        {
-                            mostSuitableParameter = t;
-                            mostSuitablePoint = point;
-                        }
+                        vertex.AdjacentTriangles.Remove(triangle);
                     }
                 }
 
-                if (mostSuitablePoint == null)
+                triangulation.RemoveWhere(t => badTriangles.Contains(t));
+
+                var polygon = FindPolygonalHoleBoundaries(badTriangles);
+
+                foreach (var edge in polygon.Where(possibleEdge => possibleEdge.Begin != point && possibleEdge.End != point))
                 {
-                    deadEdges.Add(currentEdge);
-                    continue;
-                }
-
-                MakeAlive(aliveEdges, deadEdges, currentEdge.Begin, mostSuitablePoint);
-                MakeAlive(aliveEdges, deadEdges, mostSuitablePoint, currentEdge.End);
-                triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
-            }
-
-            return triangles;
-        }
-
-        private static void MakeAlive(List<Edge2D> alives, List<Edge2D> deads, Point2D p1, Point2D p2)
-        {
-            var edge = new Edge2D(p1, p2);
-
-            var deadIndex = deads.FindIndex(e => e.Equals(edge));
-            if (deadIndex != -1)
-            {
-                return;
-            }
-
-            var aliveIndex = alives.FindIndex(e => e.Equals(edge));
-            if (aliveIndex != -1)
-            {
-                alives.RemoveAt(aliveIndex);
-                deads.Add(edge);
-                return;
-            }
-
-            alives.Add(edge);
-        }
-
-        private static Edge2D FindInitialJarvisEdge(List<Point2D> points)
-        {
-            int minXCoordinate = int.MaxValue;
-            var initialPoint = FindInitialJarvisPoint(points);
-            Point2D nextPoint = null;
-
-            foreach (var currentPoint in points)
-            {
-                if (initialPoint < currentPoint && currentPoint.X < minXCoordinate)
-                {
-                    minXCoordinate = currentPoint.X;
-                    nextPoint = currentPoint;
-                }
-
-                //int currentDotProduct = initialPoint.ToVector() * currentPoint.ToVector();
-                //if (currentDotProduct < minDotProduct)
-                //{
-                  //  minDotProduct = currentDotProduct;
-                   // nextPoint = currentPoint;
-                //}
-            }
-
-            return new Edge2D(initialPoint, nextPoint);
-        }
-
-        private static Point2D FindInitialJarvisPoint(List<Point2D> points)
-        {
-            var initialPoint = points.FirstOrDefault();
-            foreach (var currentPoint in points)
-            {
-                if (currentPoint < initialPoint)
-                {
-                    initialPoint = currentPoint;
+                    var triangle = new Triangle2D(point, edge.Begin, edge.End);
+                    triangulation.Add(triangle);
                 }
             }
-            return initialPoint;
+
+            triangulation.RemoveWhere(
+                t => t.Vertices.Any(v => supraTriangle.Vertices.Contains(v)));
+            
+            return triangulation;
+        }
+
+        private static Triangle2D GenerateSupraTriangle(List<Point2D> points)
+        {
+            int maxX = points.Select(p => p.X).Max();
+            int maxY = points.Select(p => p.Y).Max();
+
+            var p1 = new Point2D(maxX / 2, -2 * maxX );
+            var p2 = new Point2D(-2 * maxY, 2 * maxY);
+            var p3 = new Point2D(2 * maxX + maxY , 2 * maxY);
+            return new Triangle2D(p1, p2, p3);   
+        }
+
+        private static HashSet<Triangle2D> FindBadTriangles(Point2D point, HashSet<Triangle2D> triangles)
+        {
+            var badTriangles = triangles
+                .Where(t => t.IsPointInCircumscribedCircle(point));
+            return new HashSet<Triangle2D>(badTriangles);
+        }
+
+        private static List<Edge2D> FindPolygonalHoleBoundaries(HashSet<Triangle2D> badTriangles)
+        {
+            var edges = new List<Edge2D>();
+            foreach (var triangle in badTriangles)
+            {
+                edges.Add(new Edge2D(triangle.P1, triangle.P2));
+                edges.Add(new Edge2D(triangle.P2, triangle.P3));
+                edges.Add(new Edge2D(triangle.P3, triangle.P1));
+            }
+            var boundaryEdges = edges
+                .GroupBy(e => e)
+                .Where(e => e.Count() == 1)
+                .Select(e => e.First());
+            return boundaryEdges.ToList();
         }
     }
 }

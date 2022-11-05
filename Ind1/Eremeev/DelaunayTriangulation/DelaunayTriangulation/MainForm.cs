@@ -12,30 +12,37 @@ namespace DelaunayTriangulation
 {
     using static DelaunayTriangulationAlgorithm;
     using static RasterAlgorithms.BresenhamAlgorithm;
-    using FastBitmap;
 
     public partial class MainForm : Form
     {
-        private List<Point2D> points = new List<Point2D>();
-        private List<Triangle2D> triangles = new List<Triangle2D>();
+        private List<Point2D> points;
+        private HashSet<Triangle2D> triangulation;
 
         public MainForm()
         {
             InitializeComponent();
-            var size = triangulationPictureBox.Size;
-            var drawingSurface = new Bitmap(size.Width, size.Height);
-            triangulationPictureBox.Image = drawingSurface;
+            ResetScene();
         }
 
         private void triangulateButton_Click(object sender, EventArgs e)
         {
-            triangles = Triangulate(points);
-            var drawingSurface = triangulationPictureBox.Image as Bitmap;
-            foreach (var triangle in triangles)
+            triangulation = Triangulate(points);
+            DrawTriangulation(triangulation);
+        }
+
+        private void DrawTriangulation(HashSet<Triangle2D> triangulation)
+        {
+            var edges = new HashSet<Edge2D>();
+            foreach (var triangle in triangulation)
             {
-                drawingSurface.DrawBresenhamLine(triangle.P1.ToPoint(), triangle.P2.ToPoint(), Color.Red);
-                drawingSurface.DrawBresenhamLine(triangle.P2.ToPoint(), triangle.P3.ToPoint(), Color.Red);
-                drawingSurface.DrawBresenhamLine(triangle.P3.ToPoint(), triangle.P1.ToPoint(), Color.Red);
+                edges.Add(new Edge2D(triangle.P1, triangle.P2));
+                edges.Add(new Edge2D(triangle.P2, triangle.P3));
+                edges.Add(new Edge2D(triangle.P3, triangle.P1));
+            }
+            var drawingSurface = triangulationPictureBox.Image as Bitmap;
+            foreach (var edge in edges)
+            {
+                drawingSurface.DrawBresenhamLine(edge.Begin.ToPoint(), edge.End.ToPoint(), Color.Red);
             }
             triangulationPictureBox.Image = drawingSurface;
         }
@@ -64,17 +71,20 @@ namespace DelaunayTriangulation
 
         private void ResetTriangles()
         {
-            triangles = new List<Triangle2D>();
+            triangulation = new HashSet<Triangle2D>();
         }
 
         private void triangulationPictureBox_MouseClick(object sender, MouseEventArgs e)
+            => DrawPoint(new Point2D(e.Location));
+
+        private void DrawPoint(Point2D p)
         {
             var drawingSurface = triangulationPictureBox.Image as Bitmap;
             var gfx = Graphics.FromImage(drawingSurface);
             int radius = 5, diameter = radius * 2;
-            gfx.FillEllipse(Brushes.Blue, e.X - radius, e.Y - radius, diameter, diameter);
+            gfx.FillEllipse(Brushes.Blue, p.X - radius, p.Y - radius, diameter, diameter);
             triangulationPictureBox.Image = drawingSurface;
-            points.Add(new Point2D(e.Location));
+            points.Add(p);
         }
     }
 }

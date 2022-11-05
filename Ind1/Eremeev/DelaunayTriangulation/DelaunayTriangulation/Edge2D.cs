@@ -1,103 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DelaunayTriangulation
 {
-    using static Utils;
-
-    public class Edge2D : ICloneable
+    public class Edge2D
     {
-        private Point2D _begin;
-        public Point2D Begin => _begin;
-        private Point2D _end;
-        public Point2D End => _end;
-        public Point2D Mid => (Begin + End) / 2;
-        public Vector2D Vector => new Vector2D(End - Begin);
-        public Vector2D Normal => ComputeNormal();
-        public int SquareLength => ComputeSquareLength();
+        public Point2D Begin { get; private set; }
+        public Point2D End { get; private set; }
 
         public Edge2D(Point2D begin, Point2D end)
         {
-            _begin = begin;
-            _end = end;
+            Begin = begin;
+            End = end;
         }
-
-        public Vector2D ComputeNormal()
-        {
-            var vector = Vector;
-            var normal = new Vector2D(vector.Y, -vector.X);
-            return normal;
-        }
-
-        public int ComputeSquareLength()=> ComputeSquareLength(this);
-
-        public static int ComputeSquareLength(Edge2D e)
-        {
-            int diffX = e.Begin.X - e.End.X;
-            int diffY = e.Begin.Y - e.End.Y;
-            return diffX*diffX + diffY*diffY;
-        }
-
-        public Edge2D Rotate()
-        {
-            var mid = Mid;
-            var normal = Normal;
-            var begin = (mid - _begin) / 2;
-            var end = (mid + normal.ToPoint2D()) / 2;
-            return new Edge2D(begin, end);
-        }
-
-        public double ExtractIntersectionParameter(Edge2D other)
-        {
-            var a = Begin;
-            var b = End;
-
-            var c = other.Begin;
-            var d = other.End;
-
-            return ExtractIntersectionParameter(a, b, c, d);
-        }
-
-        public static double ExtractIntersectionParameter(Point2D a, Point2D b, Point2D c, Point2D d)
-        {
-            var n = new Vector2D(d.Y - c.Y, c.X - d.X);
-
-            int denominator = n * new Edge2D(b, a).Vector;
-
-            int numerator = -1 * n * new Edge2D(a, c).Vector;
-
-            double t = (double)numerator / denominator;
-
-            return t;
-        }
-
-        public bool IsOnRight(Point2D p) => Equate(p) > 0;
-
-        private int Equate(Point2D p) => Equate(Begin, End, p);
-
-        private static int Equate(Point2D p1, Point2D p2, Point2D p)
-        {
-            var a = p1 - p;
-            var b = p2 - p;
-            return a.X * b.Y - b.X * a.Y;
-        }
-
-        public object Clone() => new Edge2D(Begin.Copy(), End.Copy());
-
-        public Edge2D Copy() => Clone() as Edge2D;
-
+        
         public override bool Equals(object obj)
         {
-            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            if (obj == null || obj.GetType() != GetType())
             {
                 return false;
             }
-            
-            var other = (Edge2D)obj;
-            return other.Begin.Equals(Begin) && other.End.Equals(End);
+
+            var edge = obj as Edge2D;
+
+            var pointsAreEqual = Begin.Equals(edge.Begin) && End.Equals(edge.End);
+            var pointsAreEqualReversed = Begin.Equals(edge.End) && End.Equals(edge.Begin);
+            return pointsAreEqual || pointsAreEqualReversed;
+        }
+
+        public override int GetHashCode()
+        {
+            int pointsHashCode = Begin.GetHashCode() ^ End.GetHashCode();
+            return pointsHashCode.GetHashCode();
         }
     }
 }
