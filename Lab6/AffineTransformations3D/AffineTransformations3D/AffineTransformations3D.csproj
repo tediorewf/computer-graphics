@@ -51,6 +51,7 @@
     <Compile Include="AffineTransformationMatrices.cs" />
     <Compile Include="AxisType.cs" />
     <Compile Include="BresenhamAlgorithm.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="CoordinatePlaneType.cs" />
     <Compile Include="Edge3D.cs" />
     <Compile Include="Facet3D.cs" />
