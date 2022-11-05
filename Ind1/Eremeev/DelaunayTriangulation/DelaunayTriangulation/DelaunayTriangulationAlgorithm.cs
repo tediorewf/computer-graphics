@@ -43,8 +43,8 @@ namespace DelaunayTriangulation
 
                 if (mostSuitablePoint != null)
                 {
-                    MakeAlive(aliveEdges, currentEdge.Begin, mostSuitablePoint);
-                    MakeAlive(aliveEdges, mostSuitablePoint, currentEdge.End);
+                    MakeAlive(aliveEdges, triangles, currentEdge.Begin, mostSuitablePoint);
+                    MakeAlive(aliveEdges, triangles, mostSuitablePoint, currentEdge.End);
                     triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
                 }
             }
@@ -52,18 +52,28 @@ namespace DelaunayTriangulation
             return triangles;
         }
 
-        private static void MakeAlive(List<Edge2D> alives, Point2D p1, Point2D p2)
+        private static void MakeAlive(List<Edge2D> alives, List<Triangle2D> triangles, Point2D p1, Point2D p2)
         {
             var edge = new Edge2D(p1, p2);
             var aliveIndex = alives.FindIndex(e => e.Equals(edge));
             if (aliveIndex != -1)
             {
                 alives.RemoveAt(aliveIndex);
+                return;
             }
-            else
+
+            foreach (var tr in triangles)
             {
-                alives.Add(edge);
+                if (edge.Equals(new Edge2D(tr.P1, tr.P2)) 
+                    || edge.Equals(new Edge2D(tr.P2, tr.P3))
+                    || edge.Equals(new Edge2D(tr.P3, tr.P1)))
+                {
+                    return;
+                }
             }
+
+
+            alives.Add(edge);
         }
 
         private static Edge2D FindInitialJarvisEdge(List<Point2D> points)
