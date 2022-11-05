@@ -52,6 +52,7 @@
     <Compile Include="DelaunayTriangulationAlgorithm.cs" />
     <Compile Include="Edge2D.cs" />
     <Compile Include="FastBitmap.cs" />
+    <Compile Include="ListExtensionMethods.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -17,6 +17,7 @@ namespace DelaunayTriangulation
         public Point2D Mid => (Begin + End) / 2;
         public Vector2D Vector => new Vector2D(End - Begin);
         public Vector2D Normal => ComputeNormal();
+        public int SquareLength => ComputeSquareLength();
 
         public Edge2D(Point2D begin, Point2D end)
         {
@@ -29,6 +30,15 @@ namespace DelaunayTriangulation
             var vector = Vector;
             var normal = new Vector2D(vector.Y, -vector.X);
             return normal;
+        }
+
+        public int ComputeSquareLength() => ComputeSquareLength(this);
+
+        public static int ComputeSquareLength(Edge2D e)
+        {
+            int diffX = e.Begin.X - e.End.X;
+            int diffY = e.Begin.Y - e.End.Y;
+            return diffX*diffX + diffY*diffY;
         }
 
         public Edge2D Rotate()
@@ -82,6 +92,17 @@ namespace DelaunayTriangulation
         public object Clone() => new Edge2D(Begin.Copy(), End.Copy());
 
         public Edge2D Copy() => Clone() as Edge2D;
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            
+            var other = (Edge2D)obj;
+            return other.Begin.Equals(Begin) && other.End.Equals(End);
+        }
 
         public int CompareTo(Edge2D other)
         {

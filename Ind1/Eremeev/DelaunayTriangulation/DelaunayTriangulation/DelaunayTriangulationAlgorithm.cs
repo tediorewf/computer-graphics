@@ -14,13 +14,12 @@ namespace DelaunayTriangulation
 
             var initialEdge = FindInitialJarvisEdge(points);
 
-            var aliveEdges = new SortedSet<Edge2D>();
+            var aliveEdges = new List<Edge2D>();
             aliveEdges.Add(initialEdge);
 
             while (aliveEdges.Count != 0)
             {
-                var currentEdge = aliveEdges.Min();
-                aliveEdges.Remove(currentEdge);
+                var currentEdge = aliveEdges.FetchShortestEdge();
 
                 Point2D mostSuitablePoint = null;
                 double mostSuitableParameter = double.MaxValue;
@@ -44,8 +43,8 @@ namespace DelaunayTriangulation
 
                 if (mostSuitablePoint != null)
                 {
-                    MakeAlive(aliveEdges, mostSuitablePoint, currentEdge.Begin);
-                    MakeAlive(aliveEdges, currentEdge.End, mostSuitablePoint);
+                    MakeAlive(aliveEdges, currentEdge.Begin, mostSuitablePoint);
+                    MakeAlive(aliveEdges, mostSuitablePoint, currentEdge.End);
                     triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
                 }
             }
@@ -53,16 +52,16 @@ namespace DelaunayTriangulation
             return triangles;
         }
 
-        private static void MakeAlive(SortedSet<Edge2D> alives, Point2D p1, Point2D p2)
+        private static void MakeAlive(List<Edge2D> alives, Point2D p1, Point2D p2)
         {
             var edge = new Edge2D(p1, p2);
-            if (alives.Contains(edge))
+            var aliveIndex = alives.FindIndex(e => e.Equals(edge));
+            if (aliveIndex != -1)
             {
-                alives.Remove(edge);
+                alives.RemoveAt(aliveIndex);
             }
             else
             {
-                edge.Flip();
                 alives.Add(edge);
             }
         }

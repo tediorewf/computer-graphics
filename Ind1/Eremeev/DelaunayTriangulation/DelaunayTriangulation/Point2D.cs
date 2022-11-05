@@ -55,10 +55,16 @@ namespace DelaunayTriangulation
 
         public static bool operator >(Point2D lhs, Point2D rhs) 
             => lhs.X > rhs.X || lhs.X == rhs.X && lhs.Y > rhs.Y;
-        /*
-        public static bool operator ==(Point2D lhs, Point2D rhs) 
-            => lhs.X == rhs.X && lhs.Y == rhs.Y;
 
-        public static bool operator !=(Point2D lhs, Point2D rhs) => !(lhs == rhs);*/
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+
+            var p = (Point2D)obj;
+            return X == p.X && Y == p.Y;
+        }
     }
 }
