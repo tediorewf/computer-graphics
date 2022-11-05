@@ -29,7 +29,7 @@ namespace DelaunayTriangulation
 
                 var polygon = FindPolygonalHoleBoundaries(badTriangles);
 
-                foreach (var edge in polygon.Where(edge => edge.Begin != point && edge.End != point))
+                foreach (var edge in polygon.Where(e => e.Begin != point && e.End != point))
                 {
                     var triangle = new Triangle2D(point, edge.Begin, edge.End);
                     triangulation.Add(triangle);
