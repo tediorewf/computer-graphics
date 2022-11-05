@@ -8,6 +8,15 @@ namespace DelaunayTriangulation
 {
     public static class ListExtensionMethods
     {
+        public static Edge2D FetchFirst(this List<Edge2D> edges) => edges.Fetch(0);
+
+        public static Edge2D Fetch(this List<Edge2D> edges, int index)
+        {
+            var edge = edges[index];
+            edges.RemoveAt(index);
+            return edge;
+        }
+
         public static Edge2D FetchShortestEdge(this List<Edge2D> edges)
         {
             double minLength = int.MaxValue;

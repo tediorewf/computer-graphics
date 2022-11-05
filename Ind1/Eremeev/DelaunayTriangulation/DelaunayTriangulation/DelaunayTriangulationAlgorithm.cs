@@ -21,7 +21,7 @@ namespace DelaunayTriangulation
 
             while (aliveEdges.Count != 0)
             {
-                var currentEdge = aliveEdges.FetchShortestEdge();
+                var currentEdge = aliveEdges.FetchFirst();
 
                 Point2D mostSuitablePoint = null;
                 double mostSuitableParameter = double.MaxValue;
@@ -43,12 +43,15 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                if (mostSuitablePoint != null)
+                if (mostSuitablePoint == null)
                 {
-                    MakeAlive(aliveEdges, deadEdges, currentEdge.Begin, mostSuitablePoint);
-                    MakeAlive(aliveEdges, deadEdges, mostSuitablePoint, currentEdge.End);
-                    triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
+                    deadEdges.Add(currentEdge);
+                    continue;
                 }
+
+                MakeAlive(aliveEdges, deadEdges, currentEdge.Begin, mostSuitablePoint);
+                MakeAlive(aliveEdges, deadEdges, mostSuitablePoint, currentEdge.End);
+                triangles.Add(new Triangle2D(currentEdge.Begin, currentEdge.End, mostSuitablePoint));
             }
 
             return triangles;
@@ -77,23 +80,24 @@ namespace DelaunayTriangulation
 
         private static Edge2D FindInitialJarvisEdge(List<Point2D> points)
         {
-            int minDotProduct = int.MaxValue;
+            int minXCoordinate = int.MaxValue;
             var initialPoint = FindInitialJarvisPoint(points);
-            var nextPoint = points.FirstOrDefault();
+            Point2D nextPoint = null;
 
             foreach (var currentPoint in points)
             {
-                if (currentPoint == initialPoint)
+                if (initialPoint < currentPoint && currentPoint.X < minXCoordinate)
                 {
-                    continue;
-                }
-
-                int currentDotProduct = initialPoint.ToVector() * currentPoint.ToVector();
-                if (currentDotProduct < minDotProduct)
-                {
-                    minDotProduct = currentDotProduct;
+                    minXCoordinate = currentPoint.X;
                     nextPoint = currentPoint;
                 }
+
+                //int currentDotProduct = initialPoint.ToVector() * currentPoint.ToVector();
+                //if (currentDotProduct < minDotProduct)
+                //{
+                  //  minDotProduct = currentDotProduct;
+                   // nextPoint = currentPoint;
+                //}
             }
 
             return new Edge2D(initialPoint, nextPoint);

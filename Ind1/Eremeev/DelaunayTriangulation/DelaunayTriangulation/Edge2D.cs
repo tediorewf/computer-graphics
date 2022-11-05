@@ -74,11 +74,7 @@ namespace DelaunayTriangulation
             return t;
         }
 
-        public void Flip() => Swap(ref _begin, ref _end);
-
         public bool IsOnRight(Point2D p) => Equate(p) > 0;
-
-        public bool IsOnRightOrOnEdge(Point2D p) => Equate(p) >= 0;
 
         private int Equate(Point2D p) => Equate(Begin, End, p);
 
