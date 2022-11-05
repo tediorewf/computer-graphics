@@ -24,11 +24,12 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                triangulation.RemoveWhere(t => badTriangles.Contains(t));
+                triangulation
+                    .RemoveWhere(t => badTriangles.Contains(t));
 
                 var polygon = FindPolygonalHoleBoundaries(badTriangles);
 
-                foreach (var edge in polygon.Where(possibleEdge => possibleEdge.Begin != point && possibleEdge.End != point))
+                foreach (var edge in polygon.Where(edge => edge.Begin != point && edge.End != point))
                 {
                     var triangle = new Triangle2D(point, edge.Begin, edge.End);
                     triangulation.Add(triangle);
