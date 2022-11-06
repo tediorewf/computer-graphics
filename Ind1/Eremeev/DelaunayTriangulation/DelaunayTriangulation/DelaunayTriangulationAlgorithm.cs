@@ -16,20 +16,10 @@ namespace DelaunayTriangulation
             foreach (var point in points)
             {
                 var badTriangles = FindBadTriangles(point, triangulation);
-
-                foreach (var triangle in badTriangles)
-                {
-                    foreach (var vertex in triangle.Vertices)
-                    {
-                        vertex.AdjacentTriangles.Remove(triangle);
-                    }
-                }
-
                 triangulation
                     .RemoveWhere(t => badTriangles.Contains(t));
 
                 var polygon = FindPolygonalHoleBoundaries(badTriangles);
-
                 foreach (var edge in polygon.Where(e => e.Begin != point && e.End != point))
                 {
                     var triangle = new Triangle2D(point, edge.Begin, edge.End);
@@ -37,8 +27,8 @@ namespace DelaunayTriangulation
                 }
             }
 
-            triangulation.RemoveWhere(
-                t => t.Vertices.Any(v => superTriangle.Vertices.Contains(v)));
+            triangulation
+                .RemoveWhere(t => t.Vertices.Any(v => superTriangle.Vertices.Contains(v)));
             
             return triangulation;
         }
