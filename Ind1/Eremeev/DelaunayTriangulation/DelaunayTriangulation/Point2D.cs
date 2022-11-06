@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Collections.Generic;
 
 namespace DelaunayTriangulation
 {
@@ -7,13 +6,11 @@ namespace DelaunayTriangulation
     {
         public int X { get; private set; }
         public int Y { get; private set; }
-        public HashSet<Triangle2D> AdjacentTriangles { get; private set; }
 
         public Point2D(int x, int y)
         {
             X = x;
             Y = y;
-            AdjacentTriangles = new HashSet<Triangle2D>();
         }
 
         public Point2D(Point p) : this(p.X, p.Y)

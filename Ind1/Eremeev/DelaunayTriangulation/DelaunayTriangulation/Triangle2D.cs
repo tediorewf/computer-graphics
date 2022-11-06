@@ -20,11 +20,6 @@ namespace DelaunayTriangulation
             P2 = Vertices[1] = p2;
             P3 = Vertices[2] = p3;
 
-            foreach (var vertex in Vertices)
-            {
-                vertex.AdjacentTriangles.Add(this);
-            }
-
             SetCircumscribedCircle();
         }
 
