@@ -6,11 +6,12 @@ namespace DelaunayTriangulation
 {
     public static class DelaunayTriangulationAlgorithm
     {
+        // https://www.youtube.com/watch?v=4ySSsESzw2Y
         // https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
         public static HashSet<Triangle2D> Triangulate(List<Point2D> points)
         {
-            var supraTriangle = GenerateSupraTriangle(points);
-            var triangulation = new HashSet<Triangle2D> { supraTriangle };
+            var superTriangle = GenerateSuperTriangle(points);
+            var triangulation = new HashSet<Triangle2D> { superTriangle };
 
             foreach (var point in points)
             {
@@ -37,12 +38,12 @@ namespace DelaunayTriangulation
             }
 
             triangulation.RemoveWhere(
-                t => t.Vertices.Any(v => supraTriangle.Vertices.Contains(v)));
+                t => t.Vertices.Any(v => superTriangle.Vertices.Contains(v)));
             
             return triangulation;
         }
 
-        private static Triangle2D GenerateSupraTriangle(List<Point2D> points)
+        private static Triangle2D GenerateSuperTriangle(List<Point2D> points)
         {
             int maxX = points.Select(p => p.X).Max();
             int maxY = points.Select(p => p.Y).Max();
