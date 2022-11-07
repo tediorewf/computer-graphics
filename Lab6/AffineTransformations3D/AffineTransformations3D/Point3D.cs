@@ -5,7 +5,7 @@ namespace AffineTransformations3D
 {
     public class Point3D : IIdentifiable<long>, ICloneable
     {
-        private static int nextIdentifier = 0;
+        private static long nextIdentifier = 0;
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }

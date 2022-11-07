@@ -12,6 +12,7 @@ namespace AffineTransformations3D
 {
     using static TransformationHelper;
     using static ProjectionType;
+    using FastBitmap;
 
     public partial class MainForm : Form
     {
@@ -549,7 +550,7 @@ namespace AffineTransformations3D
 
         List<Facet3D> MakeTriangle(Facet3D f)
         {
-            List<Facet3D> Lst = new List<Facet3D>{ };
+            var Lst = new List<Facet3D>();
             Point3D StartPoint = f.Points[0];
             Point3D SecondPoint = f.Points[1];
             for (int i = 2; i < f.Points.Count; i++)
@@ -563,22 +564,22 @@ namespace AffineTransformations3D
 
         private struct ZBuferStruct
         {
-            public bool IsNotEmpthy;
+            public bool IsNotEmpty;
             public double Depth;
             public Color Color;
         }
 
-        List<Point3D> TriangleToListPoint(Facet3D Triangle)
+        List<Point3D> TriangleToListPoint(Facet3D triangle)
         {
-            List<Point3D> TriangleListPoint = new List<Point3D> { };
+            var rasterisedPoints = new List<Point3D>();
             
             // TODO:
             // Создать множество точек треугольника
 
-            return TriangleListPoint;
+            return rasterisedPoints;
         }
 
-        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr,Matrix transformation)
+        private void ZBufer(ZBuferStruct[,] ZBuferArr, Facet3D Triangle, Color Clr, Matrix transformation)
         {
             var size = polyhedronPictureBox.Size;
             List<Point3D> LstPnt = TriangleToListPoint(Triangle);
@@ -590,20 +591,31 @@ namespace AffineTransformations3D
                 double depth = item.Z;
 
                 if ((P.X >= 0) && (P.X < size.Width) && (P.Y >= 0) && (P.Y < size.Height))
-                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpthy)||(depth > ZBuferArr[P.X, P.Y].Depth))
+                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpty)||(depth > ZBuferArr[P.X, P.Y].Depth))
                     {
                         ZBuferArr[P.X, P.Y].Depth = depth;
                         ZBuferArr[P.X, P.Y].Color = Clr;
-                        ZBuferArr[P.X, P.Y].IsNotEmpthy = true;
+                        ZBuferArr[P.X, P.Y].IsNotEmpty = true;
                     }
             }
         }
 
-        private void PaintZBufer(ZBuferStruct[,] ZBuferArr,Bitmap drawingSurface)
+        private void PaintZBufer(ZBuferStruct[,] ZBuferArr, Bitmap drawingSurface)
         {
-            for (int i = 0; i < drawingSurface.Width; i++)
-                for (int j = 0; j < drawingSurface.Height; j++)
-                    drawingSurface.SetPixel(i, j, ZBuferArr[i, j].Color);
+            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+            {
+                for (int i = 0; i < fastDrawingSurface.Width; i++)
+                {
+                    for (int j = 0; j < fastDrawingSurface.Height; j++)
+                    {
+                        var zBufferItem = ZBuferArr[i, j];
+                        if (zBufferItem.IsNotEmpty)
+                        {
+                            fastDrawingSurface[i, j] = zBufferItem.Color;
+                        }
+                    }
+                }
+            }
         }
 
         private void ZbuferButton_Click(object sender, EventArgs e)
@@ -616,13 +628,15 @@ namespace AffineTransformations3D
 
             foreach (var item in ListPolyhedron)
             {
-                Random random = new Random();
-                Color Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                var random = new Random();
+                var Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                 foreach (Facet3D fct in item.Facets)
                 {
                     List < Facet3D > FctTrngl= MakeTriangle(fct);
                     foreach (Facet3D t in FctTrngl)
-                        ZBufer(ZBuferArr,t, Clr, transformation);
+                    {
+                        ZBufer(ZBuferArr, t, Clr, transformation);
+                    }
                 }
             }
             PaintZBufer(ZBuferArr, drawingSurface);
