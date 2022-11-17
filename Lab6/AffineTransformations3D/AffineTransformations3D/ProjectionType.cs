@@ -14,7 +14,7 @@ namespace AffineTransformations3D
             switch (projectionType)
             {
                 case ProjectionType.Perspective:
-                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(100);
+                    return AffineTransformationMatrices.MakePerspectiveProjectionMatrix(1000);
                 case ProjectionType.Axonometric:
                     return AffineTransformationMatrices.MakeAxonometricProjectionMatrix();
                 default:

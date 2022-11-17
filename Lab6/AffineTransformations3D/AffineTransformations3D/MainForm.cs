@@ -33,6 +33,7 @@ namespace AffineTransformations3D
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
         private List<Polyhedron> ListPolyhedron;
+        private List<Polyhedron> polyhedronProjections;
 
         private ProjectionType currentProjectionType;
         private CoordinatePlaneType currentRotationCoordinatePlaneType;
@@ -51,7 +52,7 @@ namespace AffineTransformations3D
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
-            Size = new Size(1150, 550);
+            Size = new Size(1150, 540);
         }
 
         private void InitializePolyhedronStuff()
@@ -60,7 +61,7 @@ namespace AffineTransformations3D
             polyhedronNames = polyhedronTypes.Select(pt => pt.GetPolyhedronName()).ToArray();
             polyhedronSelectionComboBox.Items.AddRange(polyhedronNames);
             polyhedronSelectionComboBox.SelectedIndex = 0;
-            currentPolyhedron = polyhedronTypes[polyhedronSelectionComboBox.SelectedIndex].CreatePolyhedron();
+            currentPolyhedron = polyhedronTypes[2].CreatePolyhedron();
             ListPolyhedron = new List<Polyhedron> {};
             ListPolyhedron.Add(currentPolyhedron);
             ChoiceComboBox.Items.Add(ListPolyhedron.Count);
@@ -113,11 +114,23 @@ namespace AffineTransformations3D
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            foreach (var item in ListPolyhedron)
-                if (item!= currentPolyhedron)
-                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
-            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
+            DrawEdges(drawingSurface);
             polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void DrawEdges(Bitmap drawingSurface)
+        {
+            foreach (var item in ListPolyhedron)
+            {
+                if (item != currentPolyhedron)
+                {
+                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
+                }
+                else
+                {
+                    drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
+                }
+            }
         }
 
         private void MashtabMinus(object sender, System.EventArgs e)
@@ -410,7 +423,7 @@ namespace AffineTransformations3D
             }
             double x = (x1 - x0) / splitting;
             double y = (y1 - y0) / splitting;
-            List < List<Point3D> > Arr= new List<List<Point3D>>();
+            List < List<Point3D> > Arr = new List<List<Point3D>>();
             List < Point3D > vertices =  new List<Point3D>();
             var edges = new List<Edge3D>();
             var facets = new List<Facet3D>();
@@ -548,18 +561,26 @@ namespace AffineTransformations3D
             Project();
         }
 
-        List<Facet3D> MakeTriangle(Facet3D f)
+        List<Facet3D> TriangulateConvexFacet(Facet3D convexFacet)
         {
-            var Lst = new List<Facet3D>();
-            Point3D StartPoint = f.Points[0];
-            Point3D SecondPoint = f.Points[1];
-            for (int i = 2; i < f.Points.Count; i++)
+            var triangles = new List<Facet3D>();
+            var firstPoint = convexFacet.Points[0];
+            for (int i = 2; i < convexFacet.Points.Count; i++)
             {
-                Facet3D NewF = new Facet3D(new List<Point3D> { StartPoint, SecondPoint, f.Points[i] }, new List<Edge3D> { new Edge3D(StartPoint, SecondPoint), new Edge3D(SecondPoint, f.Points[i]), new Edge3D(f.Points[i], StartPoint) });
-                SecondPoint = f.Points[i];
-                Lst.Add(NewF);
+                var vertices = new List<Point3D> 
+                { 
+                    firstPoint, convexFacet.Points[i - 1], convexFacet.Points[i] 
+                };
+                var edges = new List<Edge3D>
+                {
+                    new Edge3D(firstPoint, convexFacet.Points[i - 1]),
+                    new Edge3D(convexFacet.Points[i - 1], convexFacet.Points[i]),
+                    new Edge3D(convexFacet.Points[i], firstPoint)
+                };
+                var triangle = new Facet3D(vertices, edges);
+                triangles.Add(triangle);
             }
-            return Lst;
+            return triangles;
         }
 
         private struct ZBuferStruct
@@ -569,34 +590,33 @@ namespace AffineTransformations3D
             public Color Color;
         }
 
-        List<Point3D> TriangleToListPoint(Facet3D triangle)
+        IEnumerable<DeptherizedPoint> TriangleToListPoint(Facet3D triangle)
         {
-            var rasterisedPoints = new List<Point3D>();
-            
-            // TODO:
-            // Создать множество точек треугольника
-
-            return rasterisedPoints;
+            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0]);
+            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1]);
+            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2]);
+            var rasterizedPoints = TriangleRasterizationAlgoritm.RasterizeTriangle(v1, v2, v3);
+            return rasterizedPoints;
         }
 
-        private void ZBufer(ZBuferStruct[,] ZBuferArr, Facet3D Triangle, Color Clr, Matrix transformation)
+        private void ZBufer(ZBuferStruct[,] ZBuferArr, Facet3D Triangle, Color Clr)
         {
             var size = polyhedronPictureBox.Size;
-            List<Point3D> LstPnt = TriangleToListPoint(Triangle);
+
+            var LstPnt = TriangleToListPoint(Triangle);
             foreach (var item in LstPnt)
             {
-                TransformPointInplace(item, transformation);
-                Point P = item.ToPoint();
+                double depth = item.Depth;
 
-                double depth = item.Z;
-
-                if ((P.X >= 0) && (P.X < size.Width) && (P.Y >= 0) && (P.Y < size.Height))
-                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpty)||(depth > ZBuferArr[P.X, P.Y].Depth))
+                if ((item.X >= 0) && (item.X < size.Width) && (item.Y >= 0) && (item.Y < size.Height))
+                {
+                    if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth > ZBuferArr[item.X, item.Y].Depth))
                     {
-                        ZBuferArr[P.X, P.Y].Depth = depth;
-                        ZBuferArr[P.X, P.Y].Color = Clr;
-                        ZBuferArr[P.X, P.Y].IsNotEmpty = true;
+                        ZBuferArr[item.X, item.Y].Depth = depth;
+                        ZBuferArr[item.X, item.Y].Color = Clr;
+                        ZBuferArr[item.X, item.Y].IsNotEmpty = true;
                     }
+                }
             }
         }
 
@@ -616,30 +636,44 @@ namespace AffineTransformations3D
                     }
                 }
             }
+            DrawEdges(drawingSurface);
         }
 
         private void ZbuferButton_Click(object sender, EventArgs e)
         {
+            DrawZBuffer();
+        }
+
+        private void DrawZBuffer()
+        {
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            ZBuferStruct[,] ZBuferArr = new ZBuferStruct[size.Width, size.Height];
+            var zBuffer = new ZBuferStruct[size.Width, size.Height];
 
-            Matrix transformation = Axonometric.CreateMatrix();
+            var transformation = currentProjectionType.CreateMatrix();
 
             foreach (var item in ListPolyhedron)
             {
-                var random = new Random();
-                var Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-                foreach (Facet3D fct in item.Facets)
+                var itemCopy = item.Copy();
+
+                foreach (var vertex in itemCopy.Vertices)
                 {
-                    List < Facet3D > FctTrngl= MakeTriangle(fct);
-                    foreach (Facet3D t in FctTrngl)
+                    TransformPointInplace(vertex, transformation);
+                }
+
+                var random = new Random();
+                var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                foreach (var facets in itemCopy.Facets)
+                {
+                    var triangulatedConvexFacet = TriangulateConvexFacet(facets);
+                    foreach (var triangle in triangulatedConvexFacet)
                     {
-                        ZBufer(ZBuferArr, t, Clr, transformation);
+                        ZBufer(zBuffer, triangle, color);
                     }
                 }
             }
-            PaintZBufer(ZBuferArr, drawingSurface);
+            PaintZBufer(zBuffer, drawingSurface);
+
             polyhedronPictureBox.Image = drawingSurface;
         }
     }

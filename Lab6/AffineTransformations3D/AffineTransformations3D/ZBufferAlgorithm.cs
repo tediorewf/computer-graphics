@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace AffineTransformations3D
 {
-    public static class TriangleRasterisationAlgorithm
+    public static class ZBufferAlgorithm
     {
-
     }
 }

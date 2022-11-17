@@ -192,20 +192,39 @@ namespace AffineTransformations3D
                     }
                     if (begin != null && end != null)
                     {
-                        edges.Add(new Edge3D(begin, end));
+                        edges.Add(new Edge3D(begin, end, Edges[i].Identifier));
                         break;
                     }
                 }
             }
-            // Поверхности пока не нужны в этой лабе. Это так, на будущее
             var facets = new List<Facet3D>(Facets.Count);
+            foreach (var f in Facets)
+            {
+                var currentPoints = new List<Point3D>();
+                var currentEdges = new List<Edge3D>();
+
+                foreach (var p in f.Points)
+                {
+                    var pointToAdd = vertices.Find(v => v.Identifier == p.Identifier);
+                    currentPoints.Add(pointToAdd);
+                }
+
+                foreach (var edge in f.Edges)
+                {
+                    var edgeToAdd = edges.Find(e => e.Identifier == edge.Identifier);
+                    currentEdges.Add(edgeToAdd);
+                }
+
+                var currentFacet = new Facet3D(currentPoints, currentEdges);
+                facets.Add(currentFacet);
+            }
             return new Polyhedron(vertices, edges, facets);
         }
 
-        private Point3D ComputeCenter()
-        {
-            return ComputeCenter(this);
-        }
+        public Polyhedron Copy() => Clone() as Polyhedron;
+
+        private Point3D ComputeCenter() 
+            => ComputeCenter(this);
 
         private static Point3D ComputeCenter(Polyhedron polyhedron)
         {

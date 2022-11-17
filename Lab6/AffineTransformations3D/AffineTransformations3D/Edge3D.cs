@@ -2,15 +2,27 @@
 
 namespace AffineTransformations3D
 {
-    public class Edge3D
+    public class Edge3D : IIdentifiable<long>
     {
+        private static long nextIdentidier = 0;
         public Point3D Begin { get; set; }
         public Point3D End { get; set; }
+        private long identifier;
+        public long Identifier => identifier;
 
-        public Edge3D(Point3D begin, Point3D end)
+        public Edge3D(Point3D begin, Point3D end, long? identifier = null)
         {
             Begin = begin;
             End = end;
+            if (identifier == null)
+            {
+                this.identifier = nextIdentidier;
+                nextIdentidier += 1;
+            }
+            else
+            {
+                this.identifier = identifier.Value;
+            }
         }
 
         public Vector3D ToVector3D()

@@ -53,6 +53,7 @@
     <Compile Include="BresenhamAlgorithm.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CoordinatePlaneType.cs" />
+    <Compile Include="DeptherizedPoint.cs" />
     <Compile Include="Edge3D.cs" />
     <Compile Include="Facet3D.cs" />
     <Compile Include="FastBitmap.cs" />
@@ -72,11 +73,13 @@
     <Compile Include="PolyhedronType.cs" />
     <Compile Include="RegularPolyhedrons.cs" />
     <Compile Include="TransformationHelper.cs" />
-    <Compile Include="TriangleRasterisationAlgorithm.cs" />
+    <Compile Include="TriangleRasterizationAlgoritm.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Vector3D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZBufferAlgorithm.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

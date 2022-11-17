@@ -77,18 +77,18 @@ namespace AffineTransformations3D
 
             var facets = new List<Facet3D>();
             var facet0 = new Facet3D(new List<Point3D> {p1,p4,p6,p7 },new List<Edge3D> { edge3, edge4, edge11, edge9 });
-            var facet1 = new Facet3D(new List<Point3D> {p0,p2,p3,p5 },new List<Edge3D> { edge2, edge1, edge5, edge7 });
-            var facet2 = new Facet3D(new List<Point3D> {p0,p3,p4,p1 }, new List<Edge3D> { edge2, edge8, edge3, edge0 });
-            var facet3 = new Facet3D(new List<Point3D> {p5,p6,p7,p2 }, new List<Edge3D> { edge10, edge11, edge6, edge5 });
-            var facet4 = new Facet3D(new List<Point3D> {p3,p4,p7,p5 }, new List<Edge3D> { edge8, edge9, edge10, edge7 });
-            var facet5 = new Facet3D(new List<Point3D> {p0,p1,p2,p6 }, new List<Edge3D> { edge0, edge4, edge6, edge1 });
+            //var facet1 = new Facet3D(new List<Point3D> {p0,p2,p3,p5 },new List<Edge3D> { edge2, edge1, edge5, edge7 });
+            //var facet2 = new Facet3D(new List<Point3D> {p0,p3,p4,p1 }, new List<Edge3D> { edge2, edge8, edge3, edge0 });
+            //var facet3 = new Facet3D(new List<Point3D> {p5,p6,p7,p2 }, new List<Edge3D> { edge10, edge11, edge6, edge5 });
+            //var facet4 = new Facet3D(new List<Point3D> {p3,p4,p7,p5 }, new List<Edge3D> { edge8, edge9, edge10, edge7 });
+            //var facet5 = new Facet3D(new List<Point3D> {p0,p1,p2,p6 }, new List<Edge3D> { edge0, edge4, edge6, edge1 });
 
             facets.Add(facet0);
-            facets.Add(facet1);
+            /*facets.Add(facet1);
             facets.Add(facet2);
             facets.Add(facet3);
             facets.Add(facet4);
-            facets.Add(facet5);
+            facets.Add(facet5);*/
 
             return new Polyhedron(vertices, edges, facets);
         }
