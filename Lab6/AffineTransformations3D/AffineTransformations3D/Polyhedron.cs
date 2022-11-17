@@ -3,6 +3,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace AffineTransformations3D
 {
@@ -16,6 +17,7 @@ namespace AffineTransformations3D
         public List<Facet3D> Facets { get; set; }
         private Point3D _center;
         public Point3D Center => _center;
+        public Color Color { get; set; }
 
         public Polyhedron(List<Point3D> vertices, List<Edge3D> edges, List<Facet3D> facets)
         {
@@ -23,6 +25,8 @@ namespace AffineTransformations3D
             Edges = edges;
             Facets = facets;
             _center = ComputeCenter();
+            var random = new Random();
+            Color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
         }
 
         public void SaveToFile(string path)
@@ -218,7 +222,9 @@ namespace AffineTransformations3D
                 var currentFacet = new Facet3D(currentPoints, currentEdges);
                 facets.Add(currentFacet);
             }
-            return new Polyhedron(vertices, edges, facets);
+            var polyhedron = new Polyhedron(vertices, edges, facets);
+            polyhedron.Color = Color;
+            return polyhedron;
         }
 
         public Polyhedron Copy() => Clone() as Polyhedron;

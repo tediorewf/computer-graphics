@@ -56,9 +56,11 @@
     <Compile Include="DeptherizedPoint.cs" />
     <Compile Include="Edge3D.cs" />
     <Compile Include="Facet3D.cs" />
+    <Compile Include="FacetRemovingType.cs" />
     <Compile Include="FastBitmap.cs" />
     <Compile Include="Generatrix3D.cs" />
     <Compile Include="IIdentifiable.cs" />
+    <Compile Include="ListExtensionMethods.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,8 +75,7 @@
     <Compile Include="PolyhedronType.cs" />
     <Compile Include="RegularPolyhedrons.cs" />
     <Compile Include="TransformationHelper.cs" />
-    <Compile Include="TriangleRasterizationAlgoritm.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="TriangleRasterisationAlgorithm.cs" />
     <Compile Include="Vector3D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectionType.cs" />

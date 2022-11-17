@@ -108,7 +108,8 @@
             this.partitionsCountTextBox = new System.Windows.Forms.TextBox();
             this.ChoiceComboBox = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.ZbuferButton = new System.Windows.Forms.Button();
+            this.facetsRemovingComboBox = new System.Windows.Forms.ComboBox();
+            this.facetsRemovingGroupBox = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -121,6 +122,7 @@
             this.groupBox1.SuspendLayout();
             this.modelFromFileFroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.facetsRemovingGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // polyhedronPictureBox
@@ -971,23 +973,32 @@
             this.label7.TabIndex = 51;
             this.label7.Text = "Выбрать многогранник";
             // 
-            // ZbuferButton
+            // facetsRemovingComboBox
             // 
-            this.ZbuferButton.Location = new System.Drawing.Point(1860, 31);
-            this.ZbuferButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.ZbuferButton.Name = "ZbuferButton";
-            this.ZbuferButton.Size = new System.Drawing.Size(364, 75);
-            this.ZbuferButton.TabIndex = 52;
-            this.ZbuferButton.Text = "Удаление граней (Z-буфер)";
-            this.ZbuferButton.UseVisualStyleBackColor = true;
-            this.ZbuferButton.Click += new System.EventHandler(this.ZbuferButton_Click);
+            this.facetsRemovingComboBox.FormattingEnabled = true;
+            this.facetsRemovingComboBox.Location = new System.Drawing.Point(6, 31);
+            this.facetsRemovingComboBox.Name = "facetsRemovingComboBox";
+            this.facetsRemovingComboBox.Size = new System.Drawing.Size(376, 33);
+            this.facetsRemovingComboBox.TabIndex = 53;
+            this.facetsRemovingComboBox.SelectedIndexChanged += new System.EventHandler(this.facetsRemovingComboBox_SelectedIndexChanged);
+            this.facetsRemovingComboBox.SelectionChangeCommitted += new System.EventHandler(this.comboBox1_SelectionChangeCommitted);
+            // 
+            // facetsRemovingGroupBox
+            // 
+            this.facetsRemovingGroupBox.Controls.Add(this.facetsRemovingComboBox);
+            this.facetsRemovingGroupBox.Location = new System.Drawing.Point(1450, 802);
+            this.facetsRemovingGroupBox.Name = "facetsRemovingGroupBox";
+            this.facetsRemovingGroupBox.Size = new System.Drawing.Size(400, 114);
+            this.facetsRemovingGroupBox.TabIndex = 55;
+            this.facetsRemovingGroupBox.TabStop = false;
+            this.facetsRemovingGroupBox.Text = "Отсечение граней";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2270, 938);
-            this.Controls.Add(this.ZbuferButton);
+            this.Controls.Add(this.facetsRemovingGroupBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.ChoiceComboBox);
             this.Controls.Add(this.groupBox2);
@@ -1031,6 +1042,7 @@
             this.modelFromFileFroupBox.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.facetsRemovingGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1118,7 +1130,8 @@
         private System.Windows.Forms.ComboBox chooseRotationBodyAxisComboBox;
         private System.Windows.Forms.ComboBox ChoiceComboBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button ZbuferButton;
+        private System.Windows.Forms.ComboBox facetsRemovingComboBox;
+        private System.Windows.Forms.GroupBox facetsRemovingGroupBox;
     }
 }
 

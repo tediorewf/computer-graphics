@@ -8,16 +8,19 @@ namespace AffineTransformations3D
 {
     public static class RegularPolyhedrons
     {
-        private static int longg = 300;
-        private static int longg2 = 100;
+        private static readonly int longg = 300;
+        private static readonly int longg2 = 100;
+
         private static Point3D Middle(Point3D P1, Point3D P2)
         {
             return new Point3D((P1.X + P2.X) / 2, (P1.Y + P2.Y) / 2, (P1.Z + P2.Z) / 2);
         }
+
         private static Point3D Middle(Point3D P1, Point3D P2, Point3D P3)
         {
             return new Point3D((P1.X + P2.X + P3.X) / 3, (P1.Y + P2.Y + P3.Y) / 3, (P1.Z + P2.Z + P3.Z) / 3);
         }
+
         private static Point3D NewPointIkosahedron(Point3D PFCentr, double r, double h, int i)
         {
             Point3D P = new Point3D(0, 0, 0);
@@ -25,9 +28,12 @@ namespace AffineTransformations3D
             P.X = (0 - PFCentr.X) * Math.Cos(alpha) - (r - PFCentr.Y) * Math.Sin(alpha) + PFCentr.X;
             P.Y = (0 - PFCentr.X) * Math.Sin(alpha) + (r - PFCentr.Y) * Math.Cos(alpha) + PFCentr.Y;
             if (i % 2 == 0)
+            {
                 P.Z = h;
+            }
             return P;
         }
+
         public static Polyhedron MakeGeksahedron()
         {
             var vertices = new List<Point3D>();
@@ -92,17 +98,24 @@ namespace AffineTransformations3D
 
             return new Polyhedron(vertices, edges, facets);
         }
+
         public static Polyhedron MakeTetrahedron()
         {
             Polyhedron P = MakeGeksahedron();
             var vertices = new List<Point3D>();
             for (int i = 1; i <= 3; i++)
+            {
                 vertices.Add(P.Vertices[i]);
+            }
             vertices.Add(P.Vertices[7]);
             var edges = new List<Edge3D>();
             for (int i = 0; i <= 3; i++)
+            {
                 for (int j = i + 1; j <= 3; j++)
+                {
                     edges.Add(new Edge3D(vertices[i], vertices[j]));
+                }
+            }
             var facets = new List<Facet3D>();
 
             var facet0 = new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[3] }, new List<Edge3D> { edges[0], edges[4], edges[2] });
@@ -117,18 +130,26 @@ namespace AffineTransformations3D
 
             return new Polyhedron(vertices, edges, facets);
         }
+
         public static Polyhedron MakeOktahedron()
         {
             Polyhedron P = MakeGeksahedron();
             var vertices = new List<Point3D>();
             for (int i = 4; i <= 6; i++)
+            {
                 vertices.Add(Middle(P.Vertices[0], P.Vertices[i]));
+            }
             for (int i = 1; i <= 3; i++)
+            {
                 vertices.Add(Middle(P.Vertices[7], P.Vertices[i]));
+            }
 
             var edges = new List<Edge3D>();
-           for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 3; i++)
+            {
+
                 edges.Add(new Edge3D(vertices[0], vertices[i]));
+            }
             edges.Add(new Edge3D(vertices[0], vertices[5]));
             edges.Add(new Edge3D(vertices[1], vertices[2]));
             edges.Add(new Edge3D(vertices[1], vertices[4]));
@@ -160,6 +181,7 @@ namespace AffineTransformations3D
 
             return new Polyhedron(vertices, edges, facets);
         }
+
         public static Polyhedron MakeIkosahedron()
         {
             var vertices = new List<Point3D>();
@@ -169,7 +191,9 @@ namespace AffineTransformations3D
             double H = 1.902 * l;
             double k = (H - h) / 2;
             for (int i = 0; i < 10; i++)
+            {
                 vertices.Add(NewPointIkosahedron(PFCentr, longg2, h, i));
+            }
             vertices.Add(new Point3D(longg2, longg2, h + k));
             vertices.Add(new Point3D(longg2, longg2, -k));
 
@@ -181,19 +205,23 @@ namespace AffineTransformations3D
                 edges.Add(new Edge3D(vertices[i], vertices[i + 1]));
                 edges.Add(new Edge3D(vertices[i], vertices[i + 2]));
             }
-             edges.Add(new Edge3D(vertices[8], vertices[9]));
+            edges.Add(new Edge3D(vertices[8], vertices[9]));
             edges.Add(new Edge3D(vertices[8], vertices[0]));
-           edges.Add(new Edge3D(vertices[9], vertices[0]));
-          edges.Add(new Edge3D(vertices[9], vertices[1]));
+            edges.Add(new Edge3D(vertices[9], vertices[0]));
+            edges.Add(new Edge3D(vertices[9], vertices[1]));
 
             for (int i = 0; i <= 17; i++)
-                facets.Add(new Facet3D(new List<Point3D> { edges[i].Begin, edges[i + 2].Begin, edges[i + 2].End },new List<Edge3D> { edges[i], edges[i + 1], edges[i + 2] }));
+            {
+                facets.Add(new Facet3D(new List<Point3D> { edges[i].Begin, edges[i + 2].Begin, edges[i + 2].End }, new List<Edge3D> { edges[i], edges[i + 1], edges[i + 2] }));
+            }
             facets.Add(new Facet3D(new List<Point3D> { edges[18].Begin, edges[0].Begin, edges[0].End }, new List<Edge3D> { edges[18], edges[19], edges[0] }));
             facets.Add(new Facet3D(new List<Point3D> { edges[19].Begin, edges[1].Begin, edges[1].End }, new List<Edge3D> { edges[19], edges[0], edges[1] }));
 
 
             for (int i = 0; i <= 8; i += 2)
+            {
                 edges.Add(new Edge3D(vertices[10], vertices[i]));
+            }
 
             facets.Add(new Facet3D(new List<Point3D> { vertices[10], vertices[0], vertices[2] }, new List<Edge3D> { edges[1], edges[20], edges[21] }));
             facets.Add(new Facet3D(new List<Point3D> { vertices[10], vertices[2], vertices[4] }, new List<Edge3D> { edges[5], edges[21], edges[22] }));
@@ -202,8 +230,9 @@ namespace AffineTransformations3D
             facets.Add(new Facet3D(new List<Point3D> { vertices[10], vertices[8], vertices[0] }, new List<Edge3D> { edges[17], edges[20], edges[24] }));
 
             for (int i = 1; i <= 9; i += 2)
+            {
                 edges.Add(new Edge3D(vertices[11], vertices[i]));
-
+            }
 
             facets.Add(new Facet3D(new List<Point3D> { vertices[11], vertices[1], vertices[3] }, new List<Edge3D> { edges[3], edges[25], edges[26] }));
             facets.Add(new Facet3D(new List<Point3D> { vertices[11], vertices[3], vertices[5] }, new List<Edge3D> { edges[7], edges[26], edges[27] }));
@@ -214,19 +243,26 @@ namespace AffineTransformations3D
             return new Polyhedron(vertices, edges, facets);
 
         }
+
         public static Polyhedron MakeDodahedron()
         {
             var vertices = new List<Point3D>();
             Polyhedron P = MakeIkosahedron();
             for (int i = 0; i <= 6; i+=2)
-                vertices.Add(Middle(P.Vertices[10], P.Vertices[i], P.Vertices[i+2]));
+            {
+                vertices.Add(Middle(P.Vertices[10], P.Vertices[i], P.Vertices[i + 2]));
+            }
             vertices.Add(Middle(P.Vertices[10], P.Vertices[8], P.Vertices[0]));
             for (int i = 0; i <= 7; i ++)
-                vertices.Add(Middle(P.Vertices[i], P.Vertices[i+1], P.Vertices[i + 2]));
+            {
+                vertices.Add(Middle(P.Vertices[i], P.Vertices[i + 1], P.Vertices[i + 2]));
+            }
             vertices.Add(Middle(P.Vertices[8], P.Vertices[9], P.Vertices[0]));
             vertices.Add(Middle(P.Vertices[9], P.Vertices[0], P.Vertices[1]));
             for (int i = 1; i <= 7; i += 2)
+            {
                 vertices.Add(Middle(P.Vertices[11], P.Vertices[i], P.Vertices[i + 2]));
+            }
             vertices.Add(Middle(P.Vertices[11], P.Vertices[9], P.Vertices[1]));
 
 
@@ -246,7 +282,9 @@ namespace AffineTransformations3D
             facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[2], vertices[3], vertices[4] }, new List<Edge3D> { edges[0], edges[2], edges[4], edges[6], edges[8] }));
 
             for (int i = 5; i <= 13; i++)
+            {
                 edges.Add(new Edge3D(vertices[i], vertices[i + 1]));
+            }
             edges.Add(new Edge3D(vertices[14], vertices[5]));
 
             facets.Add(new Facet3D(new List<Point3D> { vertices[0], vertices[1], vertices[7], vertices[6], vertices[5] }, new List<Edge3D> { edges[0], edges[3], edges[11], edges[10], edges[1] }));
