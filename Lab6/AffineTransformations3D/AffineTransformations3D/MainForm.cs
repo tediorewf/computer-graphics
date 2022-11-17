@@ -561,21 +561,21 @@ namespace AffineTransformations3D
             Project();
         }
 
-        List<Facet3D> TriangulateConvexFacet(Facet3D convexFacet)
+        List<Facet3D> TriangulateFacet(Facet3D facet)
         {
             var triangles = new List<Facet3D>();
-            var firstPoint = convexFacet.Points[0];
-            for (int i = 2; i < convexFacet.Points.Count; i++)
+            var firstPoint = facet.Points[0];
+            for (int i = 2; i < facet.Points.Count; i++)
             {
                 var vertices = new List<Point3D> 
                 { 
-                    firstPoint, convexFacet.Points[i - 1], convexFacet.Points[i] 
+                    firstPoint, facet.Points[i - 1], facet.Points[i] 
                 };
                 var edges = new List<Edge3D>
                 {
-                    new Edge3D(firstPoint, convexFacet.Points[i - 1]),
-                    new Edge3D(convexFacet.Points[i - 1], convexFacet.Points[i]),
-                    new Edge3D(convexFacet.Points[i], firstPoint)
+                    new Edge3D(firstPoint, facet.Points[i - 1]),
+                    new Edge3D(facet.Points[i - 1], facet.Points[i]),
+                    new Edge3D(facet.Points[i], firstPoint)
                 };
                 var triangle = new Facet3D(vertices, edges);
                 triangles.Add(triangle);
@@ -610,7 +610,7 @@ namespace AffineTransformations3D
 
                 if ((item.X >= 0) && (item.X < size.Width) && (item.Y >= 0) && (item.Y < size.Height))
                 {
-                    if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth > ZBuferArr[item.X, item.Y].Depth))
+                    if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth >= ZBuferArr[item.X, item.Y].Depth))
                     {
                         ZBuferArr[item.X, item.Y].Depth = depth;
                         ZBuferArr[item.X, item.Y].Color = Clr;
@@ -662,12 +662,13 @@ namespace AffineTransformations3D
                 }
 
                 var random = new Random();
-                var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                //var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                 foreach (var facets in itemCopy.Facets)
                 {
-                    var triangulatedConvexFacet = TriangulateConvexFacet(facets);
+                    var triangulatedConvexFacet = TriangulateFacet(facets);
                     foreach (var triangle in triangulatedConvexFacet)
                     {
+                        var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                         ZBufer(zBuffer, triangle, color);
                     }
                 }

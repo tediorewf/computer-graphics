@@ -8,6 +8,7 @@ using System.Drawing;
 namespace AffineTransformations3D
 {
     using static Utils;
+    using FastBitmap;
 
     public class NearestOrdinateComparer : IComparer<DeptherizedPoint>
     {
