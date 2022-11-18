@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AffineTransformations3D
-{
-public static class ZBufferAlgorithm
-{
-}
+namespace AffineTransformations3D {
+public static class ZBufferAlgorithm {}
 }
