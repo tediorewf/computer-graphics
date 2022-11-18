@@ -110,6 +110,21 @@
             this.label7 = new System.Windows.Forms.Label();
             this.facetsRemovingComboBox = new System.Windows.Forms.ComboBox();
             this.facetsRemovingGroupBox = new System.Windows.Forms.GroupBox();
+            this.cameraGroupBox = new System.Windows.Forms.GroupBox();
+            this.cameraZtranslationTextBox = new System.Windows.Forms.TextBox();
+            this.cameraYtranslationTextBox = new System.Windows.Forms.TextBox();
+            this.cameraXtranslationTextBox = new System.Windows.Forms.TextBox();
+            this.cameraTranslationZLabel = new System.Windows.Forms.Label();
+            this.cameraTranslationYLabel = new System.Windows.Forms.Label();
+            this.cameraTranslationXLabel = new System.Windows.Forms.Label();
+            this.cameraAngleZTextBox = new System.Windows.Forms.TextBox();
+            this.cameraAngleYTextBox = new System.Windows.Forms.TextBox();
+            this.cameraZAngleLabel = new System.Windows.Forms.Label();
+            this.cameraYAngleLabel = new System.Windows.Forms.Label();
+            this.cameraXAngleLabel = new System.Windows.Forms.Label();
+            this.cameraAngleXTextBox = new System.Windows.Forms.TextBox();
+            this.rotateCameraButton = new System.Windows.Forms.Button();
+            this.translateCameraButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -123,6 +138,7 @@
             this.modelFromFileFroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.facetsRemovingGroupBox.SuspendLayout();
+            this.cameraGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // polyhedronPictureBox
@@ -993,11 +1009,151 @@
             this.facetsRemovingGroupBox.TabStop = false;
             this.facetsRemovingGroupBox.Text = "Отсечение граней";
             // 
+            // cameraGroupBox
+            // 
+            this.cameraGroupBox.Controls.Add(this.translateCameraButton);
+            this.cameraGroupBox.Controls.Add(this.rotateCameraButton);
+            this.cameraGroupBox.Controls.Add(this.cameraZtranslationTextBox);
+            this.cameraGroupBox.Controls.Add(this.cameraYtranslationTextBox);
+            this.cameraGroupBox.Controls.Add(this.cameraXtranslationTextBox);
+            this.cameraGroupBox.Controls.Add(this.cameraTranslationZLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraTranslationYLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraTranslationXLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraAngleZTextBox);
+            this.cameraGroupBox.Controls.Add(this.cameraAngleYTextBox);
+            this.cameraGroupBox.Controls.Add(this.cameraZAngleLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraYAngleLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraXAngleLabel);
+            this.cameraGroupBox.Controls.Add(this.cameraAngleXTextBox);
+            this.cameraGroupBox.Location = new System.Drawing.Point(1868, 31);
+            this.cameraGroupBox.Name = "cameraGroupBox";
+            this.cameraGroupBox.Size = new System.Drawing.Size(380, 314);
+            this.cameraGroupBox.TabIndex = 56;
+            this.cameraGroupBox.TabStop = false;
+            this.cameraGroupBox.Text = "Камера";
+            // 
+            // cameraZtranslationTextBox
+            // 
+            this.cameraZtranslationTextBox.Location = new System.Drawing.Point(273, 218);
+            this.cameraZtranslationTextBox.Name = "cameraZtranslationTextBox";
+            this.cameraZtranslationTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraZtranslationTextBox.TabIndex = 11;
+            // 
+            // cameraYtranslationTextBox
+            // 
+            this.cameraYtranslationTextBox.Location = new System.Drawing.Point(143, 218);
+            this.cameraYtranslationTextBox.Name = "cameraYtranslationTextBox";
+            this.cameraYtranslationTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraYtranslationTextBox.TabIndex = 10;
+            // 
+            // cameraXtranslationTextBox
+            // 
+            this.cameraXtranslationTextBox.Location = new System.Drawing.Point(6, 218);
+            this.cameraXtranslationTextBox.Name = "cameraXtranslationTextBox";
+            this.cameraXtranslationTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraXtranslationTextBox.TabIndex = 9;
+            // 
+            // cameraTranslationZLabel
+            // 
+            this.cameraTranslationZLabel.AutoSize = true;
+            this.cameraTranslationZLabel.Location = new System.Drawing.Point(274, 181);
+            this.cameraTranslationZLabel.Name = "cameraTranslationZLabel";
+            this.cameraTranslationZLabel.Size = new System.Drawing.Size(84, 25);
+            this.cameraTranslationZLabel.TabIndex = 8;
+            this.cameraTranslationZLabel.Text = "Move Z";
+            // 
+            // cameraTranslationYLabel
+            // 
+            this.cameraTranslationYLabel.AutoSize = true;
+            this.cameraTranslationYLabel.Location = new System.Drawing.Point(149, 181);
+            this.cameraTranslationYLabel.Name = "cameraTranslationYLabel";
+            this.cameraTranslationYLabel.Size = new System.Drawing.Size(86, 25);
+            this.cameraTranslationYLabel.TabIndex = 7;
+            this.cameraTranslationYLabel.Text = "Move Y";
+            // 
+            // cameraTranslationXLabel
+            // 
+            this.cameraTranslationXLabel.AutoSize = true;
+            this.cameraTranslationXLabel.Location = new System.Drawing.Point(17, 181);
+            this.cameraTranslationXLabel.Name = "cameraTranslationXLabel";
+            this.cameraTranslationXLabel.Size = new System.Drawing.Size(85, 25);
+            this.cameraTranslationXLabel.TabIndex = 6;
+            this.cameraTranslationXLabel.Text = "Move X";
+            // 
+            // cameraAngleZTextBox
+            // 
+            this.cameraAngleZTextBox.Location = new System.Drawing.Point(273, 72);
+            this.cameraAngleZTextBox.Name = "cameraAngleZTextBox";
+            this.cameraAngleZTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraAngleZTextBox.TabIndex = 5;
+            // 
+            // cameraAngleYTextBox
+            // 
+            this.cameraAngleYTextBox.Location = new System.Drawing.Point(143, 72);
+            this.cameraAngleYTextBox.Name = "cameraAngleYTextBox";
+            this.cameraAngleYTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraAngleYTextBox.TabIndex = 4;
+            // 
+            // cameraZAngleLabel
+            // 
+            this.cameraZAngleLabel.AutoSize = true;
+            this.cameraZAngleLabel.Location = new System.Drawing.Point(274, 40);
+            this.cameraZAngleLabel.Name = "cameraZAngleLabel";
+            this.cameraZAngleLabel.Size = new System.Drawing.Size(76, 25);
+            this.cameraZAngleLabel.TabIndex = 3;
+            this.cameraZAngleLabel.Text = "Угол Z";
+            // 
+            // cameraYAngleLabel
+            // 
+            this.cameraYAngleLabel.AutoSize = true;
+            this.cameraYAngleLabel.Location = new System.Drawing.Point(149, 40);
+            this.cameraYAngleLabel.Name = "cameraYAngleLabel";
+            this.cameraYAngleLabel.Size = new System.Drawing.Size(78, 25);
+            this.cameraYAngleLabel.TabIndex = 2;
+            this.cameraYAngleLabel.Text = "Угол Y";
+            // 
+            // cameraXAngleLabel
+            // 
+            this.cameraXAngleLabel.AutoSize = true;
+            this.cameraXAngleLabel.Location = new System.Drawing.Point(17, 40);
+            this.cameraXAngleLabel.Name = "cameraXAngleLabel";
+            this.cameraXAngleLabel.Size = new System.Drawing.Size(77, 25);
+            this.cameraXAngleLabel.TabIndex = 1;
+            this.cameraXAngleLabel.Text = "Угол X";
+            // 
+            // cameraAngleXTextBox
+            // 
+            this.cameraAngleXTextBox.Location = new System.Drawing.Point(6, 72);
+            this.cameraAngleXTextBox.Name = "cameraAngleXTextBox";
+            this.cameraAngleXTextBox.Size = new System.Drawing.Size(100, 31);
+            this.cameraAngleXTextBox.TabIndex = 0;
+            // 
+            // rotateCameraButton
+            // 
+            this.rotateCameraButton.Location = new System.Drawing.Point(30, 123);
+            this.rotateCameraButton.Name = "rotateCameraButton";
+            this.rotateCameraButton.Size = new System.Drawing.Size(344, 37);
+            this.rotateCameraButton.TabIndex = 12;
+            this.rotateCameraButton.Text = "Повернуть камеру";
+            this.rotateCameraButton.UseVisualStyleBackColor = true;
+            this.rotateCameraButton.Click += new System.EventHandler(this.rotateCameraButton_Click);
+            // 
+            // translateCameraButton
+            // 
+            this.translateCameraButton.Location = new System.Drawing.Point(30, 269);
+            this.translateCameraButton.Name = "translateCameraButton";
+            this.translateCameraButton.Size = new System.Drawing.Size(342, 37);
+            this.translateCameraButton.TabIndex = 13;
+            this.translateCameraButton.Text = "Сместить";
+            this.translateCameraButton.UseVisualStyleBackColor = true;
+            this.translateCameraButton.Click += new System.EventHandler(this.translateCameraButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2270, 938);
+            this.Controls.Add(this.cameraGroupBox);
             this.Controls.Add(this.facetsRemovingGroupBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.ChoiceComboBox);
@@ -1043,6 +1199,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.facetsRemovingGroupBox.ResumeLayout(false);
+            this.cameraGroupBox.ResumeLayout(false);
+            this.cameraGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1132,6 +1290,21 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox facetsRemovingComboBox;
         private System.Windows.Forms.GroupBox facetsRemovingGroupBox;
+        private System.Windows.Forms.GroupBox cameraGroupBox;
+        private System.Windows.Forms.TextBox cameraZtranslationTextBox;
+        private System.Windows.Forms.TextBox cameraYtranslationTextBox;
+        private System.Windows.Forms.TextBox cameraXtranslationTextBox;
+        private System.Windows.Forms.Label cameraTranslationZLabel;
+        private System.Windows.Forms.Label cameraTranslationYLabel;
+        private System.Windows.Forms.Label cameraTranslationXLabel;
+        private System.Windows.Forms.TextBox cameraAngleZTextBox;
+        private System.Windows.Forms.TextBox cameraAngleYTextBox;
+        private System.Windows.Forms.Label cameraZAngleLabel;
+        private System.Windows.Forms.Label cameraYAngleLabel;
+        private System.Windows.Forms.Label cameraXAngleLabel;
+        private System.Windows.Forms.TextBox cameraAngleXTextBox;
+        private System.Windows.Forms.Button translateCameraButton;
+        private System.Windows.Forms.Button rotateCameraButton;
     }
 }
 

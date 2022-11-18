@@ -8,32 +8,39 @@ namespace AffineTransformations3D
 {
     internal class Camera
     {
-        public Point3D position;
-        public double pitch, yaw, roll; //Тангаж, рысканье и крен
-        //public PointPol view;
+        public Point3D Position { get; set; }
+        public double DegreesX { get; set; }
+        public double DegreesY { get; set; }
+        public double DegreesZ { get; set; }
 
-        public Camera(double x, double y, double z, double p, double ya, double r) {
-            position = new Point3D(x, y, z);
-            pitch = p * Math.PI / 180;
-            yaw = ya * Math.PI / 180;
-            roll = r * Math.PI / 180;
+
+        public Camera(double x, double y, double z) {
+            Position = new Point3D(x, y, z);
+            DegreesX = 0;
+            DegreesY = 0;
+            DegreesZ = 0;
         }
 
-        public double[,] translateAtPosition() {
-            return new double[4, 4]{{1,0,0,-(position.X)},{0,1,0,-(position.Y)}, {0,0,1,-(position.Z)}, 
-            {0,0,0,1}};     
+        public void Translate(double dx, double dy, double dz)
+        {
+            Position.X += dx;
+            Position.Y += dy;
+            Position.Z += dz;
         }
 
-        public double[,] translateAtAngles() {
-            return new double[3, 3] { 
-                { Math.Cos(yaw) * Math.Cos(roll), -Math.Cos(yaw) * Math.Sin(roll), Math.Sin(yaw) },
-                {Math.Sin(pitch)*Math.Sin(yaw)*Math.Cos(roll) + Math.Sin(roll)*Math.Cos(pitch), 
-                                                            -Math.Sin(pitch)*Math.Sin(yaw)*Math.Sin(roll) + Math.Cos(roll)*Math.Cos(pitch),
-                                                                        -Math.Sin(pitch)*Math.Cos(yaw)},
-                {-Math.Cos(pitch)*Math.Sin(yaw)*Math.Cos(roll) + Math.Sin(pitch)*Math.Sin(roll), 
-                    Math.Cos(pitch)*Math.Sin(yaw)*Math.Sin(roll) + Math.Sin(pitch)*Math.Cos(roll),
-                                                                        Math.Cos(yaw)*Math.Cos(pitch)}
-            };
+        public void Rotate(double xDelta, double yDelta, double zDelta)
+        {
+            DegreesX += xDelta;
+            DegreesY += yDelta;
+            DegreesZ += zDelta;
+        }
+
+        public Polyhedron Project(Polyhedron polyhedron, ProjectionType projectionType)
+        {
+            var copyPolyhedron = polyhedron.Copy();
+            copyPolyhedron.Translate(-Position.X, -Position.Y, -Position.Z);
+            copyPolyhedron.RotateAxis(DegreesX, DegreesY, DegreesZ);
+            return copyPolyhedron.ComputeProjection(projectionType);
         }
     }
 }

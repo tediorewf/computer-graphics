@@ -14,6 +14,7 @@ namespace AffineTransformations3D
     using static ProjectionType;
     using FastBitmap;
     using static TriangleRasterisationAlgorithm;
+    using static BackfaceCullingAlgorithm;
 
     public partial class MainForm : Form
     {
@@ -25,6 +26,8 @@ namespace AffineTransformations3D
         private string[] rotationCcoordinatePlaneNames;
         private CoordinatePlaneType[] reflectionCoordinatePlaneTypes;
         private string[] reflectionCoordinatePlaneNames;
+
+        private Camera camera = new Camera(0, 0, 0);
 
         private FacetRemovingType[] facetsRemovingTypes;
         private string[] facetsRemovingNames;
@@ -38,7 +41,6 @@ namespace AffineTransformations3D
         private bool rotating = false;
         private Polyhedron currentPolyhedron;
         private List<Polyhedron> ListPolyhedron;
-        private List<Polyhedron> polyhedronProjections;
 
         private ProjectionType currentProjectionType;
         private CoordinatePlaneType currentRotationCoordinatePlaneType;
@@ -138,11 +140,30 @@ namespace AffineTransformations3D
                     DrawZBuffer(drawingSurface);
                     break;
                 case FacetRemovingType.BackfaceCulling:
+                    DrawBackfaceCulling(drawingSurface);
                     break;
                 default:
                     break;
             }
             polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void DrawBackfaceCulling(Bitmap drawingSurface)
+        {
+            var viewPoint = camera.Position;
+            foreach (var item in ListPolyhedron)
+            {
+                if (item != currentPolyhedron)
+                {
+                    var removedFacets = RemoveBackFacets(item, viewPoint);
+                    drawingSurface.DrawPolyhedron(camera.Project(removedFacets, currentProjectionType), Color.Blue);
+                }
+                else
+                {
+                    var removedFacets = RemoveBackFacets(currentPolyhedron, viewPoint);
+                    drawingSurface.DrawPolyhedron(camera.Project(removedFacets, currentProjectionType), Color.Red);
+                }
+            }
         }
 
         private void DrawEdges(Bitmap drawingSurface)
@@ -151,11 +172,11 @@ namespace AffineTransformations3D
             {
                 if (item != currentPolyhedron)
                 {
-                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
+                    drawingSurface.DrawPolyhedron(camera.Project(item, currentProjectionType), Color.Blue);
                 }
                 else
                 {
-                    drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
+                    drawingSurface.DrawPolyhedron(camera.Project(currentPolyhedron, currentProjectionType), Color.Red);
                 }
             }
         }
@@ -671,16 +692,9 @@ namespace AffineTransformations3D
             var size = drawingSurface.Size;
             var zBuffer = new ZBuferStruct[size.Width, size.Height];
 
-            var transformation = currentProjectionType.CreateMatrix();
-
             foreach (var item in ListPolyhedron)
             {
-                var itemCopy = item.Copy();
-
-                foreach (var vertex in itemCopy.Vertices)
-                {
-                    TransformPointInplace(vertex, transformation);
-                }
+                var itemCopy = camera.Project(item, currentProjectionType);
 
                 var random = new Random();
                 foreach (var facets in itemCopy.Facets)
@@ -707,6 +721,54 @@ namespace AffineTransformations3D
         private void facetsRemovingComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentFacetsRemovingType = facetsRemovingTypes[facetsRemovingComboBox.SelectedIndex];
+            Project();
+        }
+
+        private void rotateCameraButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(cameraAngleXTextBox.Text, out int dx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraAngleYTextBox.Text, out int dy))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraAngleZTextBox.Text, out int dz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            camera.Rotate(dx, dy, dz);
+            Project();
+        }
+
+        private void translateCameraButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(cameraXtranslationTextBox.Text, out int dx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraYtranslationTextBox.Text, out int dy))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraZtranslationTextBox.Text, out int dz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            camera.Translate(dx, dy, dz);
             Project();
         }
     }

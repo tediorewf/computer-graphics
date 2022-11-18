@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace AffineTransformations3D
 {
-    public class Point3D : IIdentifiable<long>, ICloneable
+    public class Point3D : IIdentifiable<long>, ICloneable, IEquatable<Point3D>
     {
         private static long nextIdentifier = 0;
         public double X { get; set; }
@@ -34,5 +34,9 @@ namespace AffineTransformations3D
         public Point ToPoint() => new Point((int)X, (int)Y);
 
         public object Clone() => new Point3D(X, Y, Z, _identifier);
+
+        public bool Equals(Point3D other) => Identifier == other.Identifier;
+
+        public override int GetHashCode() => Identifier.GetHashCode();
     }
 }

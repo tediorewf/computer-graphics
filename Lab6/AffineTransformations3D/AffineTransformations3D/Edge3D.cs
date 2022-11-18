@@ -2,7 +2,7 @@
 
 namespace AffineTransformations3D
 {
-    public class Edge3D : IIdentifiable<long>
+    public class Edge3D : IIdentifiable<long>, IEquatable<Edge3D>
     {
         private static long nextIdentidier = 0;
         public Point3D Begin { get; set; }
@@ -32,5 +32,9 @@ namespace AffineTransformations3D
             double z = End.Z - Begin.Z;
             return new Vector3D(x, y, z);
         }
+
+        public bool Equals(Edge3D other) => Identifier == other.Identifier;
+
+        public override int GetHashCode() => Identifier.GetHashCode();
     }
 }
