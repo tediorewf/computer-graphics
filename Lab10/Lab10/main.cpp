@@ -8,7 +8,7 @@ GLuint Program;
 GLint Attrib_vertex;
 GLuint VBO;
 
-struct Vertex 
+struct Vertex
 {
     GLfloat x;
     GLfloat y;
