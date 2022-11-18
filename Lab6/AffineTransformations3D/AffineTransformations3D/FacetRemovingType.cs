@@ -8,7 +8,7 @@ namespace AffineTransformations3D
 {
     public enum FacetRemovingType
     {
-        ZBuffer, BackfaceCulling, None
+        None, ZBuffer, BackfaceCulling
     }
 
     public static class FacetRemovingTypeExtensions

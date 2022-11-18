@@ -33,5 +33,23 @@ namespace AffineTransformations3D
             collection.Remove(rightMost);
             return rightMost;
         }
+
+        public static Point3D CommonCenter(this List<Polyhedron> polyhedrons)
+        {
+            double x = 0, y = 0, z = 0;
+            int count = 0;
+            foreach (var pol in polyhedrons)
+            {
+                var p = pol.Center;
+                x += p.X;
+                y += p.Y;
+                z += p.Z;
+                count ++;
+            }
+            x /= count;
+            y /= count;
+            z /= count;
+            return new Point3D(x, y, z);
+        }
     }
 }

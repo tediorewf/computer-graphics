@@ -27,7 +27,7 @@ namespace AffineTransformations3D
         private CoordinatePlaneType[] reflectionCoordinatePlaneTypes;
         private string[] reflectionCoordinatePlaneNames;
 
-        private Camera camera = new Camera(0, 0, 0);
+        private Camera camera = new Camera(400, 400, 1.4*400);
 
         private FacetRemovingType[] facetsRemovingTypes;
         private string[] facetsRemovingNames;
@@ -744,7 +744,12 @@ namespace AffineTransformations3D
                 return;
             }
 
-            camera.Rotate(dx, dy, dz);
+            //Point3D CNTR = ListPolyhedron.CommonCenter();
+            Point3D CNTR = new Point3D(250, 250, 250);
+            foreach (var item in ListPolyhedron)
+            {
+                item.RotateAroundPoint(dx, dy, dz, CNTR);
+            }
             Project();
         }
 
@@ -767,8 +772,10 @@ namespace AffineTransformations3D
                 WarnInvalidInput();
                 return;
             }
-
-            camera.Translate(dx, dy, dz);
+            foreach (var item in ListPolyhedron)
+            {
+                item.Translate(-dx, -dy, -dz);
+            }
             Project();
         }
     }
