@@ -12,6 +12,9 @@ namespace AffineTransformations3D
 {
     using static TransformationHelper;
     using static ProjectionType;
+    using FastBitmap;
+    using static TriangleRasterisationAlgorithm;
+    using static BackfaceCullingAlgorithm;
 
     public partial class MainForm : Form
     {
@@ -23,6 +26,12 @@ namespace AffineTransformations3D
         private string[] rotationCcoordinatePlaneNames;
         private CoordinatePlaneType[] reflectionCoordinatePlaneTypes;
         private string[] reflectionCoordinatePlaneNames;
+
+        private Camera camera = new Camera(0, 0, 0);
+
+        private FacetRemovingType[] facetsRemovingTypes;
+        private string[] facetsRemovingNames;
+        private FacetRemovingType currentFacetsRemovingType;
 
         private AxisType[] axisTypes;
         private string[] axisNames;
@@ -50,7 +59,8 @@ namespace AffineTransformations3D
             InitializeRotationCoordinatePlaneStuff();
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
-            Size = new Size(1150, 550);
+            InitializeFacetsStuff();
+            Size = new Size(1150, 540);
         }
 
         private void InitializePolyhedronStuff()
@@ -102,6 +112,15 @@ namespace AffineTransformations3D
             currentAxisType = axisTypes[chooseRotationBodyAxisComboBox.SelectedIndex];
         }
 
+        private void InitializeFacetsStuff()
+        {
+            facetsRemovingTypes = Enum.GetValues(typeof(FacetRemovingType)).Cast<FacetRemovingType>().ToArray();
+            facetsRemovingNames = facetsRemovingTypes.Select(frt => frt.GetFacetRemovingName()).ToArray();
+            facetsRemovingComboBox.Items.AddRange(facetsRemovingNames);
+            facetsRemovingComboBox.SelectedIndex = 0;
+            currentFacetsRemovingType = facetsRemovingTypes[facetsRemovingComboBox.SelectedIndex];
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Project();
@@ -112,11 +131,54 @@ namespace AffineTransformations3D
             // проекция влияет на отображение фигуры а не на перемещение в пространстве
             var size = polyhedronPictureBox.Size;
             var drawingSurface = new Bitmap(size.Width, size.Height);
-            foreach (var item in ListPolyhedron)
-                if (item!= currentPolyhedron)
-                    drawingSurface.DrawPolyhedron(item.ComputeProjection(currentProjectionType), Color.Blue);
-            drawingSurface.DrawPolyhedron(currentPolyhedron.ComputeProjection(currentProjectionType), Color.Red);
+            switch (currentFacetsRemovingType)
+            {
+                case FacetRemovingType.None:
+                    DrawEdges(drawingSurface);
+                    break;
+                case FacetRemovingType.ZBuffer:
+                    DrawZBuffer(drawingSurface);
+                    break;
+                case FacetRemovingType.BackfaceCulling:
+                    DrawBackfaceCulling(drawingSurface);
+                    break;
+                default:
+                    break;
+            }
             polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void DrawBackfaceCulling(Bitmap drawingSurface)
+        {
+            var viewPoint = camera.Position;
+            foreach (var item in ListPolyhedron)
+            {
+                if (item != currentPolyhedron)
+                {
+                    var removedFacets = RemoveBackFacets(item, viewPoint);
+                    drawingSurface.DrawPolyhedron(camera.Project(removedFacets, currentProjectionType), Color.Blue);
+                }
+                else
+                {
+                    var removedFacets = RemoveBackFacets(currentPolyhedron, viewPoint);
+                    drawingSurface.DrawPolyhedron(camera.Project(removedFacets, currentProjectionType), Color.Red);
+                }
+            }
+        }
+
+        private void DrawEdges(Bitmap drawingSurface)
+        {
+            foreach (var item in ListPolyhedron)
+            {
+                if (item != currentPolyhedron)
+                {
+                    drawingSurface.DrawPolyhedron(camera.Project(item, currentProjectionType), Color.Blue);
+                }
+                else
+                {
+                    drawingSurface.DrawPolyhedron(camera.Project(currentPolyhedron, currentProjectionType), Color.Red);
+                }
+            }
         }
 
         private void MashtabMinus(object sender, System.EventArgs e)
@@ -409,7 +471,7 @@ namespace AffineTransformations3D
             }
             double x = (x1 - x0) / splitting;
             double y = (y1 - y0) / splitting;
-            List < List<Point3D> > Arr= new List<List<Point3D>>();
+            List < List<Point3D> > Arr = new List<List<Point3D>>();
             List < Point3D > vertices =  new List<Point3D>();
             var edges = new List<Edge3D>();
             var facets = new List<Facet3D>();
@@ -547,86 +609,167 @@ namespace AffineTransformations3D
             Project();
         }
 
-        List<Facet3D> MakeTriangle(Facet3D f)
+        List<Facet3D> TriangulateFacet(Facet3D facet)
         {
-            List<Facet3D> Lst = new List<Facet3D>{ };
-            Point3D StartPoint = f.Points[0];
-            Point3D SecondPoint = f.Points[1];
-            for (int i = 2; i < f.Points.Count; i++)
+            var triangles = new List<Facet3D>();
+            var firstPoint = facet.Points[0];
+            for (int i = 2; i < facet.Points.Count; i++)
             {
-                Facet3D NewF = new Facet3D(new List<Point3D> { StartPoint, SecondPoint, f.Points[i] }, new List<Edge3D> { new Edge3D(StartPoint, SecondPoint), new Edge3D(SecondPoint, f.Points[i]), new Edge3D(f.Points[i], StartPoint) });
-                SecondPoint = f.Points[i];
-                Lst.Add(NewF);
+                var vertices = new List<Point3D> 
+                { 
+                    firstPoint, facet.Points[i - 1], facet.Points[i] 
+                };
+                var edges = new List<Edge3D>
+                {
+                    new Edge3D(firstPoint, facet.Points[i - 1]),
+                    new Edge3D(facet.Points[i - 1], facet.Points[i]),
+                    new Edge3D(facet.Points[i], firstPoint)
+                };
+                var triangle = new Facet3D(vertices, edges);
+                triangles.Add(triangle);
             }
-            return Lst;
+            return triangles;
         }
 
         private struct ZBuferStruct
         {
-            public bool IsNotEmpthy;
+            public bool IsNotEmpty;
             public double Depth;
             public Color Color;
         }
 
-        List<Point3D> TriangleToListPoint(Facet3D Triangle)
+        IEnumerable<DeptherizedPoint> TriangleToListPoint(Facet3D triangle)
         {
-            List<Point3D> TriangleListPoint = new List<Point3D> { };
-            
-            // TODO:
-            // Создать множество точек треугольника
-
-            return TriangleListPoint;
+            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0]);
+            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1]);
+            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2]);
+            var rasterizedPoints = RasteriseTriangle(v1, v2, v3);
+            return rasterizedPoints;
         }
 
-        private void ZBufer(ZBuferStruct[,] ZBuferArr,Facet3D Triangle,Color Clr,Matrix transformation)
+        private void ZBufer(ZBuferStruct[,] ZBuferArr, Facet3D Triangle, Color Clr)
         {
             var size = polyhedronPictureBox.Size;
-            List<Point3D> LstPnt = TriangleToListPoint(Triangle);
+
+            var LstPnt = TriangleToListPoint(Triangle);
             foreach (var item in LstPnt)
             {
-                TransformPointInplace(item, transformation);
-                Point P = item.ToPoint();
+                double depth = item.Depth;
 
-                double depth = item.Z;
-
-                if ((P.X >= 0) && (P.X < size.Width) && (P.Y >= 0) && (P.Y < size.Height))
-                    if ( (!ZBuferArr[P.X, P.Y].IsNotEmpthy)||(depth > ZBuferArr[P.X, P.Y].Depth))
+                if ((item.X >= 0) && (item.X < size.Width) && (item.Y >= 0) && (item.Y < size.Height))
+                {
+                    if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth > ZBuferArr[item.X, item.Y].Depth))
                     {
-                        ZBuferArr[P.X, P.Y].Depth = depth;
-                        ZBuferArr[P.X, P.Y].Color = Clr;
-                        ZBuferArr[P.X, P.Y].IsNotEmpthy = true;
+                        ZBuferArr[item.X, item.Y].Depth = depth;
+                        ZBuferArr[item.X, item.Y].Color = Clr;
+                        ZBuferArr[item.X, item.Y].IsNotEmpty = true;
                     }
+                }
             }
         }
 
-        private void PaintZBufer(ZBuferStruct[,] ZBuferArr,Bitmap drawingSurface)
+        private void PaintZBufer(ZBuferStruct[,] ZBuferArr, Bitmap drawingSurface)
         {
-            for (int i = 0; i < drawingSurface.Width; i++)
-                for (int j = 0; j < drawingSurface.Height; j++)
-                    drawingSurface.SetPixel(i, j, ZBuferArr[i, j].Color);
+            using (var fastDrawingSurface = new FastBitmap(drawingSurface))
+            {
+                for (int i = 0; i < fastDrawingSurface.Width; i++)
+                {
+                    for (int j = 0; j < fastDrawingSurface.Height; j++)
+                    {
+                        var zBufferItem = ZBuferArr[i, j];
+                        if (zBufferItem.IsNotEmpty)
+                        {
+                            fastDrawingSurface[i, j] = zBufferItem.Color;
+                        }
+                    }
+                }
+            }
+            //DrawEdges(drawingSurface);
         }
 
-        private void ZbuferButton_Click(object sender, EventArgs e)
+        private void DrawZBuffer(Bitmap drawingSurface)
         {
-            var size = polyhedronPictureBox.Size;
-            var drawingSurface = new Bitmap(size.Width, size.Height);
-            ZBuferStruct[,] ZBuferArr = new ZBuferStruct[size.Width, size.Height];
-
-            Matrix transformation = Axonometric.CreateMatrix();
+            var size = drawingSurface.Size;
+            var zBuffer = new ZBuferStruct[size.Width, size.Height];
 
             foreach (var item in ListPolyhedron)
             {
-                Random random = new Random();
-                Color Clr = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-                foreach (Facet3D fct in item.Facets)
+                var itemCopy = camera.Project(item, currentProjectionType);
+
+                var random = new Random();
+                foreach (var facets in itemCopy.Facets)
                 {
-                    List < Facet3D > FctTrngl= MakeTriangle(fct);
-                    foreach (Facet3D t in FctTrngl)
-                        ZBufer(ZBuferArr,t, Clr, transformation);
+                    var triangulatedFacet = TriangulateFacet(facets);
+                    var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                    foreach (var triangle in triangulatedFacet)
+                    {
+                        //ZBufer(zBuffer, triangle, itemCopy.Color);
+                        ZBufer(zBuffer, triangle, color);
+                    }
                 }
             }
-            PaintZBufer(ZBuferArr, drawingSurface);
+            PaintZBufer(zBuffer, drawingSurface);
+
             polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            //currentFacetsRemovingType = facetsRemovingTypes[facetsRemovingComboBox.SelectedIndex];
+        }
+
+        private void facetsRemovingComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            currentFacetsRemovingType = facetsRemovingTypes[facetsRemovingComboBox.SelectedIndex];
+            Project();
+        }
+
+        private void rotateCameraButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(cameraAngleXTextBox.Text, out int dx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraAngleYTextBox.Text, out int dy))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraAngleZTextBox.Text, out int dz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            camera.Rotate(dx, dy, dz);
+            Project();
+        }
+
+        private void translateCameraButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(cameraXtranslationTextBox.Text, out int dx))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraYtranslationTextBox.Text, out int dy))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(cameraZtranslationTextBox.Text, out int dz))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            camera.Translate(dx, dy, dz);
+            Project();
         }
     }
 }

@@ -14,10 +14,8 @@ namespace RasterAlgorithms
                 fastDrawingSurface.DrawBresenhamLine(p1, p2, color);
         }
 
-        public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color)
-        {
-            fastDrawingSurface.DrawPoints(GetBresenhamPoints(p1, p2), color);
-        }
+        public static void DrawBresenhamLine(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color) 
+            => fastDrawingSurface.DrawPoints(GetBresenhamPoints(p1, p2), color);
 
         public static void DrawBresenhamLineDashed(this Bitmap drawingSurface, Point p1, Point p2, Color color, int dashLength)
         {
@@ -26,9 +24,7 @@ namespace RasterAlgorithms
         }
 
         public static void DrawBresenhamLineDashed(this FastBitmap fastDrawingSurface, Point p1, Point p2, Color color, int dashLength)
-        {
-            fastDrawingSurface.DrawPointsInterruptly(GetBresenhamPoints(p1, p2), color, dashLength);
-        }
+            => fastDrawingSurface.DrawPointsInterruptly(GetBresenhamPoints(p1, p2), color, dashLength);
 
         public static void DrawPoints(this FastBitmap fastDrawingSurface, IEnumerable<Point> points, Color color)
         {
@@ -94,10 +90,8 @@ namespace RasterAlgorithms
             }
         }
 
-        public static IEnumerable<Point> GetBresenhamPoints(Point p1, Point p2)
-        {
-            return GetBresenhamPoints(p1.X, p1.Y, p2.X, p2.Y);
-        }
+        public static IEnumerable<Point> GetBresenhamPoints(Point p1, Point p2) 
+            => GetBresenhamPoints(p1.X, p1.Y, p2.X, p2.Y);
 
         public static IEnumerable<Point> GetBresenhamPoints(int x1, int y1, int x2, int y2)
         {
