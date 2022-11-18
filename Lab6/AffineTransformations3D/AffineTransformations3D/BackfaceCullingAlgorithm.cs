@@ -18,7 +18,7 @@ namespace AffineTransformations3D
             foreach (var facet in polyhoderon.Facets)
             {
                 var normal = ComputeNormal(facet);
-                var viewDirection = new Vector3D(viewpoint.X - center.X, viewpoint.Y - center.Y, viewpoint.Z - center.Z);
+                var viewDirection = new Vector3D(1, 1, -1000);
                 var dot = normal.DotProduct(viewDirection);
                 if (dot < 0)
                 {

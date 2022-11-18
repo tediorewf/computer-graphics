@@ -13,7 +13,6 @@ namespace AffineTransformations3D
         public double DegreesY { get; set; }
         public double DegreesZ { get; set; }
 
-
         public Camera(double x, double y, double z) {
             Position = new Point3D(x, y, z);
             DegreesX = 0;
@@ -38,9 +37,11 @@ namespace AffineTransformations3D
         public Polyhedron Project(Polyhedron polyhedron, ProjectionType projectionType)
         {
             var copyPolyhedron = polyhedron.Copy();
-            copyPolyhedron.Translate(-Position.X, -Position.Y, -Position.Z);
-            copyPolyhedron.RotateAxis(DegreesX, DegreesY, DegreesZ);
+            //copyPolyhedron.Translate(-Position.X, -Position.Y, -Position.Z);
+            //copyPolyhedron.Rotate
             return copyPolyhedron.ComputeProjection(projectionType);
         }
+
+        
     }
 }

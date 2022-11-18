@@ -139,9 +139,18 @@ namespace AffineTransformations3D
 
         public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
         {
-            var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+            /*var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
                 * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            ApplyTransformationInplace(this, centeredRotationTransformation);*/
+            RotateAroundPoint(degreesX, degreesY, degreesZ, Center);
+        }
+
+        public void RotateAroundPoint(double degreesX, double degreesY, double degreesZ, Point3D p)
+        {
+            var centeredRotationTransformation = MakeTranslationMatrix(-p.X, -p.Y, -p.Z)
+                * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
+                * MakeTranslationMatrix(p.X, p.Y, p.Z);
             ApplyTransformationInplace(this, centeredRotationTransformation);
         }
 
