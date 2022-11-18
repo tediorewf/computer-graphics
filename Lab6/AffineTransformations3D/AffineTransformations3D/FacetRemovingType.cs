@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace AffineTransformations3D
 {
-    public enum FacetRemovingType
-    {
-        None, ZBuffer, BackfaceCulling
-    }
+public enum FacetRemovingType
+{
+    None, ZBuffer, BackfaceCulling
+}
 
-    public static class FacetRemovingTypeExtensions
+public static class FacetRemovingTypeExtensions
+{
+    public static string GetFacetRemovingName(this FacetRemovingType facetRemovingType)
     {
-        public static string GetFacetRemovingName(this FacetRemovingType facetRemovingType)
+        switch (facetRemovingType)
         {
-            switch (facetRemovingType)
-            {
-                case FacetRemovingType.ZBuffer:
-                    return "Z-буфер";
-                case FacetRemovingType.BackfaceCulling:
-                    return "Отчесение по нормалям поверхностей";
-                case FacetRemovingType.None:
-                    return "Без отсечения (рисование ребер)";
-                default:
-                    throw new ArgumentException("Неизвестный тип отсечения граней");
-            }
+        case FacetRemovingType.ZBuffer:
+            return "Z-буфер";
+        case FacetRemovingType.BackfaceCulling:
+            return "Отчесение по нормалям поверхностей";
+        case FacetRemovingType.None:
+            return "Без отсечения (рисование ребер)";
+        default:
+            throw new ArgumentException("Неизвестный тип отсечения граней");
         }
     }
+}
 }
