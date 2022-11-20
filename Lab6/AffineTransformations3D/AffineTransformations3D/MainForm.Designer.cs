@@ -58,7 +58,6 @@
             this.scalingXLabel = new System.Windows.Forms.Label();
             this.rotationGroupBox = new System.Windows.Forms.GroupBox();
             this.rotateButton = new System.Windows.Forms.Button();
-            this.rotationZTextBox = new System.Windows.Forms.TextBox();
             this.rotationYTextBox = new System.Windows.Forms.TextBox();
             this.rotationXTextBox = new System.Windows.Forms.TextBox();
             this.rotaionDegreesZLabel = new System.Windows.Forms.Label();
@@ -108,6 +107,28 @@
             this.partitionsCountTextBox = new System.Windows.Forms.TextBox();
             this.ChoiceComboBox = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.ZbuferButton = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.FUNbuttonX = new System.Windows.Forms.Button();
+            this.FUNbuttonY = new System.Windows.Forms.Button();
+            this.FUNbuttonZ = new System.Windows.Forms.Button();
+            this.FzeroBox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.rotationZTextBox = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.splittingTBox = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.y1TBox = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.x1TBox = new System.Windows.Forms.TextBox();
+            this.y0TBox = new System.Windows.Forms.TextBox();
+            this.x0TBox = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.z1TBox = new System.Windows.Forms.TextBox();
+            this.z0TBox = new System.Windows.Forms.TextBox();
             this.facetsRemovingComboBox = new System.Windows.Forms.ComboBox();
             this.facetsRemovingGroupBox = new System.Windows.Forms.GroupBox();
             this.cameraGroupBox = new System.Windows.Forms.GroupBox();
@@ -137,6 +158,7 @@
             this.groupBox1.SuspendLayout();
             this.modelFromFileFroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.facetsRemovingGroupBox.SuspendLayout();
             this.cameraGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -464,7 +486,7 @@
             this.rotateButton.Text = "Повернуть";
             this.rotateButton.UseVisualStyleBackColor = true;
             this.rotateButton.Click += new System.EventHandler(this.rotateButton_Click);
-            // 
+            //
             // rotationZTextBox
             // 
             this.rotationZTextBox.Location = new System.Drawing.Point(282, 56);
@@ -1148,13 +1170,214 @@
             this.translateCameraButton.UseVisualStyleBackColor = true;
             this.translateCameraButton.Click += new System.EventHandler(this.translateCameraButton_Click);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label14);
+            this.groupBox3.Controls.Add(this.label15);
+            this.groupBox3.Controls.Add(this.z1TBox);
+            this.groupBox3.Controls.Add(this.z0TBox);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.splittingTBox);
+            this.groupBox3.Controls.Add(this.label12);
+            this.groupBox3.Controls.Add(this.y1TBox);
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.x1TBox);
+            this.groupBox3.Controls.Add(this.y0TBox);
+            this.groupBox3.Controls.Add(this.x0TBox);
+            this.groupBox3.Controls.Add(this.label8);
+            this.groupBox3.Controls.Add(this.FzeroBox);
+            this.groupBox3.Controls.Add(this.FUNbuttonZ);
+            this.groupBox3.Controls.Add(this.FUNbuttonY);
+            this.groupBox3.Controls.Add(this.FUNbuttonX);
+            this.groupBox3.Location = new System.Drawing.Point(930, 68);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox3.Size = new System.Drawing.Size(182, 250);
+            this.groupBox3.TabIndex = 49;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Плавающий горизонт";
+            // 
+            // FUNbuttonX
+            // 
+            this.FUNbuttonX.Location = new System.Drawing.Point(5, 182);
+            this.FUNbuttonX.Name = "FUNbuttonX";
+            this.FUNbuttonX.Size = new System.Drawing.Size(43, 48);
+            this.FUNbuttonX.TabIndex = 53;
+            this.FUNbuttonX.Text = "по X";
+            this.FUNbuttonX.UseVisualStyleBackColor = true;
+            this.FUNbuttonX.Click += new System.EventHandler(this.FUNbuttonX_Click);
+            // 
+            // FUNbuttonY
+            // 
+            this.FUNbuttonY.Location = new System.Drawing.Point(53, 182);
+            this.FUNbuttonY.Name = "FUNbuttonY";
+            this.FUNbuttonY.Size = new System.Drawing.Size(43, 48);
+            this.FUNbuttonY.TabIndex = 54;
+            this.FUNbuttonY.Text = "по Y";
+            this.FUNbuttonY.UseVisualStyleBackColor = true;
+            this.FUNbuttonY.Click += new System.EventHandler(this.FUNbuttonY_Click);
+            // 
+            // FUNbuttonZ
+            // 
+            this.FUNbuttonZ.Location = new System.Drawing.Point(100, 183);
+            this.FUNbuttonZ.Name = "FUNbuttonZ";
+            this.FUNbuttonZ.Size = new System.Drawing.Size(43, 48);
+            this.FUNbuttonZ.TabIndex = 55;
+            this.FUNbuttonZ.Text = "по Z";
+            this.FUNbuttonZ.UseVisualStyleBackColor = true;
+            this.FUNbuttonZ.Click += new System.EventHandler(this.FUNbuttonZ_Click);
+            // 
+            // FzeroBox
+            // 
+            this.FzeroBox.Location = new System.Drawing.Point(5, 143);
+            this.FzeroBox.Name = "FzeroBox";
+            this.FzeroBox.Size = new System.Drawing.Size(135, 20);
+            this.FzeroBox.TabIndex = 47;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(146, 146);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(25, 13);
+            this.label8.TabIndex = 47;
+            this.label8.Text = "= 0 ";
+            // 
+            // rotationZTextBox
+            // 
+            this.rotationZTextBox.Location = new System.Drawing.Point(141, 29);
+            this.rotationZTextBox.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.rotationZTextBox.Name = "rotationZTextBox";
+            this.rotationZTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rotationZTextBox.TabIndex = 5;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(11, 26);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(28, 13);
+            this.label9.TabIndex = 57;
+            this.label9.Text = "X от";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(102, 26);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(19, 13);
+            this.label10.TabIndex = 58;
+            this.label10.Text = "до";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(102, 52);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(19, 13);
+            this.label11.TabIndex = 59;
+            this.label11.Text = "до";
+            // 
+            // splittingTBox
+            // 
+            this.splittingTBox.Location = new System.Drawing.Point(70, 115);
+            this.splittingTBox.Name = "splittingTBox";
+            this.splittingTBox.Size = new System.Drawing.Size(51, 20);
+            this.splittingTBox.TabIndex = 65;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(11, 52);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(28, 13);
+            this.label12.TabIndex = 60;
+            this.label12.Text = "Y от";
+            // 
+            // y1TBox
+            // 
+            this.y1TBox.Location = new System.Drawing.Point(127, 52);
+            this.y1TBox.Name = "y1TBox";
+            this.y1TBox.Size = new System.Drawing.Size(51, 20);
+            this.y1TBox.TabIndex = 64;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(11, 118);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(53, 13);
+            this.label13.TabIndex = 61;
+            this.label13.Text = "С шагом:";
+            // 
+            // x1TBox
+            // 
+            this.x1TBox.Location = new System.Drawing.Point(127, 23);
+            this.x1TBox.Name = "x1TBox";
+            this.x1TBox.Size = new System.Drawing.Size(51, 20);
+            this.x1TBox.TabIndex = 63;
+            // 
+            // y0TBox
+            // 
+            this.y0TBox.Location = new System.Drawing.Point(45, 52);
+            this.y0TBox.Name = "y0TBox";
+            this.y0TBox.Size = new System.Drawing.Size(51, 20);
+            this.y0TBox.TabIndex = 62;
+            // 
+            // x0TBox
+            // 
+            this.x0TBox.Location = new System.Drawing.Point(45, 23);
+            this.x0TBox.Name = "x0TBox";
+            this.x0TBox.Size = new System.Drawing.Size(51, 20);
+            this.x0TBox.TabIndex = 56;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(102, 78);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(19, 13);
+            this.label14.TabIndex = 66;
+            this.label14.Text = "до";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(11, 78);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(28, 13);
+            this.label15.TabIndex = 67;
+            this.label15.Text = "Z от";
+            // 
+            // z1TBox
+            // 
+            this.z1TBox.Location = new System.Drawing.Point(127, 78);
+            this.z1TBox.Name = "z1TBox";
+            this.z1TBox.Size = new System.Drawing.Size(51, 20);
+            this.z1TBox.TabIndex = 69;
+            // 
+            // z0TBox
+            // 
+            this.z0TBox.Location = new System.Drawing.Point(45, 78);
+            this.z0TBox.Name = "z0TBox";
+            this.z0TBox.Size = new System.Drawing.Size(51, 20);
+            this.z0TBox.TabIndex = 68;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.ZbuferButton);
+            
             this.ClientSize = new System.Drawing.Size(2270, 938);
             this.Controls.Add(this.cameraGroupBox);
             this.Controls.Add(this.facetsRemovingGroupBox);
+            
             this.Controls.Add(this.label7);
             this.Controls.Add(this.ChoiceComboBox);
             this.Controls.Add(this.groupBox2);
@@ -1198,9 +1421,14 @@
             this.modelFromFileFroupBox.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+
             this.facetsRemovingGroupBox.ResumeLayout(false);
             this.cameraGroupBox.ResumeLayout(false);
             this.cameraGroupBox.PerformLayout();
+
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1239,7 +1467,6 @@
         private System.Windows.Forms.TextBox translationZTextBox;
         private System.Windows.Forms.GroupBox rotationGroupBox;
         private System.Windows.Forms.Button rotateButton;
-        private System.Windows.Forms.TextBox rotationZTextBox;
         private System.Windows.Forms.TextBox rotationYTextBox;
         private System.Windows.Forms.TextBox rotationXTextBox;
         private System.Windows.Forms.Label rotaionDegreesZLabel;
@@ -1288,6 +1515,30 @@
         private System.Windows.Forms.ComboBox chooseRotationBodyAxisComboBox;
         private System.Windows.Forms.ComboBox ChoiceComboBox;
         private System.Windows.Forms.Label label7;
+
+        private System.Windows.Forms.Button ZbuferButton;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button FUNbuttonZ;
+        private System.Windows.Forms.Button FUNbuttonY;
+        private System.Windows.Forms.Button FUNbuttonX;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox FzeroBox;
+        private System.Windows.Forms.TextBox rotationZTextBox;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox z1TBox;
+        private System.Windows.Forms.TextBox z0TBox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox splittingTBox;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox y1TBox;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox x1TBox;
+        private System.Windows.Forms.TextBox y0TBox;
+        private System.Windows.Forms.TextBox x0TBox;
+
         private System.Windows.Forms.ComboBox facetsRemovingComboBox;
         private System.Windows.Forms.GroupBox facetsRemovingGroupBox;
         private System.Windows.Forms.GroupBox cameraGroupBox;
@@ -1305,6 +1556,7 @@
         private System.Windows.Forms.TextBox cameraAngleXTextBox;
         private System.Windows.Forms.Button translateCameraButton;
         private System.Windows.Forms.Button rotateCameraButton;
+
     }
 }
 
