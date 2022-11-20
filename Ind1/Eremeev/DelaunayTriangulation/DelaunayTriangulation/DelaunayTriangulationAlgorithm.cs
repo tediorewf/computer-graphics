@@ -1,59 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DelaunayTriangulation
 {
     public static class DelaunayTriangulationAlgorithm
     {
-        public static List<Triangle2D> Triangulate(List<Point2D> points)
+        // https://www.youtube.com/watch?v=4ySSsESzw2Y
+        // https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
+        public static HashSet<Triangle2D> Triangulate(List<Point2D> points)
         {
-            var triangles = new List<Triangle2D>();
-            var initialEdge = FindInitialJarvisEdge(points);
+            var superTriangle = GenerateSuperTriangle(points);
+            var triangulation = new HashSet<Triangle2D> { superTriangle };
 
-            var deads = new HashSet<Edge2D>();
-
-            return triangles;
-        }
-
-        private static Edge2D FindInitialJarvisEdge(List<Point2D> points)
-        {
-            int minDotProduct = int.MaxValue;
-            var initialPoint = FindInitialJarvisPoint(points);
-            var nextPoint = points.FirstOrDefault();
-
-            foreach (var currentPoint in points)
+            foreach (var point in points)
             {
-                if (currentPoint == initialPoint)
-                {
-                    continue;
-                }
+                var badTriangles = FindBadTriangles(point, triangulation);
+                triangulation
+                    .RemoveWhere(t => badTriangles.Contains(t));
 
-                int currentDotProduct = initialPoint.ToVector() * currentPoint.ToVector();
-                if (currentDotProduct < minDotProduct)
+                var polygon = FindPolygonalHoleBoundaries(badTriangles);
+                foreach (var edge in polygon.Where(e => e.Begin != point && e.End != point))
                 {
-                    minDotProduct = currentDotProduct;
-                    nextPoint = currentPoint;
+                    var triangle = new Triangle2D(point, edge.Begin, edge.End);
+                    triangulation.Add(triangle);
                 }
             }
 
-            return new Edge2D(initialPoint, nextPoint);
+            triangulation
+                .RemoveWhere(t => t.Vertices.Any(v => superTriangle.Vertices.Contains(v)));
+            
+            return triangulation;
         }
 
-        private static Point2D FindInitialJarvisPoint(List<Point2D> points)
+        private static Triangle2D GenerateSuperTriangle(List<Point2D> points)
         {
-            var initialPoint = points.FirstOrDefault();
-            foreach (var currentPoint in points)
+            int maxX = points.Select(p => p.X).Max();
+            int maxY = points.Select(p => p.Y).Max();
+
+            var p1 = new Point2D(maxX / 2, -2 * maxX );
+            var p2 = new Point2D(-2 * maxY, 2 * maxY);
+            var p3 = new Point2D(2 * maxX + maxY , 2 * maxY);
+            return new Triangle2D(p1, p2, p3);   
+        }
+
+        private static HashSet<Triangle2D> FindBadTriangles(Point2D point, HashSet<Triangle2D> triangles)
+        {
+            var badTriangles = triangles
+                .Where(t => t.IsPointInCircumscribedCircle(point));
+            return new HashSet<Triangle2D>(badTriangles);
+        }
+
+        private static List<Edge2D> FindPolygonalHoleBoundaries(HashSet<Triangle2D> badTriangles)
+        {
+            var edges = new List<Edge2D>();
+            foreach (var triangle in badTriangles)
             {
-                if (currentPoint.X < initialPoint.X 
-                    || currentPoint.X == initialPoint.X & currentPoint.Y < initialPoint.Y)
-                {
-                    initialPoint = currentPoint;
-                }
+                edges.Add(new Edge2D(triangle.P1, triangle.P2));
+                edges.Add(new Edge2D(triangle.P2, triangle.P3));
+                edges.Add(new Edge2D(triangle.P3, triangle.P1));
             }
-            return initialPoint;
+            var polygonalHoleBoundaries = edges
+                .GroupBy(e => e)
+                .Where(e => e.Count() == 1)
+                .Select(e => e.First());
+            return polygonalHoleBoundaries.ToList();
         }
     }
 }

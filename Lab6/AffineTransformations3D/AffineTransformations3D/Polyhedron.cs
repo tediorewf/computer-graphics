@@ -3,6 +3,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace AffineTransformations3D
 {
@@ -16,6 +17,7 @@ namespace AffineTransformations3D
         public List<Facet3D> Facets { get; set; }
         private Point3D _center;
         public Point3D Center => _center;
+        public Color Color { get; set; }
 
         public Polyhedron(List<Point3D> vertices, List<Edge3D> edges, List<Facet3D> facets)
         {
@@ -23,6 +25,8 @@ namespace AffineTransformations3D
             Edges = edges;
             Facets = facets;
             _center = ComputeCenter();
+            var random = new Random();
+            Color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
         }
 
         public void SaveToFile(string path)
@@ -135,9 +139,18 @@ namespace AffineTransformations3D
 
         public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
         {
-            var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
+            /*var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
                 * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
                 * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
+            ApplyTransformationInplace(this, centeredRotationTransformation);*/
+            RotateAroundPoint(degreesX, degreesY, degreesZ, Center);
+        }
+
+        public void RotateAroundPoint(double degreesX, double degreesY, double degreesZ, Point3D p)
+        {
+            var centeredRotationTransformation = MakeTranslationMatrix(-p.X, -p.Y, -p.Z)
+                * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
+                * MakeTranslationMatrix(p.X, p.Y, p.Z);
             ApplyTransformationInplace(this, centeredRotationTransformation);
         }
 
@@ -192,20 +205,41 @@ namespace AffineTransformations3D
                     }
                     if (begin != null && end != null)
                     {
-                        edges.Add(new Edge3D(begin, end));
+                        edges.Add(new Edge3D(begin, end, Edges[i].Identifier));
                         break;
                     }
                 }
             }
-            // Поверхности пока не нужны в этой лабе. Это так, на будущее
             var facets = new List<Facet3D>(Facets.Count);
-            return new Polyhedron(vertices, edges, facets);
+            foreach (var f in Facets)
+            {
+                var currentPoints = new List<Point3D>();
+                var currentEdges = new List<Edge3D>();
+
+                foreach (var p in f.Points)
+                {
+                    var pointToAdd = vertices.Find(v => v.Identifier == p.Identifier);
+                    currentPoints.Add(pointToAdd);
+                }
+
+                foreach (var edge in f.Edges)
+                {
+                    var edgeToAdd = edges.Find(e => e.Identifier == edge.Identifier);
+                    currentEdges.Add(edgeToAdd);
+                }
+
+                var currentFacet = new Facet3D(currentPoints, currentEdges);
+                facets.Add(currentFacet);
+            }
+            var polyhedron = new Polyhedron(vertices, edges, facets);
+            polyhedron.Color = Color;
+            return polyhedron;
         }
 
-        private Point3D ComputeCenter()
-        {
-            return ComputeCenter(this);
-        }
+        public Polyhedron Copy() => Clone() as Polyhedron;
+
+        private Point3D ComputeCenter() 
+            => ComputeCenter(this);
 
         private static Point3D ComputeCenter(Polyhedron polyhedron)
         {

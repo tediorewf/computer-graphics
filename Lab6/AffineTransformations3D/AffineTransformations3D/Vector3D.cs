@@ -40,6 +40,39 @@ namespace AffineTransformations3D
             return new Matrix(elements);
         }
 
+        public double DotProduct(Vector3D other) => DotProduct(this, other);
+
+        public static double DotProduct(Vector3D lhs, Vector3D rhs)
+        {
+            double dot = lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z;
+            return dot;
+        }
+
+        public static Vector3D operator-(Vector3D lhs, Vector3D rhs) 
+            => new Vector3D(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
+
+        public static Vector3D operator*(Vector3D lhs, double rhs) 
+            => new Vector3D(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs);
+
+        public static Vector3D operator *(double lhs, Vector3D rhs) 
+            => rhs * lhs;
+
+        public Vector3D CrossProduct(Vector3D other) => CrossProduct(this, other);
+
+        public static Vector3D CrossProduct(Vector3D lhs, Vector3D rhs)
+        {
+            double x = lhs.Y * rhs.Z - lhs.Z * rhs.Y;
+            double y = lhs.Z * rhs.X - lhs.X * rhs.Z;
+            double z = lhs.X * rhs.Y - lhs.Y * rhs.X;
+            var cross = new Vector3D(x, y, z);
+            return cross;
+        }
+
+        public Vector3D Normalize()
+        {
+            double length = ComputeLength();
+            return new Vector3D(X / Length, Y / Length, Z / length);
+        }
 
         private double ComputeLength() => ComputeLength(this);
 

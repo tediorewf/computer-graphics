@@ -41,6 +41,7 @@
             this.triangulationPictureBox.Size = new System.Drawing.Size(749, 648);
             this.triangulationPictureBox.TabIndex = 0;
             this.triangulationPictureBox.TabStop = false;
+            this.triangulationPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.triangulationPictureBox_MouseClick);
             // 
             // triangulateButton
             // 

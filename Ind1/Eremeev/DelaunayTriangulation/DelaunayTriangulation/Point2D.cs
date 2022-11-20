@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace DelaunayTriangulation
 {
     public class Point2D
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        public Point2D(Point p) : this(p.X, p.Y)
-        {
-        }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         public Point2D(int x, int y)
         {
@@ -22,15 +13,34 @@ namespace DelaunayTriangulation
             Y = y;
         }
 
-        /// <summary>
-        /// Создает точку с координатами (0;0)
-        /// </summary>
-        public Point2D() : this(0, 0)
+        public Point2D(Point p) : this(p.X, p.Y)
         {
         }
 
-        public Vector2D ToVector() => new Vector2D(X, Y);
+        public Point ToPoint() => new Point(X, Y);
 
-        public override int GetHashCode() => (X.GetHashCode() + Y).GetHashCode();
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            var point = obj as Point2D;
+
+            return point.X == X && point.Y == Y;
+        }
+
+        public override int GetHashCode() => X ^ Y;
+
+        public int ComputeDistanceSquared(Point2D other)
+            => ComputeDistanceSquared(this, other);
+
+        public static int ComputeDistanceSquared(Point2D lhs, Point2D rhs)
+        {
+            int diffX = lhs.X - rhs.X;
+            int diffY = lhs.Y - rhs.Y;
+            return diffX * diffX + diffY * diffY;
+        }
     }
 }
