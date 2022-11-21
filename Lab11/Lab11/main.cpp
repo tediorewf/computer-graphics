@@ -18,7 +18,7 @@ const char* VertexShaderSource = R"(
     #version 330 core
     in vec2 coord;
     void main() {
-        gl_Position = vec4(coord, 0.0, 1.0);
+        gl_Position = vec4(coord/10, 0.0, 1.0);
     }
 )";
 
@@ -26,7 +26,7 @@ const char* FragShaderSource = R"(
     #version 330 core
     out vec4 color;
     void main() {
-        color = vec4(0, 1, 0, 1);
+        color = vec4(1, 1, 1, 1);
     }
 )";
 
@@ -42,10 +42,58 @@ void checkOpenGLerror()
 void InitVBO()
 {
     glGenBuffers(1, &VBO);
-    Vertex triangle[3] = {
-        { -1.0f, -1.0f },
-        { 0.0f, 1.0f },
-        { 1.0f, -1.0f }
+    Vertex triangle[40] = {
+        //пятиугольник 1
+        { -7.0f, 9.0f },
+        { -4.0f, 9.0f },
+        { -3.07f, 6.15f },
+        { -5.5f, 4.38f },
+        { -7.93f, 6.15f },
+
+        //четырехугольник 1
+        { -2.0f, 4.0f },
+        { -2.0f, 9.0f },
+        { 2.0f, 9.0f },
+        { 2.0f, 4.0f },
+
+        //веер 1
+        { 4.0f , 4.0f },
+        { 4.0f , 2.0f },
+        { 5.0f , 2.0f },
+        { 6.98f , 2.28f },
+        { 8.05f , 3.28f },
+        { 8.2f , 4.44f },
+        { 8.43 , 5.75f },
+        { 8.0f , 7.0f },
+        { 7.58f , 8.35f },
+        { 6.0f , 9.0f },
+        { 4.0f , 9.0f},
+
+        //пятиугольник 2
+        { -7.0f, -1.0f },
+        { -4.0f, -1.0f },
+        { -3.07f, -3.85f },
+        { -5.5f, -5.62f },
+        { -7.93f, -3.85f },
+
+        //четырехугольник 2
+        { -2.0f, -6.0f },
+        { -2.0f, -1.0f },
+        { 2.0f, -1.0f },
+        { 2.0f, -6.0f },
+
+        //веер 2
+        { 4.0f , -6.0f },
+        { 4.0f , -8.0f },
+        { 5.0f , -8.0f },
+        { 6.98f , -7.72f },
+        { 8.05f , -6.72f },
+        { 8.2f , -5.56f },
+        { 8.43 , -4.25f },
+        { 8.0f , -3.0f },
+        { 7.58f , -1.65f },
+        { 6.0f , -1.0f },
+        { 4.0f , -1.0f}
     };
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
@@ -105,7 +153,15 @@ void Draw()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(Attrib_vertex, 2, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDrawArrays(GL_POLYGON, 0, 5);
+    glDrawArrays(GL_POLYGON, 5, 4);
+    glDrawArrays(GL_TRIANGLE_FAN, 9, 11);
+
+    glDrawArrays(GL_POLYGON, 20, 5);
+    glDrawArrays(GL_POLYGON, 25, 4);
+    glDrawArrays(GL_TRIANGLE_FAN, 29, 11);
+
     glDisableVertexAttribArray(Attrib_vertex);
     glUseProgram(0);
     checkOpenGLerror();
