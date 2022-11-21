@@ -488,10 +488,10 @@
             // 
             // rotationZTextBox
             // 
-            this.rotationZTextBox.Location = new System.Drawing.Point(70, 15);
+            this.rotationZTextBox.Location = new System.Drawing.Point(138, 29);
             this.rotationZTextBox.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
             this.rotationZTextBox.Name = "rotationZTextBox";
-            this.rotationZTextBox.Size = new System.Drawing.Size(34, 20);
+            this.rotationZTextBox.Size = new System.Drawing.Size(65, 20);
             this.rotationZTextBox.TabIndex = 5;
             // 
             // rotationYTextBox

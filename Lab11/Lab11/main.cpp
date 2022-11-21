@@ -24,9 +24,10 @@ const char* VertexShaderSource = R"(
 
 const char* FragShaderSource = R"(
     #version 330 core
+    const vec4 clr = vec4(0,1,2,1);
     out vec4 color;
     void main() {
-        color = vec4(1, 1, 1, 1);
+        color = clr;
     }
 )";
 
