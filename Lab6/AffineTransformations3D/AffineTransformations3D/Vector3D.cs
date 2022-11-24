@@ -34,6 +34,10 @@ namespace AffineTransformations3D
             W = w;
         }
 
+        public Vector3D() : this(0, 0, 0)
+        {
+        }
+
         public Matrix ToMatrix()
         {
             var elements = new double[,] { { X, Y, Z, W } };
@@ -57,6 +61,13 @@ namespace AffineTransformations3D
         public static Vector3D operator *(double lhs, Vector3D rhs) 
             => rhs * lhs;
 
+        public void Add(Vector3D other)
+        {
+            X += other.X;
+            Y += other.Y;
+            Z += other.Z;
+        }
+
         public Vector3D CrossProduct(Vector3D other) => CrossProduct(this, other);
 
         public static Vector3D CrossProduct(Vector3D lhs, Vector3D rhs)
@@ -70,11 +81,22 @@ namespace AffineTransformations3D
 
         public Vector3D Normalize()
         {
-            double length = ComputeLength();
-            return new Vector3D(X / Length, Y / Length, Z / length);
+            double length = Length;
+            var v = new Vector3D(X / length, Y / length, Z / length);
+            v._length = v.ComputeLength();
+            return v;
         }
 
-        private double ComputeLength() => ComputeLength(this);
+        public void NormalizeInplace()
+        {
+            var normalized = Normalize();
+            X = normalized.X;
+            Y = normalized.Y;
+            Z = normalized.Z;
+            _length = normalized.Length;
+        }
+
+        public double ComputeLength() => ComputeLength(this);
 
         private static double ComputeLength(Vector3D vector3D) => Math.Sqrt(
             vector3D.X*vector3D.X + vector3D.Y*vector3D.Y + vector3D.Z*vector3D.Z);

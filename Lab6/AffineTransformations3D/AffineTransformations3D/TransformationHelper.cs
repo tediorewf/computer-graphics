@@ -12,6 +12,16 @@ namespace AffineTransformations3D
         {
             TransformMultiplePointsInplace(polyhedron.Vertices, transformation);
             TransformPointInplace(polyhedron.Center, transformation);
+            foreach (var vertex in polyhedron.Vertices)
+            {
+                TransformVectorInplace(vertex.Normal, transformation);
+                var v = vertex.Normal;
+                Console.WriteLine($"{v.X}, {v.Y}, {v.Z}");
+            }
+            foreach (var facet in polyhedron.Facets)
+            {
+                TransformVectorInplace(facet.Normal, transformation);
+            }
         }
 
         public static void TransformMultiplePointsInplace(List<Point3D> points, Matrix transformation) 
@@ -28,6 +38,19 @@ namespace AffineTransformations3D
             point.X = transformedPoint.X;
             point.Y = transformedPoint.Y;
             point.Z = transformedPoint.Z;
+        }
+
+        public static void TransformVectorInplace(Vector3D vector, Matrix transformation)
+        {
+            var product = vector * transformation;
+            double x = product[0, 0];
+            double y = product[0, 1];
+            double z = product[0, 2];
+            //double w = product[0, 3];
+            var transformedVector = new Vector3D(x, y, z);
+            vector.X = transformedVector.X;
+            vector.Y = transformedVector.Y;
+            vector.Z = transformedVector.Z;
         }
     }
 }
