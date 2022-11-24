@@ -1050,5 +1050,30 @@ namespace AffineTransformations3D
         {
 
         }
+
+        private void lightViewPointButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(lightViewPointXTextBox.Text, out int x))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(lightViewPointYTextBox.Text, out int y))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(lightViewPointZTextBox.Text, out int z))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            LightViewPoint.X = x;
+            LightViewPoint.Y = y;
+            LightViewPoint.Z = z;
+            Project();
+        }
     }
 }

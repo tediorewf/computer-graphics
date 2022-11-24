@@ -147,7 +147,14 @@
             this.FUNbuttonX = new System.Windows.Forms.Button();
             this.texturingGroupBox = new System.Windows.Forms.GroupBox();
             this.loadTextureButton = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lightViewPointGroupBox = new System.Windows.Forms.GroupBox();
+            this.lightViewPointXTextBox = new System.Windows.Forms.TextBox();
+            this.lightViewPointYTextBox = new System.Windows.Forms.TextBox();
+            this.lightViewPointZTextBox = new System.Windows.Forms.TextBox();
+            this.lightViewXLabel = new System.Windows.Forms.Label();
+            this.lightVieYLabel = new System.Windows.Forms.Label();
+            this.lightViewZLabel = new System.Windows.Forms.Label();
+            this.lightViewPointButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -164,6 +171,7 @@
             this.cameraGroupBox.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.texturingGroupBox.SuspendLayout();
+            this.lightViewPointGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // polyhedronPictureBox
@@ -1419,21 +1427,86 @@
             this.loadTextureButton.UseVisualStyleBackColor = true;
             this.loadTextureButton.Click += new System.EventHandler(this.loadTextureButton_Click);
             // 
-            // groupBox4
+            // lightViewPointGroupBox
             // 
-            this.groupBox4.Location = new System.Drawing.Point(1469, 1031);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(227, 196);
-            this.groupBox4.TabIndex = 59;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "groupBox4";
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewPointButton);
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewZLabel);
+            this.lightViewPointGroupBox.Controls.Add(this.lightVieYLabel);
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewXLabel);
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewPointZTextBox);
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewPointYTextBox);
+            this.lightViewPointGroupBox.Controls.Add(this.lightViewPointXTextBox);
+            this.lightViewPointGroupBox.Location = new System.Drawing.Point(1469, 1031);
+            this.lightViewPointGroupBox.Name = "lightViewPointGroupBox";
+            this.lightViewPointGroupBox.Size = new System.Drawing.Size(227, 286);
+            this.lightViewPointGroupBox.TabIndex = 59;
+            this.lightViewPointGroupBox.TabStop = false;
+            this.lightViewPointGroupBox.Text = "Точка света";
+            // 
+            // lightViewPointXTextBox
+            // 
+            this.lightViewPointXTextBox.Location = new System.Drawing.Point(120, 48);
+            this.lightViewPointXTextBox.Name = "lightViewPointXTextBox";
+            this.lightViewPointXTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointXTextBox.TabIndex = 0;
+            // 
+            // lightViewPointYTextBox
+            // 
+            this.lightViewPointYTextBox.Location = new System.Drawing.Point(120, 106);
+            this.lightViewPointYTextBox.Name = "lightViewPointYTextBox";
+            this.lightViewPointYTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointYTextBox.TabIndex = 1;
+            // 
+            // lightViewPointZTextBox
+            // 
+            this.lightViewPointZTextBox.Location = new System.Drawing.Point(121, 155);
+            this.lightViewPointZTextBox.Name = "lightViewPointZTextBox";
+            this.lightViewPointZTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointZTextBox.TabIndex = 2;
+            // 
+            // lightViewXLabel
+            // 
+            this.lightViewXLabel.AutoSize = true;
+            this.lightViewXLabel.Location = new System.Drawing.Point(29, 53);
+            this.lightViewXLabel.Name = "lightViewXLabel";
+            this.lightViewXLabel.Size = new System.Drawing.Size(26, 25);
+            this.lightViewXLabel.TabIndex = 3;
+            this.lightViewXLabel.Text = "X";
+            // 
+            // lightVieYLabel
+            // 
+            this.lightVieYLabel.AutoSize = true;
+            this.lightVieYLabel.Location = new System.Drawing.Point(29, 106);
+            this.lightVieYLabel.Name = "lightVieYLabel";
+            this.lightVieYLabel.Size = new System.Drawing.Size(27, 25);
+            this.lightVieYLabel.TabIndex = 4;
+            this.lightVieYLabel.Text = "Y";
+            // 
+            // lightViewZLabel
+            // 
+            this.lightViewZLabel.AutoSize = true;
+            this.lightViewZLabel.Location = new System.Drawing.Point(29, 158);
+            this.lightViewZLabel.Name = "lightViewZLabel";
+            this.lightViewZLabel.Size = new System.Drawing.Size(25, 25);
+            this.lightViewZLabel.TabIndex = 5;
+            this.lightViewZLabel.Text = "Z";
+            // 
+            // lightViewPointButton
+            // 
+            this.lightViewPointButton.Location = new System.Drawing.Point(34, 203);
+            this.lightViewPointButton.Name = "lightViewPointButton";
+            this.lightViewPointButton.Size = new System.Drawing.Size(187, 57);
+            this.lightViewPointButton.TabIndex = 6;
+            this.lightViewPointButton.Text = "Сместить";
+            this.lightViewPointButton.UseVisualStyleBackColor = true;
+            this.lightViewPointButton.Click += new System.EventHandler(this.lightViewPointButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2564, 1329);
-            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.lightViewPointGroupBox);
             this.Controls.Add(this.texturingGroupBox);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.cameraGroupBox);
@@ -1487,6 +1560,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.texturingGroupBox.ResumeLayout(false);
+            this.lightViewPointGroupBox.ResumeLayout(false);
+            this.lightViewPointGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1614,7 +1689,14 @@
         private System.Windows.Forms.Button FUNbuttonX;
         private System.Windows.Forms.GroupBox texturingGroupBox;
         private System.Windows.Forms.Button loadTextureButton;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox lightViewPointGroupBox;
+        private System.Windows.Forms.Button lightViewPointButton;
+        private System.Windows.Forms.Label lightViewZLabel;
+        private System.Windows.Forms.Label lightVieYLabel;
+        private System.Windows.Forms.Label lightViewXLabel;
+        private System.Windows.Forms.TextBox lightViewPointZTextBox;
+        private System.Windows.Forms.TextBox lightViewPointYTextBox;
+        private System.Windows.Forms.TextBox lightViewPointXTextBox;
     }
 }
 
