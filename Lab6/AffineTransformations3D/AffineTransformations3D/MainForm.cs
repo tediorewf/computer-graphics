@@ -51,6 +51,8 @@ namespace AffineTransformations3D
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
 
+        private bool IsTexture = false;
+        private Bitmap TextureImage;
 
         public MainForm()
         {
@@ -1045,7 +1047,108 @@ namespace AffineTransformations3D
 
         private void loadTextureButton_Click(object sender, EventArgs e)
         {
-
+            
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                TextureImage = new Bitmap(ofd.FileName);
+                IsTexture = true;
+            }
         }
+
+        private void buttonTexture_Click(object sender, EventArgs e)
+        {
+            if (!IsTexture)
+            {
+                MessageBox.Show("Выберете текстуру!");
+                return;
+            }
+            var size = polyhedronPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            DrawTexture(drawingSurface);
+            polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void DrawTexture(Bitmap drawingSurface)
+        {
+            var size = drawingSurface.Size;
+            var zBuffer = new ZBuferStruct[size.Width, size.Height];
+
+            foreach (var item in ListPolyhedron)
+            {
+                var itemCopy = camera.Project(item, currentProjectionType);
+
+                var random = new Random();
+                foreach (var facets in itemCopy.Facets)
+                {
+                    var zBufferFacet = new ZBuferStruct[size.Width, size.Height];
+
+                    var triangulatedFacet = TriangulateFacet(facets);
+                    var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                    foreach (var triangle in triangulatedFacet)
+                    {
+                        ZBufer(zBufferFacet, triangle, color);
+                    }
+                    MakeTexture(zBufferFacet, facets);
+                    zBufferUnite(zBuffer, zBufferFacet);
+                }
+
+            }
+            PaintZBufer(zBuffer, drawingSurface);
+
+            polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void zBufferUnite(ZBuferStruct[,] ZBuferArr, ZBuferStruct[,] ZB)
+        {
+            var size = polyhedronPictureBox.Size;
+
+            for (int i = 0; i < size.Width; i++)
+                for (int j = 0; j < size.Height; j++)
+                    if (ZB[i, j].IsNotEmpty && ((ZBuferArr[i, j].IsNotEmpty && (ZB[i, j].Depth > ZBuferArr[i, j].Depth)) || !ZBuferArr[i, j].IsNotEmpty) )
+                        ZBuferArr[i, j] = ZB[i, j];
+        }
+
+        private void MakeTexture(ZBuferStruct[,] ZBuferArr,Facet3D facet) {
+            double t = 1.7;
+            var size = polyhedronPictureBox.Size;
+
+            Bitmap BM = MakeNaklon(TextureImage, facet);
+
+            int w = BM.Width;
+            int h = BM.Height;
+            for (int i = 0; i < size.Width; i++)
+                for (int j = 0; j < size.Height; j++)
+                    if (ZBuferArr[i, j].IsNotEmpty)
+                    {
+                        int ww = i % w;
+                        int hh = j % h; 
+
+                        if (BM.GetPixel(ww,hh).G == 0)
+                        {
+                            Color c = ZBuferArr[i, j].Color;
+                            int r = (int)(c.R * t);
+                            if (r > 255)
+                                r = 255;
+                            int g = (int)(c.G * t);
+                            if (g > 255)
+                                g = 255;
+                            int b = (int)(c.B * t);
+                            if (b > 255)
+                                b = 255;
+                            ZBuferArr[i, j].Color = Color.FromArgb(r, g, b);
+                        }
+                    }
+        }
+
+        private Bitmap MakeNaklon(Bitmap TImage,Facet3D facet)
+        {
+            //TO DO:
+            //наклонить изображение так, чтобы оно было в плоскости facet'a
+            return TImage;
+        }
+
+
     }
 }
