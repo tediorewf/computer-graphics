@@ -43,21 +43,21 @@ void checkOpenGLerror()
 void InitVBO()
 {
     glGenBuffers(1, &VBO);
-    Vertex triangle[40] = {
-        //пятиугольник 1
+    Vertex vertices[40] = {
+        // пятиугольник 1
         { -7.0f, 9.0f },
         { -4.0f, 9.0f },
         { -3.07f, 6.15f },
         { -5.5f, 4.38f },
         { -7.93f, 6.15f },
 
-        //четырехугольник 1
+        // четырехугольник 1
         { -2.0f, 4.0f },
         { -2.0f, 9.0f },
         { 2.0f, 9.0f },
         { 2.0f, 4.0f },
 
-        //веер 1
+        // веер 1
         { 4.0f , 4.0f },
         { 4.0f , 2.0f },
         { 5.0f , 2.0f },
@@ -70,20 +70,20 @@ void InitVBO()
         { 6.0f , 9.0f },
         { 4.0f , 9.0f},
 
-        //пятиугольник 2
+        // пятиугольник 2
         { -7.0f, -1.0f },
         { -4.0f, -1.0f },
         { -3.07f, -3.85f },
         { -5.5f, -5.62f },
         { -7.93f, -3.85f },
 
-        //четырехугольник 2
+        // четырехугольник 2
         { -2.0f, -6.0f },
         { -2.0f, -1.0f },
         { 2.0f, -1.0f },
         { 2.0f, -6.0f },
 
-        //веер 2
+        // веер 2
         { 4.0f , -6.0f },
         { 4.0f , -8.0f },
         { 5.0f , -8.0f },
@@ -97,7 +97,7 @@ void InitVBO()
         { 4.0f , -1.0f}
     };
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     checkOpenGLerror();
 }
 
@@ -194,7 +194,9 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(600, 600), "Green Triangle", sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(600, 600), 
+        "Construction of various 2D shapes. Flat painting. Uniform", 
+        sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
