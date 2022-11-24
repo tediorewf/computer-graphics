@@ -17,12 +17,12 @@ namespace AffineTransformations3D
         {
             switch (facetRemovingType)
             {
+                case FacetRemovingType.None:
+                    return "Без отсечения (рисование ребер)";
                 case FacetRemovingType.ZBuffer:
                     return "Z-буфер";
                 case FacetRemovingType.BackfaceCulling:
                     return "Отчесение по нормалям поверхностей";
-                case FacetRemovingType.None:
-                    return "Без отсечения (рисование ребер)";
                 default:
                     throw new ArgumentException("Неизвестный тип отсечения граней");
             }

@@ -70,11 +70,13 @@
     </Compile>
     <Compile Include="MathConstants.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="Texel.cs" />
     <Compile Include="Point3D.cs" />
     <Compile Include="Polyhedron.cs" />
     <Compile Include="PolyhedronDrawing.cs" />
     <Compile Include="PolyhedronType.cs" />
     <Compile Include="RegularPolyhedrons.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="TransformationHelper.cs" />
     <Compile Include="TriangleRasterisationAlgorithm.cs" />
     <Compile Include="Vector3D.cs" />
@@ -112,6 +114,8 @@
     <Content Include="ModelFileExamples\cylinder.txt" />
     <Content Include="ModelFileExamples\hexahedron.txt" />
     <Content Include="ModelFileExamples\tetrahedron.txt" />
+    <Content Include="Textures\bricks.jpg" />
+    <Content Include="Textures\creeper.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

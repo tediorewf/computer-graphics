@@ -8,6 +8,7 @@ namespace AffineTransformations3D
     {
         public List<Point3D> Points { get; set; }
         public List<Edge3D> Edges { get; set; }
+        public List<List<Point>> Texture { get; set; }
 
         // Создает пустую поверхность
         public Facet3D() : this(new List<Point3D>(), new List<Edge3D>())
@@ -18,6 +19,7 @@ namespace AffineTransformations3D
         {
             Points = points;
             Edges = edges;
+            Texture = new List<List<Point>>();
         }
 
         public void AddPoint(Point3D p)
@@ -28,6 +30,12 @@ namespace AffineTransformations3D
         public void AddEdge(Edge3D edge)
         {
             Edges.Add(edge);
+        }
+
+        public void LoadTexture(string path)
+        {
+            var texture = Bitmap.FromFile(path);
+            Texture = new List<List<Point>>();
         }
 
         public object Clone()

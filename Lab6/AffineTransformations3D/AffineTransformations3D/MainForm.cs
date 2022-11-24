@@ -61,7 +61,7 @@ namespace AffineTransformations3D
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
             InitializeFacetsStuff();
-            Size = new Size(1150, 540);
+            Size = new Size(1400, 800);
         }
 
         private void InitializePolyhedronStuff()
@@ -826,7 +826,7 @@ namespace AffineTransformations3D
         private int MakeZF(string FSTR,int y, LimitationsFunction LF)
         {
             string FSTR_0 = FSTR.Replace("y", "" + y);
-            double t = Double.MaxValue;
+            double t = double.MaxValue;
             double find_z = 0;
             for (int i = LF.z0; i <= LF.z1; i++)
             {
@@ -1043,5 +1043,9 @@ namespace AffineTransformations3D
             Project();
         }
 
+        private void loadTextureButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
