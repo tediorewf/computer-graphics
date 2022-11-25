@@ -315,8 +315,8 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(600, 600), 
-        "Construction of various 2D shapes. Flat painting. Uniform", 
+    sf::Window window(sf::VideoMode(600, 600),
+        "Attributes, uniforms and 3D objects",
         sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);

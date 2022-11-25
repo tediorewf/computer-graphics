@@ -54,6 +54,9 @@ namespace AffineTransformations3D
         private bool IsTexture = false;
         private Bitmap TextureImage;
 
+        private Point3D LightViewPoint = new Point3D(400, 0, 400);
+
+
         public MainForm()
         {
             InitializeComponent();
@@ -645,9 +648,9 @@ namespace AffineTransformations3D
 
         IEnumerable<DeptherizedPoint> TriangleToListPoint(Facet3D triangle)
         {
-            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0]);
-            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1]);
-            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2]);
+            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0], LightViewPoint);
+            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1], LightViewPoint);
+            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2], LightViewPoint);
             var rasterizedPoints = RasteriseTriangle(v1, v2, v3);
             return rasterizedPoints;
         }
@@ -665,8 +668,10 @@ namespace AffineTransformations3D
                 {
                     if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth > ZBuferArr[item.X, item.Y].Depth))
                     {
+                        var intensivity = item.Intensivity;
+                        var intensivityCOlor = Color.FromArgb((int)(Clr.R * intensivity), (int)(Clr.G * intensivity), (int)(Clr.B * intensivity));
                         ZBuferArr[item.X, item.Y].Depth = depth;
-                        ZBuferArr[item.X, item.Y].Color = Clr;
+                        ZBuferArr[item.X, item.Y].Color = intensivityCOlor;//Clr;
                         ZBuferArr[item.X, item.Y].IsNotEmpty = true;
                     }
                 }
@@ -709,7 +714,7 @@ namespace AffineTransformations3D
                     foreach (var triangle in triangulatedFacet)
                     {
                         //ZBufer(zBuffer, triangle, itemCopy.Color);
-                        ZBufer(zBuffer, triangle, color);
+                        ZBufer(zBuffer, triangle, itemCopy.Color);
                     }
                 }
             }
@@ -1149,6 +1154,29 @@ namespace AffineTransformations3D
             return TImage;
         }
 
+        private void lightViewPointButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(lightViewPointXTextBox.Text, out int x))
+            {
+                WarnInvalidInput();
+                return;
+            }
 
+            if (!int.TryParse(lightViewPointYTextBox.Text, out int y))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(lightViewPointZTextBox.Text, out int z))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            LightViewPoint.X = x;
+            LightViewPoint.Y = y;
+            LightViewPoint.Z = z;
+            Project();
+        }
     }
 }
