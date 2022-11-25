@@ -8,7 +8,7 @@ namespace AffineTransformations3D
 {
     public enum FacetRemovingType
     {
-        None, ZBuffer, BackfaceCulling
+        None, ZBuffer, ZBufferWithTexturing, BackfaceCulling
     }
 
     public static class FacetRemovingTypeExtensions
@@ -21,6 +21,8 @@ namespace AffineTransformations3D
                     return "Без отсечения (рисование ребер)";
                 case FacetRemovingType.ZBuffer:
                     return "Z-буфер";
+                case FacetRemovingType.ZBufferWithTexturing:
+                    return "Z-буфер с текстурированием";
                 case FacetRemovingType.BackfaceCulling:
                     return "Отчесение по нормалям поверхностей";
                 default:
