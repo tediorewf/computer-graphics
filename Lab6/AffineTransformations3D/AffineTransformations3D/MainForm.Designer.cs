@@ -148,13 +148,14 @@
             this.texturingGroupBox = new System.Windows.Forms.GroupBox();
             this.loadTextureButton = new System.Windows.Forms.Button();
             this.lightViewPointGroupBox = new System.Windows.Forms.GroupBox();
-            this.lightViewPointXTextBox = new System.Windows.Forms.TextBox();
-            this.lightViewPointYTextBox = new System.Windows.Forms.TextBox();
-            this.lightViewPointZTextBox = new System.Windows.Forms.TextBox();
-            this.lightViewXLabel = new System.Windows.Forms.Label();
-            this.lightVieYLabel = new System.Windows.Forms.Label();
-            this.lightViewZLabel = new System.Windows.Forms.Label();
             this.lightViewPointButton = new System.Windows.Forms.Button();
+            this.lightViewZLabel = new System.Windows.Forms.Label();
+            this.lightVieYLabel = new System.Windows.Forms.Label();
+            this.lightViewXLabel = new System.Windows.Forms.Label();
+            this.lightViewPointZTextBox = new System.Windows.Forms.TextBox();
+            this.lightViewPointYTextBox = new System.Windows.Forms.TextBox();
+            this.lightViewPointXTextBox = new System.Windows.Forms.TextBox();
+            this.buttonTexture = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.polyhedronPictureBox)).BeginInit();
             this.rotationAroundEdgeGroupBox.SuspendLayout();
             this.affineTransformationsGroupBox.SuspendLayout();
@@ -873,11 +874,11 @@
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.y0TextBox);
             this.groupBox1.Controls.Add(this.x0TextBox);
-            this.groupBox1.Location = new System.Drawing.Point(2113, 852);
+            this.groupBox1.Location = new System.Drawing.Point(2113, 887);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(400, 367);
+            this.groupBox1.Size = new System.Drawing.Size(400, 332);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Построение поверхности";
@@ -1409,17 +1410,18 @@
             // 
             // texturingGroupBox
             // 
+            this.texturingGroupBox.Controls.Add(this.buttonTexture);
             this.texturingGroupBox.Controls.Add(this.loadTextureButton);
             this.texturingGroupBox.Location = new System.Drawing.Point(2113, 718);
             this.texturingGroupBox.Name = "texturingGroupBox";
-            this.texturingGroupBox.Size = new System.Drawing.Size(358, 125);
+            this.texturingGroupBox.Size = new System.Drawing.Size(358, 160);
             this.texturingGroupBox.TabIndex = 58;
             this.texturingGroupBox.TabStop = false;
             this.texturingGroupBox.Text = "Текстурирование";
             // 
             // loadTextureButton
             // 
-            this.loadTextureButton.Location = new System.Drawing.Point(15, 46);
+            this.loadTextureButton.Location = new System.Drawing.Point(12, 30);
             this.loadTextureButton.Name = "loadTextureButton";
             this.loadTextureButton.Size = new System.Drawing.Size(276, 45);
             this.loadTextureButton.TabIndex = 0;
@@ -1443,44 +1445,15 @@
             this.lightViewPointGroupBox.TabStop = false;
             this.lightViewPointGroupBox.Text = "Точка света";
             // 
-            // lightViewPointXTextBox
+            // lightViewPointButton
             // 
-            this.lightViewPointXTextBox.Location = new System.Drawing.Point(120, 48);
-            this.lightViewPointXTextBox.Name = "lightViewPointXTextBox";
-            this.lightViewPointXTextBox.Size = new System.Drawing.Size(100, 31);
-            this.lightViewPointXTextBox.TabIndex = 0;
-            // 
-            // lightViewPointYTextBox
-            // 
-            this.lightViewPointYTextBox.Location = new System.Drawing.Point(120, 106);
-            this.lightViewPointYTextBox.Name = "lightViewPointYTextBox";
-            this.lightViewPointYTextBox.Size = new System.Drawing.Size(100, 31);
-            this.lightViewPointYTextBox.TabIndex = 1;
-            // 
-            // lightViewPointZTextBox
-            // 
-            this.lightViewPointZTextBox.Location = new System.Drawing.Point(121, 155);
-            this.lightViewPointZTextBox.Name = "lightViewPointZTextBox";
-            this.lightViewPointZTextBox.Size = new System.Drawing.Size(100, 31);
-            this.lightViewPointZTextBox.TabIndex = 2;
-            // 
-            // lightViewXLabel
-            // 
-            this.lightViewXLabel.AutoSize = true;
-            this.lightViewXLabel.Location = new System.Drawing.Point(29, 53);
-            this.lightViewXLabel.Name = "lightViewXLabel";
-            this.lightViewXLabel.Size = new System.Drawing.Size(26, 25);
-            this.lightViewXLabel.TabIndex = 3;
-            this.lightViewXLabel.Text = "X";
-            // 
-            // lightVieYLabel
-            // 
-            this.lightVieYLabel.AutoSize = true;
-            this.lightVieYLabel.Location = new System.Drawing.Point(29, 106);
-            this.lightVieYLabel.Name = "lightVieYLabel";
-            this.lightVieYLabel.Size = new System.Drawing.Size(27, 25);
-            this.lightVieYLabel.TabIndex = 4;
-            this.lightVieYLabel.Text = "Y";
+            this.lightViewPointButton.Location = new System.Drawing.Point(34, 203);
+            this.lightViewPointButton.Name = "lightViewPointButton";
+            this.lightViewPointButton.Size = new System.Drawing.Size(187, 57);
+            this.lightViewPointButton.TabIndex = 6;
+            this.lightViewPointButton.Text = "Сместить";
+            this.lightViewPointButton.UseVisualStyleBackColor = true;
+            this.lightViewPointButton.Click += new System.EventHandler(this.lightViewPointButton_Click);
             // 
             // lightViewZLabel
             // 
@@ -1491,15 +1464,54 @@
             this.lightViewZLabel.TabIndex = 5;
             this.lightViewZLabel.Text = "Z";
             // 
-            // lightViewPointButton
+            // lightVieYLabel
             // 
-            this.lightViewPointButton.Location = new System.Drawing.Point(34, 203);
-            this.lightViewPointButton.Name = "lightViewPointButton";
-            this.lightViewPointButton.Size = new System.Drawing.Size(187, 57);
-            this.lightViewPointButton.TabIndex = 6;
-            this.lightViewPointButton.Text = "Сместить";
-            this.lightViewPointButton.UseVisualStyleBackColor = true;
-            this.lightViewPointButton.Click += new System.EventHandler(this.lightViewPointButton_Click);
+            this.lightVieYLabel.AutoSize = true;
+            this.lightVieYLabel.Location = new System.Drawing.Point(29, 106);
+            this.lightVieYLabel.Name = "lightVieYLabel";
+            this.lightVieYLabel.Size = new System.Drawing.Size(27, 25);
+            this.lightVieYLabel.TabIndex = 4;
+            this.lightVieYLabel.Text = "Y";
+            // 
+            // lightViewXLabel
+            // 
+            this.lightViewXLabel.AutoSize = true;
+            this.lightViewXLabel.Location = new System.Drawing.Point(29, 53);
+            this.lightViewXLabel.Name = "lightViewXLabel";
+            this.lightViewXLabel.Size = new System.Drawing.Size(26, 25);
+            this.lightViewXLabel.TabIndex = 3;
+            this.lightViewXLabel.Text = "X";
+            // 
+            // lightViewPointZTextBox
+            // 
+            this.lightViewPointZTextBox.Location = new System.Drawing.Point(121, 155);
+            this.lightViewPointZTextBox.Name = "lightViewPointZTextBox";
+            this.lightViewPointZTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointZTextBox.TabIndex = 2;
+            // 
+            // lightViewPointYTextBox
+            // 
+            this.lightViewPointYTextBox.Location = new System.Drawing.Point(120, 106);
+            this.lightViewPointYTextBox.Name = "lightViewPointYTextBox";
+            this.lightViewPointYTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointYTextBox.TabIndex = 1;
+            // 
+            // lightViewPointXTextBox
+            // 
+            this.lightViewPointXTextBox.Location = new System.Drawing.Point(120, 48);
+            this.lightViewPointXTextBox.Name = "lightViewPointXTextBox";
+            this.lightViewPointXTextBox.Size = new System.Drawing.Size(100, 31);
+            this.lightViewPointXTextBox.TabIndex = 0;
+            // 
+            // buttonTexture
+            // 
+            this.buttonTexture.Location = new System.Drawing.Point(13, 91);
+            this.buttonTexture.Name = "buttonTexture";
+            this.buttonTexture.Size = new System.Drawing.Size(275, 45);
+            this.buttonTexture.TabIndex = 1;
+            this.buttonTexture.Text = "Нанести текстуру";
+            this.buttonTexture.UseVisualStyleBackColor = true;
+            this.buttonTexture.Click += new System.EventHandler(this.buttonTexture_Click);
             // 
             // MainForm
             // 
@@ -1697,6 +1709,7 @@
         private System.Windows.Forms.TextBox lightViewPointZTextBox;
         private System.Windows.Forms.TextBox lightViewPointYTextBox;
         private System.Windows.Forms.TextBox lightViewPointXTextBox;
+        private System.Windows.Forms.Button buttonTexture;
     }
 }
 
