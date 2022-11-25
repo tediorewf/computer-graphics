@@ -11,6 +11,7 @@ namespace AffineTransformations3D
         public double Z { get; set; }
         private long _identifier;
         public long Identifier => _identifier;
+        public Vector3D Normal { get; set; }
 
         public Point3D(Point3D other) : this(other.X, other.Y, other.Z)
         {
@@ -27,13 +28,14 @@ namespace AffineTransformations3D
             Y = y;
             Z = z;
             _identifier = identifier;
+            Normal = new Vector3D();
         }
 
         public Vector3D ToVector3D() => new Vector3D(X, Y, Z, 1);
 
         public Point ToPoint() => new Point((int)X, (int)Y);
 
-        public object Clone() => new Point3D(X, Y, Z, _identifier);
+        public object Clone() => new Point3D(X, Y, Z, Identifier);
 
         public bool Equals(Point3D other) => Identifier == other.Identifier;
 
