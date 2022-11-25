@@ -116,6 +116,7 @@
     <Content Include="ModelFileExamples\tetrahedron.txt" />
     <Content Include="Textures\bricks.jpg" />
     <Content Include="Textures\creeper.jpg" />
+    <Content Include="Textures\star.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
