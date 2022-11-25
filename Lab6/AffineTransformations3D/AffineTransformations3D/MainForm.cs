@@ -144,6 +144,9 @@ namespace AffineTransformations3D
                 case FacetRemovingType.ZBuffer:
                     DrawZBuffer(drawingSurface);
                     break;
+                case FacetRemovingType.ZBufferWithTexturing:
+                    DrawTexture(drawingSurface);
+                    break;
                 case FacetRemovingType.BackfaceCulling:
                     DrawBackfaceCulling(drawingSurface);
                     break;
@@ -1089,7 +1092,7 @@ namespace AffineTransformations3D
                     var zBufferFacet = new ZBuferStruct[size.Width, size.Height];
 
                     var triangulatedFacet = TriangulateFacet(facets);
-                    var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                    var color = itemCopy.Color;
                     foreach (var triangle in triangulatedFacet)
                     {
                         ZBufer(zBufferFacet, triangle, color);
