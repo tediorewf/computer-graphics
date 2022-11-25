@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6555D9CC-3AD3-421D-A879-7648D0870174}</ProjectGuid>
+    <ProjectGuid>{ACCDA0F3-D5B8-4BC1-8EDF-A1E06673B9CF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AffineTransformations3D</RootNamespace>
-    <AssemblyName>AffineTransformations3D</AssemblyName>
+    <RootNamespace>CornishRoom</RootNamespace>
+    <AssemblyName>CornishRoom</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,45 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AffineTransformationMatrices.cs" />
-    <Compile Include="AxisType.cs" />
-    <Compile Include="BackfaceCullingAlgorithm.cs" />
-    <Compile Include="BresenhamAlgorithm.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="CoordinatePlaneType.cs" />
-    <Compile Include="DeptherizedPoint.cs" />
-    <Compile Include="Edge3D.cs" />
-    <Compile Include="Facet3D.cs" />
-    <Compile Include="FacetRemovingType.cs" />
-    <Compile Include="FastBitmap.cs" />
-    <Compile Include="Generatrix3D.cs" />
-    <Compile Include="IIdentifiable.cs" />
-    <Compile Include="ListExtensionMethods.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="MathConstants.cs" />
-    <Compile Include="Matrix.cs" />
-    <Compile Include="Texel.cs" />
-    <Compile Include="Point3D.cs" />
-    <Compile Include="Polyhedron.cs" />
-    <Compile Include="PolyhedronDrawing.cs" />
-    <Compile Include="PolyhedronType.cs" />
-    <Compile Include="RegularPolyhedrons.cs" />
-    <Compile Include="Texture.cs" />
-    <Compile Include="TransformationHelper.cs" />
-    <Compile Include="TriangleRasterisationAlgorithm.cs" />
-    <Compile Include="Vector3D.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ProjectionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZBufferAlgorithm.cs" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -108,14 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ModelFileExamples\cone.txt" />
-    <Content Include="ModelFileExamples\cylinder.txt" />
-    <Content Include="ModelFileExamples\hexahedron.txt" />
-    <Content Include="ModelFileExamples\tetrahedron.txt" />
-    <Content Include="Textures\bricks.jpg" />
-    <Content Include="Textures\creeper.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

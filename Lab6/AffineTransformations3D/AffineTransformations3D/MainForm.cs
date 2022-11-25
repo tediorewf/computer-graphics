@@ -51,6 +51,10 @@ namespace AffineTransformations3D
         private double MashtabP = 1.1;
         private double MashtabM = 0.9;
 
+        private bool IsTexture = false;
+        private Bitmap TextureImage;
+
+        private Point3D LightViewPoint = new Point3D(400, 0, 400);
 
         public MainForm()
         {
@@ -61,7 +65,7 @@ namespace AffineTransformations3D
             InitializeReflectionCoordinatePlaneStuff();
             InitializeRotationBodyStuff();
             InitializeFacetsStuff();
-            Size = new Size(1150, 540);
+            Size = new Size(1400, 800);
         }
 
         private void InitializePolyhedronStuff()
@@ -643,9 +647,9 @@ namespace AffineTransformations3D
 
         IEnumerable<DeptherizedPoint> TriangleToListPoint(Facet3D triangle)
         {
-            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0]);
-            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1]);
-            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2]);
+            var v1 = DeptherizedPoint.FromPoint3D(triangle.Points[0], LightViewPoint);
+            var v2 = DeptherizedPoint.FromPoint3D(triangle.Points[1], LightViewPoint);
+            var v3 = DeptherizedPoint.FromPoint3D(triangle.Points[2], LightViewPoint);
             var rasterizedPoints = RasteriseTriangle(v1, v2, v3);
             return rasterizedPoints;
         }
@@ -663,8 +667,10 @@ namespace AffineTransformations3D
                 {
                     if ((!ZBuferArr[item.X, item.Y].IsNotEmpty) || (depth > ZBuferArr[item.X, item.Y].Depth))
                     {
+                        var intensivity = item.Intensivity;
+                        var intensivityCOlor = Color.FromArgb((int)(Clr.R * intensivity), (int)(Clr.G * intensivity), (int)(Clr.B * intensivity));
                         ZBuferArr[item.X, item.Y].Depth = depth;
-                        ZBuferArr[item.X, item.Y].Color = Clr;
+                        ZBuferArr[item.X, item.Y].Color = intensivityCOlor;//Clr;
                         ZBuferArr[item.X, item.Y].IsNotEmpty = true;
                     }
                 }
@@ -707,7 +713,7 @@ namespace AffineTransformations3D
                     foreach (var triangle in triangulatedFacet)
                     {
                         //ZBufer(zBuffer, triangle, itemCopy.Color);
-                        ZBufer(zBuffer, triangle, color);
+                        ZBufer(zBuffer, triangle, itemCopy.Color);
                     }
                 }
             }
@@ -826,7 +832,7 @@ namespace AffineTransformations3D
         private int MakeZF(string FSTR,int y, LimitationsFunction LF)
         {
             string FSTR_0 = FSTR.Replace("y", "" + y);
-            double t = Double.MaxValue;
+            double t = double.MaxValue;
             double find_z = 0;
             for (int i = LF.z0; i <= LF.z1; i++)
             {
@@ -1043,5 +1049,134 @@ namespace AffineTransformations3D
             Project();
         }
 
+        private void loadTextureButton_Click(object sender, EventArgs e)
+        {
+
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                TextureImage = new Bitmap(ofd.FileName);
+                IsTexture = true;
+            }
+        }
+
+        private void buttonTexture_Click(object sender, EventArgs e)
+        {
+            if (!IsTexture)
+            {
+                MessageBox.Show("Выберете текстуру!");
+                return;
+            }
+            var size = polyhedronPictureBox.Size;
+            var drawingSurface = new Bitmap(size.Width, size.Height);
+            DrawTexture(drawingSurface);
+            polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void DrawTexture(Bitmap drawingSurface)
+        {
+            var size = drawingSurface.Size;
+            var zBuffer = new ZBuferStruct[size.Width, size.Height];
+
+            foreach (var item in ListPolyhedron)
+            {
+                var itemCopy = camera.Project(item, currentProjectionType);
+
+                var random = new Random();
+                foreach (var facets in itemCopy.Facets)
+                {
+                    var zBufferFacet = new ZBuferStruct[size.Width, size.Height];
+
+                    var triangulatedFacet = TriangulateFacet(facets);
+                    var color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                    foreach (var triangle in triangulatedFacet)
+                    {
+                        ZBufer(zBufferFacet, triangle, color);
+                    }
+                    MakeTexture(zBufferFacet, facets);
+                    zBufferUnite(zBuffer, zBufferFacet);
+                }
+
+            }
+            PaintZBufer(zBuffer, drawingSurface);
+
+            polyhedronPictureBox.Image = drawingSurface;
+        }
+
+        private void zBufferUnite(ZBuferStruct[,] ZBuferArr, ZBuferStruct[,] ZB)
+        {
+            var size = polyhedronPictureBox.Size;
+
+            for (int i = 0; i < size.Width; i++)
+                for (int j = 0; j < size.Height; j++)
+                    if (ZB[i, j].IsNotEmpty && ((ZBuferArr[i, j].IsNotEmpty && (ZB[i, j].Depth > ZBuferArr[i, j].Depth)) || !ZBuferArr[i, j].IsNotEmpty))
+                        ZBuferArr[i, j] = ZB[i, j];
+        }
+
+        private void MakeTexture(ZBuferStruct[,] ZBuferArr, Facet3D facet)
+        {
+            double t = 1.7;
+            var size = polyhedronPictureBox.Size;
+
+            Bitmap BM = MakeNaklon(TextureImage, facet);
+
+            int w = BM.Width;
+            int h = BM.Height;
+            for (int i = 0; i < size.Width; i++)
+                for (int j = 0; j < size.Height; j++)
+                    if (ZBuferArr[i, j].IsNotEmpty)
+                    {
+                        int ww = i % w;
+                        int hh = j % h;
+
+                        if (BM.GetPixel(ww, hh).G == 0)
+                        {
+                            Color c = ZBuferArr[i, j].Color;
+                            int r = (int)(c.R * t);
+                            if (r > 255)
+                                r = 255;
+                            int g = (int)(c.G * t);
+                            if (g > 255)
+                                g = 255;
+                            int b = (int)(c.B * t);
+                            if (b > 255)
+                                b = 255;
+                            ZBuferArr[i, j].Color = Color.FromArgb(r, g, b);
+                        }
+                    }
+        }
+
+        private Bitmap MakeNaklon(Bitmap TImage, Facet3D facet)
+        {
+            //TO DO:
+            //наклонить изображение так, чтобы оно было в плоскости facet'a
+            return TImage;
+        }
+
+        private void lightViewPointButton_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(lightViewPointXTextBox.Text, out int x))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(lightViewPointYTextBox.Text, out int y))
+            {
+                WarnInvalidInput();
+                return;
+            }
+
+            if (!int.TryParse(lightViewPointZTextBox.Text, out int z))
+            {
+                WarnInvalidInput();
+                return;
+            }
+            LightViewPoint.X = x;
+            LightViewPoint.Y = y;
+            LightViewPoint.Z = z;
+            Project();
+        }
     }
 }
