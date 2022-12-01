@@ -4,51 +4,34 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-GLuint Program1;
-GLint Attrib_vertex1;
-GLuint VBO1;
-
-GLuint Program2;
-GLint Attrib_vertex2;
-GLuint VBO2;
+GLuint Program;
+GLint Attrib_vertex;
+GLint Attrib_color;
+GLuint VBO;
 
 struct Vertex
 {
-    GLfloat x;
-    GLfloat y;
+    GLfloat x, y;
+    GLfloat r, g, b;
 };
 
-const char* VertexShaderSource1 = R"(
+const char* VertexShaderSource = R"(
     #version 330 core
-    in vec2 coord;
+    in vec3 coord;
+    in vec3 color;
+    out vec3 VertexColor;
     void main() {
-        gl_Position = vec4(coord/10, 0.0, 1.0);
+        gl_Position = vec4(coord, 2.0);
+        VertexColor = color;
     }
 )";
 
-const char* FragShaderSource1 = R"(
+const char* FragShaderSource = R"(
     #version 330 core
-    const vec4 clr = vec4(0,1,2,1);
+    in vec3 VertexColor;
     out vec4 color;
     void main() {
-        color = clr;
-    }
-)";
-
-const char* VertexShaderSource2 = R"(
-    #version 330 core
-    in vec2 coord;
-    void main() {
-        gl_Position = vec4(coord/10, 0.0, 1.0);
-    }
-)";
-
-const char* FragShaderSource2 = R"(
-    #version 330 core
-    uniform vec4 clr; 
-    out vec4 color;
-    void main() {
-        color = clr;
+        color = vec4(VertexColor, 0);
     }
 )";
 
@@ -61,84 +44,69 @@ void checkOpenGLerror()
     }
 }
 
-// Инициализирует VBO для программы 1
-void InitVBOProgram1()
+const GLint numberOfVertices = 360 + 1 + 2;
+
+void InitVBO(GLfloat xScale, GLfloat yScale)
 {
-    glGenBuffers(1, &VBO1);
-    Vertex vertices1[20] = {
-        // пятиугольник 1
-        { -7.0f, 9.0f },
-        { -4.0f, 9.0f },
-        { -3.07f, 6.15f },
-        { -5.5f, 4.38f },
-        { -7.93f, 6.15f },
+    glGenBuffers(1, &VBO);
 
-        // четырехугольник 1
-        { -2.0f, 4.0f },
-        { -2.0f, 9.0f },
-        { 2.0f, 9.0f },
-        { 2.0f, 4.0f },
+    Vertex triangles[numberOfVertices];
+    
+    const GLfloat kRadius = 1;
 
-        // веер 1
-        { 4.0f , 4.0f },
-        { 4.0f , 2.0f },
-        { 5.0f , 2.0f },
-        { 6.98f , 2.28f },
-        { 8.05f , 3.28f },
-        { 8.2f , 4.44f },
-        { 8.43 , 5.75f },
-        { 8.0f , 7.0f },
-        { 7.58f , 8.35f },
-        { 6.0f , 9.0f },
-        { 4.0f , 9.0f},
-    };
-    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+    const GLfloat x0 = 0, y0 = 0;
+
+    // Белый центр
+    triangles[0] = { x0 * xScale, y0 * yScale, 1, 1, 1 };
+
+    const GLfloat kPI = 3.14;
+    const GLfloat radianMultiplier = kPI / 180;
+    const GLfloat rgbMax = 1.0;
+
+    const GLint numberOfVerticesThird = numberOfVertices / 3;
+
+    // Интерполируем цвета по первой трети дуги окружности (Red -> Green)
+    for (int i = 1; i < numberOfVerticesThird; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat r = (GLfloat)(numberOfVerticesThird - i) / numberOfVerticesThird;
+        GLfloat g = (GLfloat)i / numberOfVerticesThird;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale, 
+            (y0 + kRadius * yCurrentOffset) * yScale, 
+            r, g, 0 
+        };
+    }
+
+    // Интерполируем цвета по второй трети дуги окружности (Green -> Blue)
+    for (int i = numberOfVerticesThird; i < numberOfVerticesThird * 2; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat g = (GLfloat)(2 * numberOfVerticesThird - i) / numberOfVerticesThird;
+        GLfloat b = (GLfloat)(i - numberOfVerticesThird) / numberOfVerticesThird;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale,
+            (y0 + kRadius * yCurrentOffset) * yScale,
+            0, g, b
+        };
+    }
+    
+    // Интерполируем цвета по третьей трети дуги окружности (Blue -> Red)
+    for (int i = numberOfVerticesThird * 2; i < numberOfVertices; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat b = (numberOfVertices - i) / (GLfloat)numberOfVerticesThird;
+        GLfloat r =  (i - 2 * numberOfVerticesThird) / (GLfloat)numberOfVerticesThird;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale,
+            (y0 + kRadius * yCurrentOffset) * yScale,
+            r, 0, b
+        };
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
     checkOpenGLerror();
-}
-
-// Инициализирует VBO для программы 2
-void InitVBOProgram2()
-{
-    glGenBuffers(1, &VBO2);
-    Vertex vertices2[20]{
-        // пятиугольник 2
-        { -7.0f, -1.0f },
-        { -4.0f, -1.0f },
-        { -3.07f, -3.85f },
-        { -5.5f, -5.62f },
-        { -7.93f, -3.85f },
-
-        // четырехугольник 2
-        { -2.0f, -6.0f },
-        { -2.0f, -1.0f },
-        { 2.0f, -1.0f },
-        { 2.0f, -6.0f },
-
-        // веер 2
-        { 4.0f , -6.0f },
-        { 4.0f , -8.0f },
-        { 5.0f , -8.0f },
-        { 6.98f , -7.72f },
-        { 8.05f , -6.72f },
-        { 8.2f , -5.56f },
-        { 8.43 , -4.25f },
-        { 8.0f , -3.0f },
-        { 7.58f , -1.65f },
-        { 6.0f , -1.0f },
-        { 4.0f , -1.0f}
-    };
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-    checkOpenGLerror();
-}
-
-void InitVBO()
-{
-    // Инициализация VBO для программы 1
-    InitVBOProgram1();
-    // Инициализация VBO для программы 2
-    InitVBOProgram2();
 }
 
 void ShaderLog(unsigned int shader)
@@ -154,157 +122,83 @@ void ShaderLog(unsigned int shader)
     }
 }
 
-// Инициализирует шейдеры для программы 1
-void InitShaderProgram1()
-{
-    GLuint vShader1 = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader1, 1, &VertexShaderSource1, NULL);
-    glCompileShader(vShader1);
-    std::cout << "vertex shader \n";
-    ShaderLog(vShader1);
-
-    GLuint fShader1 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader1, 1, &FragShaderSource1, NULL);
-    glCompileShader(fShader1);
-    std::cout << "fragment shader \n";
-    ShaderLog(fShader1);
-
-    Program1 = glCreateProgram();
-    glAttachShader(Program1, vShader1);
-    glAttachShader(Program1, fShader1);
-    glLinkProgram(Program1);
-
-    int link_ok1;
-    glGetProgramiv(Program1, GL_LINK_STATUS, &link_ok1);
-    if (!link_ok1)
-    {
-        std::cout << "error attach shaders \n";
-        return;
-    }
-    const char* attr_name1 = "coord";
-    Attrib_vertex1 = glGetAttribLocation(Program1, attr_name1);
-    if (Attrib_vertex1 == -1)
-    {
-        std::cout << "could not bind attrib " << attr_name1 << std::endl;
-        return;
-    }
-    checkOpenGLerror();
-}
-
-// Инициализирует шейдеры для программы 2
-void InitShaderProgram2()
-{
-    GLuint fShader2 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader2, 1, &FragShaderSource2, NULL);
-    glCompileShader(fShader2);
-    std::cout << "fragment shader \n";
-    ShaderLog(fShader2);
-
-    GLuint vShader2 = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader2, 1, &VertexShaderSource2, NULL);
-    glCompileShader(vShader2);
-    std::cout << "vertex shader \n";
-    ShaderLog(vShader2);
-
-    Program2 = glCreateProgram();
-    glAttachShader(Program2, vShader2);
-    glAttachShader(Program2, fShader2);
-    glLinkProgram(Program2);
-
-    int link_ok2;
-    glGetProgramiv(Program2, GL_LINK_STATUS, &link_ok2);
-    if (!link_ok2)
-    {
-        std::cout << "error attach shaders \n";
-        return;
-    }
-    const char* attr_name2 = "coord";
-    Attrib_vertex1 = glGetAttribLocation(Program2, attr_name2);
-    if (Attrib_vertex1 == -1)
-    {
-        std::cout << "could not bind attrib " << attr_name2 << std::endl;
-        return;
-    }
-    checkOpenGLerror();
-}
-
 void InitShader()
 {
-    // Инициализация шейдеров для программы 1
-    InitShaderProgram1();
-    // Инициализация шейдеров для программы 2
-    InitShaderProgram2();
-}
-
-// Отрисовка для программы 1
-void DrawProgram1()
-{
-    glUseProgram(Program1);
-    glEnableVertexAttribArray(Attrib_vertex1);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
-    glVertexAttribPointer(Attrib_vertex1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glDrawArrays(GL_POLYGON, 0, 5);
-    glDrawArrays(GL_POLYGON, 5, 4);
-    glDrawArrays(GL_TRIANGLE_FAN, 9, 11);
-
-    glDisableVertexAttribArray(Attrib_vertex1);
-    glUseProgram(0);
-    checkOpenGLerror();
-}
-
-// Отрисовка для программы 2
-void DrawProgram2()
-{
-    glUseProgram(Program2);
-    glEnableVertexAttribArray(Attrib_vertex2);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glVertexAttribPointer(Attrib_vertex2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    GLuint clrUniformLocation = glGetUniformLocation(Program2, "clr");
-
-    glUniform4f(clrUniformLocation, 0, 0.2f, 0.3f, 1.0f);
-    glDrawArrays(GL_POLYGON, 0, 5);
-
-    glUniform4f(clrUniformLocation, 0, 0.3f, 0.5f, 1.0f);
-    glDrawArrays(GL_POLYGON, 5, 4);
-
-    glUniform4f(clrUniformLocation, 0, 0.6f, 0.8f, 0.5f);
-    glDrawArrays(GL_TRIANGLE_FAN, 9, 11);
-
-    glDisableVertexAttribArray(Attrib_vertex2);
-    glUseProgram(0);
+    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader, 1, &VertexShaderSource, NULL);
+    glCompileShader(vShader);
+    std::cout << "vertex shader \n";
+    ShaderLog(vShader);
+    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader, 1, &FragShaderSource, NULL);
+    glCompileShader(fShader);
+    std::cout << "fragment shader \n";
+    ShaderLog(fShader);
+    Program = glCreateProgram();
+    glAttachShader(Program, vShader);
+    glAttachShader(Program, fShader);
+    glLinkProgram(Program);
+    int link_ok;
+    glGetProgramiv(Program, GL_LINK_STATUS, &link_ok);
+    if (!link_ok)
+    {
+        std::cout << "error attach shaders \n";
+        return;
+    }
+    const char* coord_attr_name = "coord";
+    Attrib_vertex = glGetAttribLocation(Program, coord_attr_name);
+    if (Attrib_vertex == -1)
+    {
+        std::cout << "could not bind coord attrib " << coord_attr_name << std::endl;
+        return;
+    }
+    const char* color_attr_name = "color";
+    Attrib_color = glGetAttribLocation(Program, color_attr_name);
+    if (Attrib_color == -1)
+    {
+        std::cout << "could not bind color attrib " << color_attr_name << std::endl;
+        return;
+    }
     checkOpenGLerror();
 }
 
 void Draw()
 {
-    // Программа 1
-    DrawProgram1();
-    // Программа 2
-    DrawProgram2();
+    glUseProgram(Program);
+
+    glEnableVertexAttribArray(Attrib_vertex);
+    glEnableVertexAttribArray(Attrib_color);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Атрибут с координатами
+    glVertexAttribPointer(Attrib_vertex, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+    // Атрибут с цветом
+    glVertexAttribPointer(Attrib_color, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, numberOfVertices);
+    glDisableVertexAttribArray(Attrib_vertex);
+    glDisableVertexAttribArray(Attrib_color);
+    glUseProgram(0);
+    checkOpenGLerror();
 }
 
-void Init()
+void Init(GLfloat x, GLfloat y)
 {
     InitShader();
-    InitVBO();
+    InitVBO(x, y);
 }
 
 void ReleaseVBO()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VBO1);
-    glDeleteBuffers(1, &VBO2);
+    glDeleteBuffers(1, &VBO);
 }
 
 void ReleaseShader()
 {
     glUseProgram(0);
-    glDeleteProgram(Program1);
-    glDeleteProgram(Program2);
+    glDeleteProgram(Program);
 }
 
 void Release()
@@ -315,14 +209,14 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(600, 600),
-        "Attributes, uniforms and 3D objects",
-        sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(1000, 1000), "Gradient circle", sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
     glewInit();
-    Init();
+    GLfloat xScale = 1.0, yScale = 1.0;
+    Init(xScale, yScale);
+    GLfloat scaleStep = 0.1;
     while (window.isOpen())
     {
         sf::Event event;
@@ -335,6 +229,34 @@ int main()
             else if (event.type == sf::Event::Resized)
             {
                 glViewport(0, 0, event.size.width, event.size.height);
+            }
+            else if (event.type == sf::Event::KeyPressed) {
+                switch (event.key.code) {
+                case sf::Keyboard::Left:
+                    if (xScale - scaleStep > 0) {
+                        xScale -= scaleStep;
+                        Init(xScale, yScale);
+                    }
+                    break;
+                case sf::Keyboard::Right:
+                    if (xScale + scaleStep < 2) {
+                        xScale += scaleStep;
+                        Init(xScale, yScale);
+                    }
+                    break;
+                case sf::Keyboard::Up:
+                    if (yScale + scaleStep < 2) {
+                        yScale += scaleStep;
+                        Init(xScale, yScale);
+                    }
+                    break;
+                case sf::Keyboard::Down:
+                    if (yScale - scaleStep > 0) {
+                        yScale -= scaleStep;
+                        Init(xScale, yScale);
+                    }
+                    break;
+                }
             }
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
