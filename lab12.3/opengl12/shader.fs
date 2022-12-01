@@ -31,5 +31,5 @@ void main() {
     vec3 specular = specularStrength * spec * lightColor;
 
     outputColor = vec4(ambient+diffuse+specular, 1.0f) * texture(texture1, _texCoord);
-    // outputColor = texture(texture1, _texCoord);
+    outputColor = texture(texture1, _texCoord);
 }
