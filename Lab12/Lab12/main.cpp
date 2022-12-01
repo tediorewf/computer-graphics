@@ -51,8 +51,6 @@ void InitVBO(GLfloat xScale, GLfloat yScale)
     glGenBuffers(1, &VBO);
 
     Vertex triangles[numberOfVertices];
-    
-    const GLfloat kRadius = 1;
 
     const GLfloat x0 = 0, y0 = 0;
 
@@ -61,46 +59,80 @@ void InitVBO(GLfloat xScale, GLfloat yScale)
 
     const GLfloat kPI = 3.14;
     const GLfloat radianMultiplier = kPI / 180;
+    const GLfloat kRadius = 1;
     const GLfloat rgbMax = 1.0;
 
-    const GLint numberOfVerticesThird = numberOfVertices / 3;
+    const GLint numberOfVerticesSixth = numberOfVertices / 6;
 
-    // Интерполируем цвета по первой трети дуги окружности (Red -> Green)
-    for (int i = 1; i < numberOfVerticesThird; i++) {
+    // Интерполируем цвета по первой 1/6 части дуги окружности (Red -> Yellow)
+    for (GLint i = 1; i < numberOfVerticesSixth; i++) {
         GLfloat xCurrentOffset = cos(i * radianMultiplier);
         GLfloat yCurrentOffset = sin(i * radianMultiplier);
-        GLfloat r = (GLfloat)(numberOfVerticesThird - i) / numberOfVerticesThird;
-        GLfloat g = (GLfloat)i / numberOfVerticesThird;
+        GLfloat g = (GLfloat)(i - 1) / numberOfVerticesSixth;
         triangles[i] = {
             (x0 + kRadius * xCurrentOffset) * xScale, 
             (y0 + kRadius * yCurrentOffset) * yScale, 
-            r, g, 0 
+            rgbMax, g, 0 
         };
     }
 
-    // Интерполируем цвета по второй трети дуги окружности (Green -> Blue)
-    for (int i = numberOfVerticesThird; i < numberOfVerticesThird * 2; i++) {
+    // Интерполируем цвета по второй 1/6 части дуги окружности (Yellow -> Green)
+    for (GLint i = numberOfVerticesSixth; i < numberOfVerticesSixth * 2; i++) {
         GLfloat xCurrentOffset = cos(i * radianMultiplier);
         GLfloat yCurrentOffset = sin(i * radianMultiplier);
-        GLfloat g = (GLfloat)(2 * numberOfVerticesThird - i) / numberOfVerticesThird;
-        GLfloat b = (GLfloat)(i - numberOfVerticesThird) / numberOfVerticesThird;
+        GLfloat r = (GLfloat)(numberOfVerticesSixth * 2 - i) / numberOfVerticesSixth;
         triangles[i] = {
             (x0 + kRadius * xCurrentOffset) * xScale,
             (y0 + kRadius * yCurrentOffset) * yScale,
-            0, g, b
+            r, rgbMax, 0
+        };
+    }
+
+    // Интерполируем цвета по третьей 1/6 части дуги окружности (Green -> Cyan)
+    for (GLint i = numberOfVerticesSixth * 2; i < numberOfVerticesSixth * 3; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat b = (GLfloat)(i - numberOfVerticesSixth * 2) / numberOfVerticesSixth;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale,
+            (y0 + kRadius * yCurrentOffset) * yScale,
+            0, rgbMax, b
         };
     }
     
-    // Интерполируем цвета по третьей трети дуги окружности (Blue -> Red)
-    for (int i = numberOfVerticesThird * 2; i < numberOfVertices; i++) {
+    // Интерполируем цвета по четвертой 1/6 части дуги окружности (Cyan -> Blue)
+    for (GLint i = numberOfVerticesSixth * 3; i < numberOfVerticesSixth * 4; i++) {
         GLfloat xCurrentOffset = cos(i * radianMultiplier);
         GLfloat yCurrentOffset = sin(i * radianMultiplier);
-        GLfloat b = (numberOfVertices - i) / (GLfloat)numberOfVerticesThird;
-        GLfloat r =  (i - 2 * numberOfVerticesThird) / (GLfloat)numberOfVerticesThird;
+        GLfloat g = (numberOfVerticesSixth * 4 - i) / (GLfloat)numberOfVerticesSixth;
         triangles[i] = {
             (x0 + kRadius * xCurrentOffset) * xScale,
             (y0 + kRadius * yCurrentOffset) * yScale,
-            r, 0, b
+            0, g, rgbMax
+        };
+    }
+
+    // Интерполируем цвета по пятой 1/6 части дуги окружности (Blue -> Magenta)
+    for (GLint i = numberOfVerticesSixth * 4; i < numberOfVerticesSixth * 5; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat r = (i - numberOfVerticesSixth * 4) / (GLfloat)numberOfVerticesSixth;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale,
+            (y0 + kRadius * yCurrentOffset) * yScale,
+            r, 0, rgbMax
+        };
+    }
+
+    // Интерполируем цвета по шестой 1/6 части дуги окружности (Magenta -> Red)
+    for (GLint i = numberOfVerticesSixth * 5; i < numberOfVerticesSixth * 6 + 3; i++) {
+        GLfloat xCurrentOffset = cos(i * radianMultiplier);
+        GLfloat yCurrentOffset = sin(i * radianMultiplier);
+        GLfloat b = (numberOfVertices - i) / (GLfloat)numberOfVerticesSixth;
+        triangles[i] = {
+            (x0 + kRadius * xCurrentOffset) * xScale,
+            (y0 + kRadius * yCurrentOffset) * yScale,
+            rgbMax, 0, b
         };
     }
 
