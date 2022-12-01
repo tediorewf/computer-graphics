@@ -241,7 +241,7 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(1000, 1000), "Gradient circle", sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(1000, 1000), "HSV Hue Circle", sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
