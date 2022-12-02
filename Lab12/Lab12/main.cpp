@@ -26,7 +26,11 @@ const char* VertexShaderSource = R"(
     in vec3 color;
     out vec3 Vertexcolor;
     void main() {
-        gl_Position = vec4(coord, 1.0);
+        mat3 transformX = mat3(1,0,0,0,0.98,-0.174,0,0.174,0.98);
+        mat3 transformY = mat3(0.98,0,0.174,0,1,0,-0.174,0,0.98);
+        vec3 Crd = transformY * (transformX * coord);
+        gl_Position = vec4(Crd, 1.0);
+
         Vertexcolor = color;
     }
 )";
