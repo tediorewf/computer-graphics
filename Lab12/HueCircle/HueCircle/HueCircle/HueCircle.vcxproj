@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{58519574-d7d5-4d52-a001-c136b5a5fcdb}</ProjectGuid>
-    <RootNamespace>Lab12</RootNamespace>
+    <ProjectGuid>{47e75124-db5c-4d71-bbc8-1d11add49db6}</ProjectGuid>
+    <RootNamespace>HueCircle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
