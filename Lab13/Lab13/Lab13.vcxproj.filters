@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Файлы ресурсов\Models">
-      <UniqueIdentifier>{ee8495eb-3987-4721-9ad2-cfd4a781d243}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы ресурсов\Textures">
-      <UniqueIdentifier>{f730f1ef-f33d-42df-89cf-a91f5a05b1f9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,19 +20,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="Models\Banana.obj">
-      <Filter>Файлы ресурсов\Models</Filter>
-    </Object>
-    <Object Include="Models\Spider_Monkey.obj">
-      <Filter>Файлы ресурсов\Models</Filter>
-    </Object>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Textures\Banana.png">
-      <Filter>Файлы ресурсов\Textures</Filter>
-    </Image>
-    <Image Include="Textures\Spider_Monkey.jpg">
-      <Filter>Файлы ресурсов\Textures</Filter>
-    </Image>
+    <ClInclude Include="obj-parser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

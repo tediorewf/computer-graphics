@@ -142,12 +142,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="Models\Banana.obj" />
-    <Object Include="Models\Spider_Monkey.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Textures\Banana.png" />
-    <Image Include="Textures\Spider_Monkey.jpg" />
+    <ClInclude Include="obj-parser.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
