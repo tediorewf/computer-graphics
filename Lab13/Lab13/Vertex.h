@@ -3,11 +3,10 @@
 
 #include <glm/glm.hpp>
 
-struct Vertex 
+struct Vertex
 {
 	glm::vec3 position;
 	glm::vec2 texture_coordinate;
-	glm::vec3 normal;
 };
 
 #endif  // VERTEX_H
