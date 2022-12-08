@@ -18,7 +18,7 @@
 
 GLuint Program;
 GLint Attrib_vertex_position, Attrib_vertex_texture_coordinate;
-GLuint VBO, EBO;
+GLuint VBO;
 GLuint texture0, texture1;
 
 unsigned char* image_banana;
@@ -69,41 +69,26 @@ void checkOpenGLerror()
     }
 }
 
-Vertex vertices[] =
-{
-    								
-    { glm::vec3(-0.5f, 0.5f, 0.f), glm::vec2(0.f, 1.f) },
-    { glm::vec3(-0.5f, -0.5f, 0.f), glm::vec2(0.f, 0.f) },
-    { glm::vec3(0.5f, -0.5f, 0.f), glm::vec2(1.f, 0.f) },
-    { glm::vec3(0.5f, 0.5f, 0.f), glm::vec2(1.f, 1.f) }
-};
+auto spider_monkey_mesh = parse_obj("Models/Spider_Monkey.obj");
+auto banana_mesh = parse_obj("Models/Banana.obj");
 
-unsigned num_vertices = sizeof(vertices) / sizeof(Vertex);
-
-GLuint indices[] =
-{
-    0, 1, 2,
-    0, 2, 3
-};
-
-unsigned num_indices = sizeof(indices) / sizeof(GLuint);
-
-auto banana_mesh = parse_obj("Models/Spider_Monkey.obj");
-auto monkey_mesh = parse_obj("Models/Spider_Monkey.obj");
+std::vector<Vertex> common_mesh;
 
 void InitVBO()
 {
+    common_mesh = spider_monkey_mesh;
+    common_mesh.insert(common_mesh.end(), banana_mesh.begin(), banana_mesh.end());
+
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * common_mesh.size(), common_mesh.data(), GL_STATIC_DRAW);
+    /*
+    glGenBuffers(1, &VBO_1);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_1);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * (monkey_mesh.size() + banana_mesh.size()), monkey_mesh.data(), GL_STATIC_DRAW);
-    checkOpenGLerror();
-}
+    */
 
-void InitEBO()
-{
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * monkey_mesh.size(), NULL, GL_STATIC_DRAW);
+    checkOpenGLerror();
 }
 
 void ShaderLog(unsigned int shader)
@@ -210,7 +195,7 @@ GLfloat xAngle = 0, yAngle = 0, zAngle = 0;
 GLuint windowWidth = 1200, windowHeight = 1200;
 
 GLfloat cameraX = 0.f, cameraY = 0.f, cameraZ = 1.f;
-GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Тангаж, расканье и крен
+GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Тангаж, рысканье и крен
 
 void Draw()
 {
@@ -220,7 +205,6 @@ void Draw()
     glEnableVertexAttribArray(Attrib_vertex_texture_coordinate);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glVertexAttribPointer(Attrib_vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
     glVertexAttribPointer(Attrib_vertex_texture_coordinate, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texture_coordinate));
@@ -248,9 +232,9 @@ void Draw()
     glm::mat4 view(1.0f);
     view = glm::lookAt(camera_position, camera_position + camera_front, camera_up);
 
-    GLfloat field_of_view = 90.0f;
-    GLfloat near_plane = 0.1f;
-    GLfloat far_plane = 1000.0f;
+    GLfloat field_of_view = 120.0f;
+    GLfloat near_plane = 0.01f;
+    GLfloat far_plane = 10000.0f;
     glm::mat4 projection(1.0f);
     projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
 
@@ -258,9 +242,12 @@ void Draw()
     glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    //glUniform1i(glGetUniformLocation(Program, "texture"), 0);
     glUniform1i(glGetUniformLocation(Program, "texture"), 1);
-    glDrawArrays(GL_QUADS, 0, monkey_mesh.size());
+    glDrawArrays(GL_QUADS, 0, spider_monkey_mesh.size());
+
+    glUniform1i(glGetUniformLocation(Program, "texture"), 0);
+    glDrawArrays(GL_QUADS, spider_monkey_mesh.size(), banana_mesh.size());
+
     //glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(Attrib_vertex_position);
@@ -276,19 +263,12 @@ void Init()
     InitShader();
     InitTextures();
     InitVBO();
-    InitEBO();
 }
 
 void ReleaseVBO()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &VBO);
-}
-
-void ReleaseEBO()
-{
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &EBO);
 }
 
 void ReleaseShader()
@@ -309,7 +289,6 @@ void Release()
 {
     ReleaseShader();
     ReleaseVBO();
-    //ReleaseEBO();
     ReleaseTextures();
 }
 
@@ -341,34 +320,34 @@ int main()
                 switch (event.key.code) 
                 {
                 case sf::Keyboard::A:
-                    pitch += 5.0;
+                    pitch += 5.0f;
                     break;
                 case sf::Keyboard::Z:
-                    pitch -= 5.0;
+                    pitch -= 5.0f;
                     break;
                 case sf::Keyboard::S:
-                    yaw += 5.0;
+                    yaw += 5.0f;
                     break;
                 case sf::Keyboard::X:
-                    yaw -= 5.0;
+                    yaw -= 5.0f;
                     break;
                 case sf::Keyboard::D:
-                    roll += 5.0;
+                    roll += 5.0f;
                     break;
                 case sf::Keyboard::C:
-                    roll -= 5.0;
+                    roll -= 5.0f;
                     break;
                 case sf::Keyboard::G:
-                    cameraX += 0.5;
+                    cameraX += 1.0f;
                     break;
                 case sf::Keyboard::B:
-                    cameraX -= 0.5;
+                    cameraX -= 1.0f;
                     break;
                 case sf::Keyboard::H:
-                    cameraY += 0.5;
+                    cameraY += 1.0f;
                     break;
                 case sf::Keyboard::N:
-                    cameraY -= 0.5;
+                    cameraY -= 1.0f;
                     break;
                 case sf::Keyboard::J:
                     cameraZ += 0.5;
