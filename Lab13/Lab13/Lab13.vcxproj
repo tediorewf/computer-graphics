@@ -143,7 +143,6 @@
     <ClCompile Include="obj-parser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model.h" />
     <ClInclude Include="obj-parser.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
