@@ -3,10 +3,9 @@
 
 #include <glm/glm.hpp>
 
-struct Vertex
-{
-    glm::vec3 position;
-    glm::vec2 texture_coordinate;
+struct Vertex {
+  glm::vec3 position;
+  glm::vec2 texture_coordinate;
 };
 
-#endif  // VERTEX_H
+#endif // VERTEX_H
