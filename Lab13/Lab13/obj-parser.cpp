@@ -48,7 +48,7 @@ std::vector<Vertex> parse_obj(const std::string& filename)
 		else if (prefix == "vt")
 		{
 			ss >> u >> v;
-			vertex_texture_coordinates.push_back(glm::vec2(u, v));
+			vertex_texture_coordinates.push_back(glm::vec2(u, 1-v));
 		}
 		else if (prefix == "vn")
 		{

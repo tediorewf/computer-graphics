@@ -42,7 +42,7 @@ const char* VertexShaderSource0 = R"(
 
     void main() {
         vs_position = vec4(model * vec4(position + offsets[gl_InstanceID], 1.0f)).xyz;
-        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y * -1.0f);
+        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y);
 
         gl_Position = projection * view * model * vec4(position + offsets[gl_InstanceID], 1.0f);
     }
@@ -78,7 +78,7 @@ const char* VertexShaderSource1 = R"(
 
     void main() {
         vs_position = vec4(model * vec4(position, 1.0f)).xyz;
-        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y * -1.0f);
+        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y);
 
         gl_Position = projection * view * model * vec4(position, 1.0f);
     }
@@ -429,8 +429,20 @@ void Draw()
     drawProgram0();
 }
 
+void InitOptions()
+{
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void Init()
 {
+    InitOptions();
     InitShaders();
     InitTextures();
     InitVBOs();
