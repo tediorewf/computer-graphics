@@ -40,11 +40,13 @@ const char* VertexShaderSource0 = R"(
 
     uniform float offsets[10];
 
+    const float radius = 500.f;
+
     void main() {
-        vs_position = vec4(model * vec4(position + offsets[gl_InstanceID], 1.0f)).xyz;
+        vs_position = vec4(model * vec4(position.x + radius * sin(offsets[gl_InstanceID]), position.y + radius * cos(offsets[gl_InstanceID]), position.z, 1.0f)).xyz;
         vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y);
 
-        gl_Position = projection * view * model * vec4(position + offsets[gl_InstanceID], 1.0f);
+        gl_Position = projection * view * model * vec4(position.x + radius * sin(offsets[gl_InstanceID]), position.y + radius * cos(offsets[gl_InstanceID]), position.z, 1.0f);
     }
 )";
 
@@ -317,20 +319,21 @@ void drawProgram0()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    GLuint bananasCount = 10;
+    const GLuint bananasCount = 10;
 
-    GLfloat offsets[10];
-    GLfloat offset = 2.0f;
-    for (GLint i = 0; i < bananasCount; i += 1)
+    GLfloat offsets[bananasCount];
+    GLfloat offset = 0.0;
+    offsets[0] = 2.f * 3.14f / ((GLfloat)(bananasCount * bananasCount));
+    for (GLint i = 1; i < bananasCount; i += 1)
     {
-        offsets[i] = i * offset;
+        offsets[i] += offsets[i-1];
     }
     glUniform1fv(glGetUniformLocation(Program0, "offsets"), bananasCount, offsets);
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
-    model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
-    model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
+    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
     model = glm::scale(model, glm::vec3(0.1f));
 
@@ -384,7 +387,7 @@ void drawProgram1()
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
-    model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
     //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
     //model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
     model = glm::scale(model, glm::vec3(0.5f));
@@ -489,6 +492,7 @@ int main()
     {
         xAngle += 0.5f;
         yAngle += 0.5f;
+        zAngle += 0.5f;
         sf::Event event;
         while (window.pollEvent(event))
         {
