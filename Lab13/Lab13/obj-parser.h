@@ -2,7 +2,6 @@
 #define OBJ_PARSER_H
 
 #include "Vertex.h"
-#include "Model.h"
 
 #include <vector>
 #include <string>

@@ -1,5 +1,4 @@
 #include "obj-parser.h"
-#include "Model.h"
 
 #include <vector>
 #include <string>
@@ -106,6 +105,8 @@ std::vector<Vertex> parse_obj(const std::string& filename)
 		vertices[i].texture_coordinate = vertex_texture_coordinates[vertex_texture_coordinate_indicies[i]];
 		//vertices[i].normal = vertex_normals[vertex_normal_indicies[i]];
 	}
+
+	std::cout << "Vertices size " << vertices.size() << std::endl;
 
 	return vertices;
 }

@@ -38,11 +38,13 @@ const char* VertexShaderSource0 = R"(
     uniform mat4 view;
     uniform mat4 projection;
 
+    uniform float offsets[10];
+
     void main() {
-        vs_position = vec4(model * vec4(position, 1.0f)).xyz;
+        vs_position = vec4(model * vec4(position + offsets[gl_InstanceID], 1.0f)).xyz;
         vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y * -1.0f);
 
-        gl_Position = projection * view * model * vec4(position, 1.0f);
+        gl_Position = projection * view * model * vec4(position + offsets[gl_InstanceID], 1.0f);
     }
 )";
 
@@ -315,12 +317,22 @@ void drawProgram0()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    GLuint bananasCount = 10;
+
+    GLfloat offsets[10];
+    GLfloat offset = 2.0f;
+    for (GLint i = 0; i < bananasCount; i += 1)
+    {
+        offsets[i] = i * offset;
+    }
+    glUniform1fv(glGetUniformLocation(Program0, "offsets"), bananasCount, offsets);
+
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
     model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
     model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
-    model = glm::scale(model, glm::vec3(1.f));
+    model = glm::scale(model, glm::vec3(0.1f));
 
     glm::vec3 camera_position(cameraX, cameraY, cameraZ);
     glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
@@ -346,7 +358,7 @@ void drawProgram0()
     glUniformMatrix4fv(glGetUniformLocation(Program0, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glUniform1i(glGetUniformLocation(Program0, "texture"), 0);
-    glDrawArraysInstanced(GL_QUADS, 0, banana_mesh.size(), 10);
+    glDrawArraysInstanced(GL_QUADS, 0, banana_mesh.size(), bananasCount);
 
     glDisableVertexAttribArray(Attrib_vertex_position0);
     glDisableVertexAttribArray(Attrib_vertex_texture_coordinate0);
@@ -375,7 +387,7 @@ void drawProgram1()
     model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
     //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
     //model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
-    model = glm::scale(model, glm::vec3(1.f));
+    model = glm::scale(model, glm::vec3(0.5f));
 
     glm::vec3 camera_position(cameraX, cameraY, cameraZ);
     glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
