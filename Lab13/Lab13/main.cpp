@@ -50,7 +50,7 @@ const char *VertexShaderSource0 = R"(
 
 const char *FragShaderSource0 = R"(
     #version 330 core
-    
+
     in vec3 vs_position;
     in vec2 vs_texture_coordinate;
 
@@ -86,7 +86,7 @@ const char *VertexShaderSource1 = R"(
 
 const char *FragShaderSource1 = R"(
     #version 330 core
-    
+
     in vec3 vs_position;
     in vec2 vs_texture_coordinate;
 
