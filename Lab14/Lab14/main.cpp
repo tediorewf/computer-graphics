@@ -16,23 +16,23 @@
 
 #include <iostream>
 
-GLuint Program;
-GLint Attrib_vertex_position, Attrib_vertex_texcoord, Attrib_vertex_normal;
-GLuint VBO;
-GLuint texture;
+GLuint Program0, Program1;
+GLint Attrib_vertex_position0, Attrib_vertex_texture_coordinate0;
+GLint Attrib_vertex_position1, Attrib_vertex_texture_coordinate1;
+GLuint VBO_0, VBO_1;
+GLuint texture0, texture1;
 
-unsigned char* image;
+unsigned char* image_banana;
+unsigned char* image_spider_monkey;
 
-const char* VertexShaderSource = R"(
+const char* VertexShaderSource0 = R"(
     #version 330 core
 
     in vec3 position;
     in vec2 texcoord;
-    in vec3 normal;
 
     out vec3 vs_position;
     out vec2 vs_texcoord;
-    out vec3 vs_normal;
 
     uniform mat4 model;
     uniform mat4 view;
@@ -41,18 +41,52 @@ const char* VertexShaderSource = R"(
     void main() {
         vs_position = vec4(model * vec4(position, 1.0f)).xyz;
         vs_texcoord = vec2(texcoord.x, texcoord.y);
-        vs_normal = normal;
 
         gl_Position = projection * view * model * vec4(position, 1.0f);
     }
 )";
 
-const char* FragShaderSource = R"(
+const char* FragShaderSource0 = R"(
     #version 330 core
     
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;
+
+    out vec4 color;
+
+    uniform sampler2D texture;
+
+    void main() {
+        color = texture(texture, vs_texcoord);
+    }
+)";
+
+const char* VertexShaderSource1 = R"(
+    #version 330 core
+
+    in vec3 position;
+    in vec2 texcoord;
+
+    out vec3 vs_position;
+    out vec2 vs_texcoord;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main() {
+        vs_position = vec4(model * vec4(position, 1.0f)).xyz;
+        vs_texcoord = vec2(texcoord.x, texcoord.y);
+
+        gl_Position = projection * view * model * vec4(position, 1.0f);
+    }
+)";
+
+const char* FragShaderSource1 = R"(
+    #version 330 core
+    
+    in vec3 vs_position;
+    in vec2 vs_texcoord;
 
     out vec4 color;
 
@@ -72,19 +106,29 @@ void checkOpenGLerror()
     }
 }
 
-auto chair_mesh = parse_obj("Models/banana.obj");
+auto banana_mesh = parse_obj("Models/banana.obj");
+auto spider_monkey_mesh = parse_obj("Models/plate.obj");
 
 void initVBOProgram0()
 {
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * chair_mesh.size(), chair_mesh.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &VBO_0);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * banana_mesh.size(), banana_mesh.data(), GL_STATIC_DRAW);
+    checkOpenGLerror();
+}
+
+void initVBOProgram1()
+{
+    glGenBuffers(1, &VBO_1);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * spider_monkey_mesh.size(), spider_monkey_mesh.data(), GL_STATIC_DRAW);
     checkOpenGLerror();
 }
 
 void InitVBOs()
 {
     initVBOProgram0();
+    initVBOProgram1();
 }
 
 void ShaderLog(unsigned int shader)
@@ -102,53 +146,92 @@ void ShaderLog(unsigned int shader)
 
 void initShaderProgram0()
 {
-    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader, 1, &VertexShaderSource, NULL);
-    glCompileShader(vShader);
+    GLuint vShader0 = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader0, 1, &VertexShaderSource0, NULL);
+    glCompileShader(vShader0);
     std::cout << "vertex shader \n";
-    ShaderLog(vShader);
+    ShaderLog(vShader0);
 
-    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader, 1, &FragShaderSource, NULL);
-    glCompileShader(fShader);
+    GLuint fShader0 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader0, 1, &FragShaderSource0, NULL);
+    glCompileShader(fShader0);
     std::cout << "fragment shader \n";
-    ShaderLog(fShader);
+    ShaderLog(fShader0);
 
-    Program = glCreateProgram();
+    Program0 = glCreateProgram();
 
-    glAttachShader(Program, vShader);
-    glAttachShader(Program, fShader);
+    glAttachShader(Program0, vShader0);
+    glAttachShader(Program0, fShader0);
 
-    glLinkProgram(Program);
-    int link_ok;
-    glGetProgramiv(Program, GL_LINK_STATUS, &link_ok);
-    if (!link_ok)
+    glLinkProgram(Program0);
+    int link_ok0;
+    glGetProgramiv(Program0, GL_LINK_STATUS, &link_ok0);
+    if (!link_ok0)
     {
         std::cout << "error attach shaders \n";
         return;
     }
 
-    const char* attr_name_position = "position";
-    Attrib_vertex_position = glGetAttribLocation(Program, attr_name_position);
-    if (Attrib_vertex_position == -1)
+    const char* attr_name_position0 = "position";
+    Attrib_vertex_position0 = glGetAttribLocation(Program0, attr_name_position0);
+    if (Attrib_vertex_position0 == -1)
     {
-        std::cout << "could not bind attrib " << attr_name_position << std::endl;
+        std::cout << "could not bind attrib " << attr_name_position0 << std::endl;
         return;
     }
 
-    const char* attr_name_texcoord = "texcoord";
-    Attrib_vertex_texcoord = glGetAttribLocation(Program, attr_name_texcoord);
-    if (Attrib_vertex_texcoord == -1)
+    const char* attr_name_texture_coordinate0 = "texcoord";
+    Attrib_vertex_texture_coordinate0 = glGetAttribLocation(Program0, attr_name_texture_coordinate0);
+    if (Attrib_vertex_texture_coordinate0 == -1)
     {
-        std::cout << "could not bind attrib " << attr_name_texcoord << std::endl;
+        std::cout << "could not bind attrib " << attr_name_texture_coordinate0 << std::endl;
         return;
     }
 
-    const char* attr_name_normal = "normal";
-    Attrib_vertex_texcoord = glGetAttribLocation(Program, attr_name_normal);
-    if (Attrib_vertex_texcoord == -1)
+    checkOpenGLerror();
+}
+
+void initShaderProgram1()
+{
+    GLuint vShader1 = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader1, 1, &VertexShaderSource1, NULL);
+    glCompileShader(vShader1);
+    std::cout << "vertex shader \n";
+    ShaderLog(vShader1);
+
+    GLuint fShader1 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader1, 1, &FragShaderSource1, NULL);
+    glCompileShader(fShader1);
+    std::cout << "fragment shader \n";
+    ShaderLog(fShader1);
+
+    Program1 = glCreateProgram();
+
+    glAttachShader(Program1, vShader1);
+    glAttachShader(Program1, fShader1);
+
+    glLinkProgram(Program1);
+    int link_ok1;
+    glGetProgramiv(Program1, GL_LINK_STATUS, &link_ok1);
+    if (!link_ok1)
     {
-        std::cout << "could not bind attrib " << attr_name_normal << std::endl;
+        std::cout << "error attach shaders \n";
+        return;
+    }
+
+    const char* attr_name_position1 = "position";
+    Attrib_vertex_position1 = glGetAttribLocation(Program1, attr_name_position1);
+    if (Attrib_vertex_position1 == -1)
+    {
+        std::cout << "could not bind attrib " << attr_name_position1 << std::endl;
+        return;
+    }
+
+    const char* attr_name_texture_coordinate1 = "texcoord";
+    Attrib_vertex_texture_coordinate1 = glGetAttribLocation(Program0, attr_name_texture_coordinate1);
+    if (Attrib_vertex_texture_coordinate1 == -1)
+    {
+        std::cout << "could not bind attrib " << attr_name_texture_coordinate1 << std::endl;
         return;
     }
 
@@ -159,20 +242,22 @@ void InitShaders()
 {
     // Program0
     initShaderProgram0();
+    // Program1
+    initShaderProgram1();
 }
 
 void initTextureProgram0()
 {
-    int image_width, image_height;
+    int image_width_banana, image_height_banana;
     const char* filename_banana = "Textures/banana.png";
-    image = SOIL_load_image(filename_banana, &image_width, &image_height, NULL, SOIL_LOAD_RGBA);
+    image_banana = SOIL_load_image(filename_banana, &image_width_banana, &image_height_banana, NULL, SOIL_LOAD_RGBA);
     glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &texture0);
+    glBindTexture(GL_TEXTURE_2D, texture0);
 
-    if (image)
+    if (image_banana)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width_banana, image_height_banana, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_banana);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -182,9 +267,31 @@ void initTextureProgram0()
     }
 }
 
+void initTextureProgram1()
+{
+    int image_width_spider_monkey, image_height_spider_monkey;
+    const char* filename_spider_monkey = "Textures/plate.jpg";
+    image_spider_monkey = SOIL_load_image(filename_spider_monkey, &image_width_spider_monkey, &image_height_spider_monkey, NULL, SOIL_LOAD_RGBA);
+    glActiveTexture(GL_TEXTURE1);
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    if (image_spider_monkey)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width_spider_monkey, image_height_spider_monkey, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_spider_monkey);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "could not load texture " << filename_spider_monkey << std::endl;
+        return;
+    }
+}
+
 void InitTextures()
 {
     initTextureProgram0();
+    initTextureProgram1();
 }
 
 GLfloat xAngle = 0, yAngle = 0, zAngle = 0;
@@ -196,17 +303,15 @@ GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Тангаж, рысканье и крен
 
 void drawProgram0()
 {
-    glUseProgram(Program);
+    glUseProgram(Program0);
 
-    glEnableVertexAttribArray(Attrib_vertex_position);
-    glEnableVertexAttribArray(Attrib_vertex_texcoord);
-    glEnableVertexAttribArray(Attrib_vertex_normal);
+    glEnableVertexAttribArray(Attrib_vertex_position0);
+    glEnableVertexAttribArray(Attrib_vertex_texture_coordinate0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_0);
 
-    glVertexAttribPointer(Attrib_vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
-    glVertexAttribPointer(Attrib_vertex_texcoord, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
-    glVertexAttribPointer(Attrib_vertex_normal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+    glVertexAttribPointer(Attrib_vertex_position0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+    glVertexAttribPointer(Attrib_vertex_texture_coordinate0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -215,7 +320,7 @@ void drawProgram0()
     //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
     //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
-    model = glm::scale(model, glm::vec3(0.1f));
+    model = glm::scale(model, glm::vec3(2.0f));
 
     glm::vec3 camera_position(cameraX, cameraY, cameraZ);
     glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
@@ -236,16 +341,70 @@ void drawProgram0()
     glm::mat4 projection(1.0f);
     projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
 
-    glUniformMatrix4fv(glGetUniformLocation(Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    glUniform1i(glGetUniformLocation(Program, "texture"), 0);
-    glDrawArrays(GL_TRIANGLES, 0, chair_mesh.size());
+    glUniform1i(glGetUniformLocation(Program0, "texture"), 0);
+    glDrawArrays(GL_TRIANGLES, 0, banana_mesh.size());
 
-    glDisableVertexAttribArray(Attrib_vertex_position);
-    glDisableVertexAttribArray(Attrib_vertex_texcoord);
-    glDisableVertexAttribArray(Attrib_vertex_normal);
+    glDisableVertexAttribArray(Attrib_vertex_position0);
+    glDisableVertexAttribArray(Attrib_vertex_texture_coordinate0);
+
+    glUseProgram(0);
+
+    checkOpenGLerror();
+}
+
+void drawProgram1()
+{
+    glUseProgram(Program1);
+
+    glEnableVertexAttribArray(Attrib_vertex_position1);
+    glEnableVertexAttribArray(Attrib_vertex_texture_coordinate1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_1);
+
+    glVertexAttribPointer(Attrib_vertex_position1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+    glVertexAttribPointer(Attrib_vertex_texture_coordinate1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glm::mat4 model(1.0f);
+    model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
+    //model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
+    model = glm::scale(model, glm::vec3(2.5f));
+
+    glm::vec3 camera_position(cameraX, cameraY, cameraZ);
+    glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
+    glm::vec3 camera_front = glm::normalize(
+        glm::vec3(
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+        )
+    );
+
+    glm::mat4 view(1.0f);
+    view = glm::lookAt(camera_position, camera_position + camera_front, camera_up);
+
+    GLfloat field_of_view = 120.0f;
+    GLfloat near_plane = 0.01f;
+    GLfloat far_plane = 10000.0f;
+    glm::mat4 projection(1.0f);
+    projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
+
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glUniform1i(glGetUniformLocation(Program1, "texture"), 1);
+    glDrawArrays(GL_TRIANGLES, 0, spider_monkey_mesh.size());
+
+    glDisableVertexAttribArray(Attrib_vertex_position1);
+    glDisableVertexAttribArray(Attrib_vertex_texture_coordinate1);
 
     glUseProgram(0);
 
@@ -254,6 +413,7 @@ void drawProgram0()
 
 void Draw()
 {
+    drawProgram1();
     drawProgram0();
 }
 
@@ -279,20 +439,23 @@ void Init()
 void ReleaseVBOs()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &VBO_0);
+    glDeleteBuffers(1, &VBO_1);
 }
 
 void ReleaseShaders()
 {
     glUseProgram(0);
-    glDeleteProgram(Program);
+    glDeleteProgram(Program0);
+    glDeleteProgram(Program1);
 }
 
 void ReleaseTextures()
 {
     glActiveTexture(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-    SOIL_free_image_data(image);
+    SOIL_free_image_data(image_banana);
+    SOIL_free_image_data(image_spider_monkey);
 }
 
 void Release()
@@ -304,7 +467,7 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(windowWidth, windowHeight), "Lighting", sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(windowWidth, windowHeight), "Solar System Model", sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
