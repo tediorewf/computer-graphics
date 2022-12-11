@@ -1,4 +1,4 @@
-﻿#include "Vertex.h"
+#include "Vertex.h"
 #include "obj-parser.h"
 
 #include <GL/glew.h>
@@ -303,7 +303,7 @@ GLfloat xAngle = 0, yAngle = 0, zAngle = 0;
 GLuint windowWidth = 1200, windowHeight = 1200;
 
 GLfloat cameraX = 0.f, cameraY = 0.f, cameraZ = 1.f;
-GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Тангаж, рысканье и крен
+GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Ð¢Ð°Ð½Ð³Ð°Ð¶, ÑÑÑÐºÐ°Ð½ÑÐµ Ð¸ ÐºÑÐµÐ½
 
 void drawProgram0()
 {
