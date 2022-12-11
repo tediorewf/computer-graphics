@@ -1,48 +1,103 @@
+#include "Vertex.h"
+#include "obj-parser.h"
+
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <glm/mat4x4.hpp> 
+#include <SOIL/SOIL.h>
+#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-GLuint Program;
-GLint Attrib_vertex;
-GLint Attrib_color;
-GLuint VBO;
+#include <iostream>
 
-struct Vertex
-{
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
+GLuint Program0, Program1;
+GLint Attrib_vertex_position0, Attrib_vertex_texture_coordinate0;
+GLint Attrib_vertex_position1, Attrib_vertex_texture_coordinate1;
+GLuint VBO_0, VBO_1;
+GLuint texture0, texture1;
 
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-};
+unsigned char* image_banana;
+unsigned char* image_spider_monkey;
 
-const char* VertexShaderSource = R"(
+const char* VertexShaderSource0 = R"(
     #version 330 core
-    in vec3 coord;
-    in vec3 color;
-    out vec3 Vertexcolor;
 
-    uniform mat4 Transform;
+    in vec3 position;
+    in vec2 texture_coordinate;
+
+    out vec3 vs_position;
+    out vec2 vs_texture_coordinate;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    uniform float offsets[10];
+
+    const float radius = 500.f;
 
     void main() {
-        gl_Position = Transform * vec4(coord, 1.0f);
+        vs_position = vec4(model * vec4(position.x + radius * sin(offsets[gl_InstanceID]), position.y + radius * cos(offsets[gl_InstanceID]), position.z, 1.0f)).xyz;
+        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y);
 
-        Vertexcolor = color;
+        gl_Position = projection * view * model * vec4(position.x + radius * sin(offsets[gl_InstanceID]), position.y + radius * cos(offsets[gl_InstanceID]), position.z, 1.0f);
     }
 )";
 
-const char* FragShaderSource = R"(
+const char* FragShaderSource0 = R"(
     #version 330 core
-    in vec3 Vertexcolor;
+    
+    in vec3 vs_position;
+    in vec2 vs_texture_coordinate;
+
     out vec4 color;
+
+    uniform sampler2D texture;
+
     void main() {
-        color = vec4(Vertexcolor , 0);
+        color = texture(texture, vs_texture_coordinate);
+    }
+)";
+
+const char* VertexShaderSource1 = R"(
+    #version 330 core
+
+    in vec3 position;
+    in vec2 texture_coordinate;
+
+    out vec3 vs_position;
+    out vec2 vs_texture_coordinate;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main() {
+        vs_position = vec4(model * vec4(position, 1.0f)).xyz;
+        vs_texture_coordinate = vec2(texture_coordinate.x, texture_coordinate.y);
+
+        gl_Position = projection * view * model * vec4(position, 1.0f);
+    }
+)";
+
+const char* FragShaderSource1 = R"(
+    #version 330 core
+    
+    in vec3 vs_position;
+    in vec2 vs_texture_coordinate;
+
+    out vec4 color;
+
+    uniform sampler2D texture;
+
+    void main() {
+        color = texture(texture, vs_texture_coordinate);
     }
 )";
 
@@ -55,30 +110,29 @@ void checkOpenGLerror()
     }
 }
 
-void InitVBO()
+auto banana_mesh = parse_obj("Models/Banana.obj");
+auto spider_monkey_mesh = parse_obj("Models/Spider_Monkey.obj");
+
+void initVBOProgram0()
 {
-    glGenBuffers(1, &VBO);
-    float t = 0.7;
-    Vertex triangle[] = {
-        {0,0 ,0, 3, 1, 0},
-        {t ,0,0, 0.5, 2, 1},
-        {t / 2 ,t * sqrt(3) / 2 ,0, 1, 0, 0.5},
-
-        {0 ,0 ,0, 3, 1, 0},
-        {t ,0 ,0, 0.5, 2, 1},
-        {t / 2 ,t * sqrt(3) / 6 ,t * sqrt(2) / 3, 0.5, 0, 0.5},
-
-        {0 ,0 ,0, 3, 1, 0},
-        {t / 2 ,t * sqrt(3) / 2 ,0, 1, 0, 0.5},
-        {t / 2 ,t * sqrt(3) / 6 ,t * sqrt(2) / 3, 0.5, 0, 0.5},
-
-        {t ,0 ,0, 0.5, 2, 1},
-        {t / 2 ,t * sqrt(3) / 2 ,0, 1, 0, 0.5},
-        {t / 2 ,t * sqrt(3) / 6 ,t * sqrt(2) / 3, 0.5, 0, 0.5},
-    };
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+    glGenBuffers(1, &VBO_0);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * banana_mesh.size(), banana_mesh.data(), GL_STATIC_DRAW);
     checkOpenGLerror();
+}
+
+void initVBOProgram1()
+{
+    glGenBuffers(1, &VBO_1);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * spider_monkey_mesh.size(), spider_monkey_mesh.data(), GL_STATIC_DRAW);
+    checkOpenGLerror();
+}
+
+void InitVBOs()
+{
+    initVBOProgram0();
+    initVBOProgram1();
 }
 
 void ShaderLog(unsigned int shader)
@@ -94,127 +148,351 @@ void ShaderLog(unsigned int shader)
     }
 }
 
-void InitShader()
+void initShaderProgram0()
 {
-    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader, 1, &VertexShaderSource, NULL);
-    glCompileShader(vShader);
+    GLuint vShader0 = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader0, 1, &VertexShaderSource0, NULL);
+    glCompileShader(vShader0);
     std::cout << "vertex shader \n";
-    ShaderLog(vShader);
-    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader, 1, &FragShaderSource, NULL);
-    glCompileShader(fShader);
+    ShaderLog(vShader0);
+
+    GLuint fShader0 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader0, 1, &FragShaderSource0, NULL);
+    glCompileShader(fShader0);
     std::cout << "fragment shader \n";
-    ShaderLog(fShader);
-    Program = glCreateProgram();
-    glAttachShader(Program, vShader);
-    glAttachShader(Program, fShader);
-    glLinkProgram(Program);
-    int link_ok;
-    glGetProgramiv(Program, GL_LINK_STATUS, &link_ok);
-    if (!link_ok)
+    ShaderLog(fShader0);
+
+    Program0 = glCreateProgram();
+
+    glAttachShader(Program0, vShader0);
+    glAttachShader(Program0, fShader0);
+
+    glLinkProgram(Program0);
+    int link_ok0;
+    glGetProgramiv(Program0, GL_LINK_STATUS, &link_ok0);
+    if (!link_ok0)
     {
         std::cout << "error attach shaders \n";
         return;
     }
-    const char* attr_name = "coord";
-    Attrib_vertex = glGetAttribLocation(Program, attr_name);
-    if (Attrib_vertex == -1)
+
+    const char* attr_name_position0 = "position";
+    Attrib_vertex_position0 = glGetAttribLocation(Program0, attr_name_position0);
+    if (Attrib_vertex_position0 == -1)
     {
-        std::cout << "could not bind attrib " << attr_name << std::endl;
+        std::cout << "could not bind attrib " << attr_name_position0 << std::endl;
         return;
     }
-    const char* attr_name1 = "color";
-    Attrib_color = glGetAttribLocation(Program, attr_name1);
-    if (Attrib_color == -1)
+
+    const char* attr_name_texture_coordinate0 = "texture_coordinate";
+    Attrib_vertex_texture_coordinate0 = glGetAttribLocation(Program0, attr_name_texture_coordinate0);
+    if (Attrib_vertex_texture_coordinate0 == -1)
     {
-        std::cout << "could not bind attrib " << attr_name1 << std::endl;
+        std::cout << "could not bind attrib " << attr_name_texture_coordinate0 << std::endl;
         return;
     }
+
     checkOpenGLerror();
 }
 
-
-glm::mat4 Camera(float Mashtab, float OX, float OY,float Rx,float Ry)
+void initShaderProgram1()
 {
-    glm::mat4 RotateY = glm::mat4(cos(Ry), 0, -sin(Ry), 0, 0, 1, 0, 0, sin(Ry), 0, cos(Ry), 0, 0, 0, 0, 1);
-    glm::mat4 RotateX = glm::mat4(1, 0, 0, 0, 0, cos(Rx), sin(Rx), 0, 0, -sin(Rx), cos(Rx), 0, 0, 0, 0, 1);
-    int c = 500;
-    glm::mat4 Projection = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1/c, 0, 0, 0, 1);
-    glm::mat4 Trans = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -OX, -OY, Mashtab, 1);
-    return Projection * Trans * RotateY * RotateX;
+    GLuint vShader1 = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader1, 1, &VertexShaderSource1, NULL);
+    glCompileShader(vShader1);
+    std::cout << "vertex shader \n";
+    ShaderLog(vShader1);
+
+    GLuint fShader1 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader1, 1, &FragShaderSource1, NULL);
+    glCompileShader(fShader1);
+    std::cout << "fragment shader \n";
+    ShaderLog(fShader1);
+
+    Program1 = glCreateProgram();
+
+    glAttachShader(Program1, vShader1);
+    glAttachShader(Program1, fShader1);
+
+    glLinkProgram(Program1);
+    int link_ok1;
+    glGetProgramiv(Program1, GL_LINK_STATUS, &link_ok1);
+    if (!link_ok1)
+    {
+        std::cout << "error attach shaders \n";
+        return;
+    }
+
+    const char* attr_name_position1 = "position";
+    Attrib_vertex_position1 = glGetAttribLocation(Program1, attr_name_position1);
+    if (Attrib_vertex_position1 == -1)
+    {
+        std::cout << "could not bind attrib " << attr_name_position1 << std::endl;
+        return;
+    }
+
+    const char* attr_name_texture_coordinate1 = "texture_coordinate";
+    Attrib_vertex_texture_coordinate1 = glGetAttribLocation(Program0, attr_name_texture_coordinate1);
+    if (Attrib_vertex_texture_coordinate1 == -1)
+    {
+        std::cout << "could not bind attrib " << attr_name_texture_coordinate1 << std::endl;
+        return;
+    }
+
+    checkOpenGLerror();
 }
 
-
-void Draw(float Mashtab, float OX, float OY, float Rx, float Ry)
+void InitShaders()
 {
-    glUseProgram(Program);
+    // Program0
+    initShaderProgram0();
+    // Program1
+    initShaderProgram1();
+}
 
-    glEnableVertexAttribArray(Attrib_vertex);
-    glEnableVertexAttribArray(Attrib_color);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+void initTextureProgram0()
+{
+    int image_width_banana, image_height_banana;
+    const char* filename_banana = "Textures/Banana.png";
+    image_banana = SOIL_load_image(filename_banana, &image_width_banana, &image_height_banana, NULL, SOIL_LOAD_RGBA);
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &texture0);
+    glBindTexture(GL_TEXTURE_2D, texture0);
 
-    // Àòðèáóò ñ êîîðäèíàòàìè
-    glVertexAttribPointer(Attrib_vertex, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-    // Àòðèáóò ñ öâåòîì
-    glVertexAttribPointer(Attrib_color, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    if (image_banana)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width_banana, image_height_banana, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_banana);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "could not load texture " << filename_banana << std::endl;
+        return;
+    }
+}
 
-    GLint TransformLoc = glGetUniformLocation(Program, "Transform");
-    glm::mat4 Transform = Camera(Mashtab, OX, OY, Rx, Ry);
-    glUniformMatrix4fv(TransformLoc, 1, GL_FALSE, glm::value_ptr(Transform));
+void initTextureProgram1()
+{
+    int image_width_spider_monkey, image_height_spider_monkey;
+    const char* filename_spider_monkey = "Textures/Spider_Monkey.jpg";
+    image_spider_monkey = SOIL_load_image(filename_spider_monkey, &image_width_spider_monkey, &image_height_spider_monkey, NULL, SOIL_LOAD_RGBA);
+    glActiveTexture(GL_TEXTURE1);
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
+    if (image_spider_monkey)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width_spider_monkey, image_height_spider_monkey, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_spider_monkey);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "could not load texture " << filename_spider_monkey << std::endl;
+        return;
+    }
+}
+
+void InitTextures()
+{
+    initTextureProgram0();
+    initTextureProgram1();
+}
+
+GLfloat xAngle = 0, yAngle = 0, zAngle = 0;
+
+GLuint windowWidth = 1200, windowHeight = 1200;
+
+GLfloat cameraX = 0.f, cameraY = 0.f, cameraZ = 1.f;
+GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // ÃÂ¢ÃÂ°ÃÂ½ÃÂ³ÃÂ°ÃÂ¶, Ã‘Â€Ã‘Â‹Ã‘ÂÃÂºÃÂ°ÃÂ½Ã‘ÂŒÃÂµ ÃÂ¸ ÃÂºÃ‘Â€ÃÂµÃÂ½
+
+void drawProgram0()
+{
+    glUseProgram(Program0);
+
+    glEnableVertexAttribArray(Attrib_vertex_position0);
+    glEnableVertexAttribArray(Attrib_vertex_texture_coordinate0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_0);
+
+    glVertexAttribPointer(Attrib_vertex_position0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+    glVertexAttribPointer(Attrib_vertex_texture_coordinate0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texture_coordinate));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 12);
-    glDisableVertexAttribArray(Attrib_vertex);
-    glDisableVertexAttribArray(Attrib_color);
+
+    const GLuint bananasCount = 10;
+
+    GLfloat offsets[bananasCount];
+    GLfloat offset = 0.0;
+    offsets[0] = 2.f * 3.14f / ((GLfloat)(bananasCount * bananasCount));
+    for (GLint i = 1; i < bananasCount; i += 1)
+    {
+        offsets[i] += offsets[i-1];
+    }
+    glUniform1fv(glGetUniformLocation(Program0, "offsets"), bananasCount, offsets);
+
+    glm::mat4 model(1.0f);
+    model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
+    model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
+    model = glm::scale(model, glm::vec3(0.1f));
+
+    glm::vec3 camera_position(cameraX, cameraY, cameraZ);
+    glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
+    glm::vec3 camera_front = glm::normalize(
+        glm::vec3(
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+        )
+    );
+
+    glm::mat4 view(1.0f);
+    view = glm::lookAt(camera_position, camera_position + camera_front, camera_up);
+
+    GLfloat field_of_view = 120.0f;
+    GLfloat near_plane = 0.01f;
+    GLfloat far_plane = 10000.0f;
+    glm::mat4 projection(1.0f);
+    projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
+
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(Program0, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glUniform1i(glGetUniformLocation(Program0, "texture"), 0);
+    glDrawArraysInstanced(GL_QUADS, 0, banana_mesh.size(), bananasCount);
+
+    glDisableVertexAttribArray(Attrib_vertex_position0);
+    glDisableVertexAttribArray(Attrib_vertex_texture_coordinate0);
+
     glUseProgram(0);
+
     checkOpenGLerror();
 }
 
+void drawProgram1()
+{
+    glUseProgram(Program1);
+
+    glEnableVertexAttribArray(Attrib_vertex_position1);
+    glEnableVertexAttribArray(Attrib_vertex_texture_coordinate1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_1);
+
+    glVertexAttribPointer(Attrib_vertex_position1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+    glVertexAttribPointer(Attrib_vertex_texture_coordinate1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texture_coordinate));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glm::mat4 model(1.0f);
+    model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
+    //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
+    //model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
+    model = glm::scale(model, glm::vec3(0.5f));
+
+    glm::vec3 camera_position(cameraX, cameraY, cameraZ);
+    glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
+    glm::vec3 camera_front = glm::normalize(
+        glm::vec3(
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+        )
+    );
+
+    glm::mat4 view(1.0f);
+    view = glm::lookAt(camera_position, camera_position + camera_front, camera_up);
+
+    GLfloat field_of_view = 120.0f;
+    GLfloat near_plane = 0.01f;
+    GLfloat far_plane = 10000.0f;
+    glm::mat4 projection(1.0f);
+    projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
+
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(Program1, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glUniform1i(glGetUniformLocation(Program1, "texture"), 1);
+    glDrawArrays(GL_QUADS, 0, spider_monkey_mesh.size());
+
+    glDisableVertexAttribArray(Attrib_vertex_position1);
+    glDisableVertexAttribArray(Attrib_vertex_texture_coordinate1);
+
+    glUseProgram(0);
+
+    checkOpenGLerror();
+}
+
+void Draw()
+{
+    drawProgram1();
+    drawProgram0();
+}
+
+void InitOptions()
+{
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
 void Init()
 {
-    InitShader();
-    InitVBO();
+    InitOptions();
+    InitShaders();
+    InitTextures();
+    InitVBOs();
 }
 
-void ReleaseVBO()
+void ReleaseVBOs()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &VBO_0);
+    glDeleteBuffers(1, &VBO_1);
 }
 
-void ReleaseShader()
+void ReleaseShaders()
 {
     glUseProgram(0);
-    glDeleteProgram(Program);
+    glDeleteProgram(Program0);
+    glDeleteProgram(Program1);
+}
+
+void ReleaseTextures()
+{
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    SOIL_free_image_data(image_banana);
+    SOIL_free_image_data(image_spider_monkey);
 }
 
 void Release()
 {
-    ReleaseShader();
-    ReleaseVBO();
+    ReleaseShaders();
+    ReleaseVBOs();
+    ReleaseTextures();
 }
 
 int main()
 {
-    sf::Window window(sf::VideoMode(600, 600), "12", sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(windowWidth, windowHeight), "Solar System Model", sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
-    float Mashtab = 0;
-    float OX = 0;
-    float OY = 0;
-    float Rx = 0;
-    float Ry = 0;
-    float delta = 0.1;
-
     glewInit();
     Init();
-
     while (window.isOpen())
     {
+        xAngle += 0.5f;
+        yAngle += 0.5f;
+        zAngle += 0.5f;
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -225,38 +503,55 @@ int main()
             else if (event.type == sf::Event::Resized)
             {
                 glViewport(0, 0, event.size.width, event.size.height);
+                windowWidth = event.size.width;
+                windowHeight = event.size.height;
             }
-            else if (event.type == sf::Event::KeyPressed) {
-                switch (event.key.code) {
-                    case sf::Keyboard::Left:
-                        OX -= delta;
-                        break;
-                    case sf::Keyboard::Right:
-                        OX += delta;
-                        break;
-                    case sf::Keyboard::Up:
-                        OY += delta;
-                        break;
-                    case sf::Keyboard::Down:
-                        OY -= delta;
-                        break;
-                    case sf::Keyboard::LBracket:
-                        Mashtab += delta;
-                        break;
-                    case sf::Keyboard::RBracket:
-                        Mashtab -= delta;
-                        break;
-                    case sf::Keyboard::O:
-                        Rx -= delta*10;
-                        break;
-                    case sf::Keyboard::P:
-                        Ry -= delta*10;
-                        break;
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                switch (event.key.code) 
+                {
+                case sf::Keyboard::A:
+                    pitch += 5.0f;
+                    break;
+                case sf::Keyboard::Z:
+                    pitch -= 5.0f;
+                    break;
+                case sf::Keyboard::S:
+                    yaw += 5.0f;
+                    break;
+                case sf::Keyboard::X:
+                    yaw -= 5.0f;
+                    break;
+                case sf::Keyboard::D:
+                    roll += 5.0f;
+                    break;
+                case sf::Keyboard::C:
+                    roll -= 5.0f;
+                    break;
+                case sf::Keyboard::G:
+                    cameraX += 1.0f;
+                    break;
+                case sf::Keyboard::B:
+                    cameraX -= 1.0f;
+                    break;
+                case sf::Keyboard::H:
+                    cameraY += 1.0f;
+                    break;
+                case sf::Keyboard::N:
+                    cameraY -= 1.0f;
+                    break;
+                case sf::Keyboard::J:
+                    cameraZ += 0.5;
+                    break;
+                case sf::Keyboard::M:
+                    cameraZ -= 0.5;
+                    break;
                 }
             }
         }
+        glClearColor(0.1f, 0.6f, 0.2f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        Draw(Mashtab, OX, OY, Rx, Ry);
+        Draw();
         window.display();
     }
     Release();

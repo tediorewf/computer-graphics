@@ -27,6 +27,10 @@ namespace AffineTransformations3D
             _center = ComputeCenter();
             var random = new Random();
             Color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+            foreach (var v in Vertices)
+            {
+                v.Normal.NormalizeInplace();
+            }
         }
 
         public void SaveToFile(string path)
@@ -139,10 +143,6 @@ namespace AffineTransformations3D
 
         public void RotateAroundCenter(double degreesX, double degreesY, double degreesZ)
         {
-            /*var centeredRotationTransformation = MakeTranslationMatrix(-Center.X, -Center.Y, -Center.Z)
-                * MakeXYZRotationMatrix(degreesX, degreesY, degreesZ)
-                * MakeTranslationMatrix(Center.X, Center.Y, Center.Z);
-            ApplyTransformationInplace(this, centeredRotationTransformation);*/
             RotateAroundPoint(degreesX, degreesY, degreesZ, Center);
         }
 
