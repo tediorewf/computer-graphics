@@ -53,12 +53,14 @@ namespace AffineTransformations3D
                 for (int x = leftSideMostRightPoint.X + 1; x < rightSideMostLeftPoint.X; x += 1)
                 {
                     var currentDepth = ApplyLinearInterpolation(leftSideMostRightPoint.Depth, rightSideMostLeftPoint.Depth, x, rightSideMostLeftPoint.X, coordinateDeltaX);
-                    yield return new DeptherizedPoint(x, y, currentDepth);
+                    var currentIntensivity = ApplyLinearInterpolation(leftSideMostRightPoint.Intensivity, rightSideMostLeftPoint.Intensivity, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                    yield return new DeptherizedPoint(x, y, currentDepth, currentIntensivity);
                 }
                 for (int x = rightSideMostLeftPoint.X + 1; x < leftSideMostRightPoint.X; x += 1)
                 {
                     var currentDepth = ApplyLinearInterpolation(leftSideMostRightPoint.Depth, rightSideMostLeftPoint.Depth, x, rightSideMostLeftPoint.X, coordinateDeltaX);
-                    yield return new DeptherizedPoint(x, y, currentDepth);
+                    var currentIntensivity = ApplyLinearInterpolation(leftSideMostRightPoint.Intensivity, rightSideMostLeftPoint.Intensivity, x, rightSideMostLeftPoint.X, coordinateDeltaX);
+                    yield return new DeptherizedPoint(x, y, currentDepth, currentIntensivity);
                 }
                 yield return rightSideMostLeftPoint;
 
@@ -78,6 +80,7 @@ namespace AffineTransformations3D
             int x1 = v1.X, x2 = v2.X;
             int y1 = v1.Y, y2 = v2.Y;
             double d1 = v1.Depth, d2 = v2.Depth;
+            double i1 = v1.Intensivity, i2 = v2.Intensivity;
 
             int diffX = x2 - x1;
             int diffY = y2 - y1;
@@ -107,7 +110,8 @@ namespace AffineTransformations3D
             while (x1 != x2 || y1 != y2)
             {
                 var depthCurrent = ApplyLinearInterpolation(d1, d2, x1 * refereeY - y1 * refereeX, interpolationEndCoordinate, interpolationCoordinateDelta);
-                var pointCurrent = new DeptherizedPoint(x1, y1, depthCurrent);
+                var intensivityCurrent = Math.Max(ApplyLinearInterpolation(i1, i2, x1 * refereeY - y1 * refereeX, interpolationEndCoordinate, interpolationCoordinateDelta), 0);
+                var pointCurrent = new DeptherizedPoint(x1, y1, depthCurrent, intensivityCurrent);
 
                 currentPointsQueue.Enqueue(pointCurrent);
 
