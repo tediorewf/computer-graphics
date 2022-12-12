@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace CornishRoom
 {
-    public class Sphere: Primitive
-    {
-        public Point3D Center { get; set; }
-        public double Radius { get; set; }
-
-        public override bool DefineIfIntersect(Ray straighLine)
-        {
-            return true;
-        }
+public class Sphere: Primitive
+{
+    public Point3D Center {
+        get;
+        set;
     }
+    public double Radius {
+        get;
+        set;
+    }
+
+    public override bool DefineIfIntersect(Ray straighLine)
+    {
+        return true;
+    }
+}
 }

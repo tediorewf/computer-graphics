@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CornishRoom
 {
-    internal class Point3D
-    {
-    }
+internal class Point3D
+{
+}
 }
