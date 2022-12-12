@@ -19,6 +19,9 @@
 GLuint Program0, Program1;
 GLint Attrib_vertex_position0, Attrib_vertex_texture_coordinate0;
 GLint Attrib_vertex_position1, Attrib_vertex_texture_coordinate1;
+
+GLint Attrib_vertex_normal0;
+
 GLuint VBO_0, VBO_1;
 GLuint texture0, texture1;
 
@@ -30,9 +33,12 @@ const char* VertexShaderSource0 = R"(
 
     in vec3 position;
     in vec2 texcoord;
+    in vec3 normal;
 
     out vec3 vs_position;
     out vec2 vs_texcoord;
+    out vec3 vs_normal;
+    out vec3 vs_l;
 
     uniform mat4 model;
     uniform mat4 view;
@@ -43,6 +49,9 @@ const char* VertexShaderSource0 = R"(
         vs_texcoord = vec2(texcoord.x, texcoord.y);
 
         gl_Position = projection * view * model * vec4(position, 1.0f);
+
+        vs_normal = normal;
+        vs_l = vec3(1,1,1);
     }
 )";
 
@@ -51,13 +60,26 @@ const char* FragShaderSource0 = R"(
     
     in vec3 vs_position;
     in vec2 vs_texcoord;
+    in vec3 vs_normal;    
+    in vec3 vs_l;    
 
     out vec4 color;
 
     uniform sampler2D texture;
 
     void main() {
-        color = texture(texture, vs_texcoord);
+        vec4 diffColor = texture(texture, vs_texcoord);
+
+        vec3 n2 = normalize(vs_normal);
+        vec3 l2 = normalize(vs_l);
+        float diff = 0.2 + max( dot( n2, l2 ) , 0.0 );
+        if ( diff < 0.4 )
+	        diffColor = diffColor * 0.3 + vec4(0,0,0,1);
+        else if ( diff < 0.7 )
+	        diffColor = diffColor;
+        else
+	        diffColor = diffColor * 1.3;
+        color = diffColor;
     }
 )";
 
@@ -94,6 +116,7 @@ const char* FragShaderSource1 = R"(
 
     void main() {
         color = texture(texture, vs_texcoord);
+
     }
 )";
 
@@ -107,7 +130,7 @@ void checkOpenGLerror()
 }
 
 auto banana_mesh = parse_obj("Models/banana.obj");
-auto spider_monkey_mesh = parse_obj("Models/plate.obj");
+auto spider_monkey_mesh = parse_obj("Models/table.obj");
 
 void initVBOProgram0()
 {
@@ -187,6 +210,15 @@ void initShaderProgram0()
         std::cout << "could not bind attrib " << attr_name_texture_coordinate0 << std::endl;
         return;
     }
+
+    const char* attr_name_normal0 = "normal";
+    Attrib_vertex_normal0 = glGetAttribLocation(Program0, attr_name_normal0);
+    if (Attrib_vertex_position0 == -1)
+    {
+        std::cout << "could not bind attrib " << attr_name_normal0 << std::endl;
+        return;
+    }
+
 
     checkOpenGLerror();
 }
@@ -270,7 +302,7 @@ void initTextureProgram0()
 void initTextureProgram1()
 {
     int image_width_spider_monkey, image_height_spider_monkey;
-    const char* filename_spider_monkey = "Textures/plate.jpg";
+    const char* filename_spider_monkey = "Textures/table.jpg";
     image_spider_monkey = SOIL_load_image(filename_spider_monkey, &image_width_spider_monkey, &image_height_spider_monkey, NULL, SOIL_LOAD_RGBA);
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &texture1);
@@ -308,10 +340,14 @@ void drawProgram0()
     glEnableVertexAttribArray(Attrib_vertex_position0);
     glEnableVertexAttribArray(Attrib_vertex_texture_coordinate0);
 
+    glEnableVertexAttribArray(Attrib_vertex_normal0);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO_0);
 
     glVertexAttribPointer(Attrib_vertex_position0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
     glVertexAttribPointer(Attrib_vertex_texture_coordinate0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
+
+    glVertexAttribPointer(Attrib_vertex_normal0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
