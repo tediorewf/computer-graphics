@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CornishRoom
-{
-internal class Point3D
-{
-}
+namespace CornishRoom {
+internal class Point3D {}
 }
