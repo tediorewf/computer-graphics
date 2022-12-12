@@ -1,4 +1,4 @@
-#include "Vertex.h"
+п»ї#include "Vertex.h"
 #include "obj-parser.h"
 
 #include <GL/glew.h>
@@ -88,9 +88,13 @@ const char* VertexShaderSource1 = R"(
 
     in vec3 position;
     in vec2 texcoord;
+    in vec3 normal;
 
     out vec3 vs_position;
     out vec2 vs_texcoord;
+    out vec3 vs_normal;
+    out vec3 vs_l;
+    out vec4 vs_v;
 
     uniform mat4 model;
     uniform mat4 view;
@@ -101,6 +105,11 @@ const char* VertexShaderSource1 = R"(
         vs_texcoord = vec2(texcoord.x, texcoord.y);
 
         gl_Position = projection * view * model * vec4(position, 1.0f);
+
+        vs_normal = normal;
+        vs_l = vec3(1,1,1);
+
+        vs_v = projection * view * model * vec4(0,0,-1.0f,0.0f);
     }
 )";
 
@@ -109,13 +118,24 @@ const char* FragShaderSource1 = R"(
     
     in vec3 vs_position;
     in vec2 vs_texcoord;
+    in vec3 vs_normal;    
+    in vec3 vs_l;    
+    in vec4 vs_v;
 
     out vec4 color;
 
     uniform sampler2D texture;
 
     void main() {
-        color = texture(texture, vs_texcoord);
+        
+        vec4 diffColor = texture(texture, vs_texcoord);
+        float k = 0.8;
+        vec3 n2 = normalize( vs_normal );
+        vec3 l2 = normalize( vs_l );
+        vec3 v2 = normalize( vec3(vs_v) );
+        float d1 = pow(max(dot(n2 , l2) , 0.0 ) , 1.0 + k );
+        float d2 = pow( 1.0 - dot( n2 , v2 ) , 1.0 - k );
+        color = diffColor * d1 * d2 + vec4(0,0,0,1);
 
     }
 )";
@@ -130,7 +150,7 @@ void checkOpenGLerror()
 }
 
 auto banana_mesh = parse_obj("Models/banana.obj");
-auto spider_monkey_mesh = parse_obj("Models/table.obj");
+auto spider_monkey_mesh = parse_obj("Models/banana.obj");
 
 void initVBOProgram0()
 {
@@ -302,7 +322,7 @@ void initTextureProgram0()
 void initTextureProgram1()
 {
     int image_width_spider_monkey, image_height_spider_monkey;
-    const char* filename_spider_monkey = "Textures/table.jpg";
+    const char* filename_spider_monkey = "Textures/banana.png";
     image_spider_monkey = SOIL_load_image(filename_spider_monkey, &image_width_spider_monkey, &image_height_spider_monkey, NULL, SOIL_LOAD_RGBA);
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &texture1);
@@ -331,7 +351,7 @@ GLfloat xAngle = 0, yAngle = 0, zAngle = 0;
 GLuint windowWidth = 1200, windowHeight = 1200;
 
 GLfloat cameraX = 0.f, cameraY = 0.f, cameraZ = 1.f;
-GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // Тангаж, рысканье и крен
+GLfloat pitch = 0.0f, yaw = -90.0f, roll = 0.0f;  // РўР°РЅРіР°Р¶, СЂС‹СЃРєР°РЅСЊРµ Рё РєСЂРµРЅ
 
 void drawProgram0()
 {
