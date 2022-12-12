@@ -1,3 +1,6 @@
 [submodule "Lab2/ColourSpaceConverter"]
 	path = Lab2/ColourSpaceConverter
 	url = https://github.com/tediorewf/ColourSpaceConverter.git
+[submodule "Lab1/GraphPlotter"]
+	path = Lab1/GraphPlotter
+	url = https://github.com/tediorewf/GraphPlotter.git
