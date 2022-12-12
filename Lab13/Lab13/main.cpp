@@ -139,10 +139,10 @@ glm::mat4 Camera(float Mashtab, float OX, float OY,float Rx,float Ry)
 {
     glm::mat4 RotateY = glm::mat4(cos(Ry), 0, -sin(Ry), 0, 0, 1, 0, 0, sin(Ry), 0, cos(Ry), 0, 0, 0, 0, 1);
     glm::mat4 RotateX = glm::mat4(1, 0, 0, 0, 0, cos(Rx), sin(Rx), 0, 0, -sin(Rx), cos(Rx), 0, 0, 0, 0, 1);
-    int c = 500;
+    int c = 10;
     glm::mat4 Projection = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1/c, 0, 0, 0, 1);
     glm::mat4 Trans = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -OX, -OY, Mashtab, 1);
-    return Projection * Trans * RotateY * RotateX;
+    return  Trans * RotateY * RotateX * Projection;
 }
 
 
