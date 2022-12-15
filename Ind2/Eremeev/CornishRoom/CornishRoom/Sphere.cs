@@ -11,7 +11,7 @@ namespace CornishRoom
         public Point3D Center { get; set; }
         public double Radius { get; set; }
 
-        public override bool DefineIfIntersect(Ray straighLine)
+        public override bool Intersect(Ray straighLine)
         {
             return true;
         }

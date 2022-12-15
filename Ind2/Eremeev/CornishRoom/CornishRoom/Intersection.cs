@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CornishRoom
 {
-    public abstract class Primitive
+    public class Intersection
     {
-        public abstract bool Intersect(Ray ray);
-
-        public abstract Vector3D ComputeNormal(Point3D point);
+        public bool HasIntersection { get; set; }
+        public 
     }
 }
