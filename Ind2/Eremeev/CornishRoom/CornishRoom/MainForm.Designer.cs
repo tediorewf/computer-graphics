@@ -50,7 +50,7 @@
             this.renderButton.Location = new System.Drawing.Point(12, 587);
             this.renderButton.Name = "renderButton";
             this.renderButton.Size = new System.Drawing.Size(1118, 74);
-            this.renderButton.TabIndex = 1;
+            this.renderButton.TabIndex = 5;
             this.renderButton.Text = "Отрендерить";
             this.renderButton.UseVisualStyleBackColor = true;
             this.renderButton.Click += new System.EventHandler(this.renderButton_Click);
@@ -69,7 +69,7 @@
             this.zCameraPositionTextBox.Location = new System.Drawing.Point(762, 540);
             this.zCameraPositionTextBox.Name = "zCameraPositionTextBox";
             this.zCameraPositionTextBox.Size = new System.Drawing.Size(368, 31);
-            this.zCameraPositionTextBox.TabIndex = 3;
+            this.zCameraPositionTextBox.TabIndex = 4;
             this.zCameraPositionTextBox.Text = "0";
             this.zCameraPositionTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -78,7 +78,7 @@
             this.yCameraPositionTextBox.Location = new System.Drawing.Point(388, 540);
             this.yCameraPositionTextBox.Name = "yCameraPositionTextBox";
             this.yCameraPositionTextBox.Size = new System.Drawing.Size(368, 31);
-            this.yCameraPositionTextBox.TabIndex = 4;
+            this.yCameraPositionTextBox.TabIndex = 3;
             this.yCameraPositionTextBox.Text = "0";
             this.yCameraPositionTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
