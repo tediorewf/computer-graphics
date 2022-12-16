@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CornishRoom
 {
-    public class Scene
+    // TODO: реализовать плоскость
+    /*
+    public class Plane : Primitive
     {
     }
+    */
 }
