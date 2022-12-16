@@ -24,16 +24,24 @@ namespace CornishRoom
             backgroundColor = Color.BurlyWood;
 
             var yellowGreenMaterial = new Material(Color.YellowGreen, 0.0, 0.0, 0.0);
-            var blueMaterial = new Material(Color.Blue, 500, 0.0, 0.0);
+            var blueMaterial = new Material(Color.Blue, 500, 0.5, 0.0);
             var orangeMaterial = new Material(Color.Orange, 1000, 0.001, 0.7);
-            var pinkMaterial = new Material(Color.Pink, 3000, 0.5, 0.0);
+            var pinkMaterial = new Material(Color.Pink, 0.0, 0.5, 0.0);
+            var cyanMaterial = new Material(Color.Cyan, 0.0, 0.0, 0.0);
+
+            var lowerPlane = new Plane(new Vector3D(0.0, -2.0, 0.0), new Vector3D(0.0, 1.0, 0.0), pinkMaterial);
+            var rightPlane = new Plane(new Vector3D(8.0, 0.0, 0.0), new Vector3D(-1.0, 0.0, 0.0), orangeMaterial);
+            var leftPlane = new Plane(new Vector3D(-8.0, 0.0, 0.0), new Vector3D(1.0, 0.0, 0.0), blueMaterial);
+            var backPlane = new Plane(new Vector3D(0.0, 0.0, 30.0), new Vector3D(0.0, 0.0, -1.0), yellowGreenMaterial);
+            var upperPlane = new Plane(new Vector3D(0.0, 10.0, 0.0), new Vector3D(0.0, -1.0, 0.0), cyanMaterial);
+            var frontPlane = new Plane(new Vector3D(0.0, 0.0, -30.0), new Vector3D(0.0, 0.0, 1.0), yellowGreenMaterial);
 
             primitives = new List<Primitive>
             {
                 new Sphere(yellowGreenMaterial, new Vector3D(6.0, 3.0, 15.0), 1.0),
                 new Sphere(blueMaterial, new Vector3D(0.5, 3.0, 13.0), 1.0),
                 new Sphere(orangeMaterial, new Vector3D(1.0, 1.0, 9.0), 0.8),
-                new Sphere(pinkMaterial, new Vector3D(3.0, -1851.0, -30.0), 1850.0)
+                lowerPlane, rightPlane, leftPlane, backPlane, upperPlane, frontPlane
             };
 
             lights = new List<Light>

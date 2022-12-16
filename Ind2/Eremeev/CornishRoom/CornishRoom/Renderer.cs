@@ -16,7 +16,7 @@ namespace CornishRoom
         private Color backgroundColor;
         private int recursionDepth;
 
-        public Renderer(Vector3D origin, Size imageSize, List<Primitive> primitives, List<Light> lights, Color backgroundColor, int recursionDepth = 10)
+        public Renderer(Vector3D origin, Size imageSize, List<Primitive> primitives, List<Light> lights, Color backgroundColor, int recursionDepth = 5)
         {
             this.origin = origin;
             this.imageSize = imageSize;
