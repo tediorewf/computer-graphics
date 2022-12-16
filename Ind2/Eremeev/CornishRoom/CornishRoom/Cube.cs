@@ -8,15 +8,16 @@ namespace CornishRoom
 {
     public class Cube : Primitive
     {
+        private double edgeLength;
         private double epsilon;
 
         public Vector3D[] Vectices { get; }
 
-        public Cube(Vector3D[] vertices, Material material, double epsilon = 0.001) 
+        public Cube(double edgeLength, Material material, double epsilon = 0.001) 
             : base(material)
         {
+            this.edgeLength = edgeLength;
             this.epsilon = epsilon;
-            Vectices = vertices;
         }
 
         public override Tuple<double, double> Intersect(Vector3D origin, Vector3D direction)
