@@ -1,13 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CornishRoom
 {
     public abstract class Primitive
     {
-        public abstract bool DefineIfIntersect(Ray straighLine);
+        public Material Material { get; }
+
+        public Primitive(Material material)
+        {
+            Material = material;
+        }
+
+        public abstract Tuple<double, double> Intersect(Vector3D origin, Vector3D direction);
+
+        public abstract Vector3D ComputeNormal(Vector3D point);
     }
 }
