@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace CornishRoom
 {
     // TODO: реализовать плоскость
+    // в помощь https://gamedev.ru/code/forum/?id=177952
     /*
     public class Plane : Primitive
     {
