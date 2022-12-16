@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorMethods.cs" />
+    <Compile Include="Cube.cs" />
     <Compile Include="FastBitmap.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="MainForm.cs">

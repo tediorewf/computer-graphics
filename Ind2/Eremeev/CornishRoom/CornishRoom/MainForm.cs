@@ -24,8 +24,8 @@ namespace CornishRoom
             backgroundColor = Color.BurlyWood;
 
             var yellowGreenMaterial = new Material(Color.YellowGreen, 0.0, 0.0, 0.0);
-            var blueMaterial = new Material(Color.Blue, 500, 0.5, 0.0);
-            var orangeMaterial = new Material(Color.Orange, 1000, 0.001, 0.7);
+            var blueMaterial = new Material(Color.Blue, 500, 0.7, 0.0);
+            var orangeMaterial = new Material(Color.Orange, 1000, 0.001, 0.6);
             var pinkMaterial = new Material(Color.Pink, 0.0, 0.5, 0.0);
             var cyanMaterial = new Material(Color.Cyan, 0.0, 0.0, 0.0);
 
