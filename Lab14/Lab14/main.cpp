@@ -57,11 +57,11 @@ const char *VertexShaderSource0 = R"(
 
 const char *FragShaderSource0 = R"(
     #version 330 core
-    
+
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;    
-    in vec3 vs_l;    
+    in vec3 vs_normal;
+    in vec3 vs_l;
 
     out vec4 color;
 
@@ -115,11 +115,11 @@ const char *VertexShaderSource1 = R"(
 
 const char *FragShaderSource1 = R"(
     #version 330 core
-    
+
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;    
-    in vec3 vs_l;    
+    in vec3 vs_normal;
+    in vec3 vs_l;
     in vec4 vs_v;
 
     out vec4 color;
@@ -127,7 +127,7 @@ const char *FragShaderSource1 = R"(
     uniform sampler2D texture;
 
     void main() {
-        
+
         vec4 diffColor = texture(texture, vs_texcoord);
         float k = 0.8;
         vec3 n2 = normalize( vs_normal );
