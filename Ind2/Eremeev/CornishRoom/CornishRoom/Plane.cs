@@ -2,41 +2,41 @@
 
 namespace CornishRoom
 {
-    public class Plane : Primitive
+public class Plane : Primitive
+{
+    private double epsilon;
+
+    public Vector3D Position;
+    public Vector3D Normal;
+
+    public Plane(Vector3D position, Vector3D normal, Material material, double epsilon = 0.001)
+        : base(material)
     {
-        private double epsilon;
+        this.epsilon = epsilon;
 
-        public Vector3D Position;
-        public Vector3D Normal;
+        Position = position;
+        Normal = normal;
+    }
 
-        public Plane(Vector3D position, Vector3D normal, Material material, double epsilon = 0.001) 
-            : base(material)
+    // https://www.delftstack.com/howto/cpp/intersection-of-ray-and-plane-in-cpp/
+    public override Tuple<double, double> Intersect(Vector3D origin, Vector3D direction)
+    {
+        double denom = Normal.ComputeDotProduct(direction);
+        if (Math.Abs(denom) < epsilon)
         {
-            this.epsilon = epsilon;
-
-            Position = position;
-            Normal = normal;
-        }
-
-        // https://www.delftstack.com/howto/cpp/intersection-of-ray-and-plane-in-cpp/
-        public override Tuple<double, double> Intersect(Vector3D origin, Vector3D direction)
-        {
-            double denom = Normal.ComputeDotProduct(direction);
-            if (Math.Abs(denom) < epsilon)
-            {
-                return Tuple.Create(double.MaxValue, double.MaxValue);
-            }
-
-            var ab = Position - origin;
-            double t = ab.ComputeDotProduct(Normal) / denom;
-            if (Math.Abs(t) >= epsilon)
-            {
-                return Tuple.Create(t, t);
-            }
-
             return Tuple.Create(double.MaxValue, double.MaxValue);
         }
 
-        public override Vector3D ComputeNormal(Vector3D point) => Normal;
+        var ab = Position - origin;
+        double t = ab.ComputeDotProduct(Normal) / denom;
+        if (Math.Abs(t) >= epsilon)
+        {
+            return Tuple.Create(t, t);
+        }
+
+        return Tuple.Create(double.MaxValue, double.MaxValue);
     }
+
+    public override Vector3D ComputeNormal(Vector3D point) => Normal;
+}
 }
