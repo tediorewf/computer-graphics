@@ -25,8 +25,6 @@ GLint Attrib_vertex_normal;
 GLuint VBO;
 GLuint textures[5];
 
-unsigned char* image;
-
 const char* VertexShaderSource = R"(
     #version 330 core
 
@@ -61,18 +59,61 @@ const char* FragmentShaderSource = R"(
     out vec4 color;
 
     uniform vec3 point_light_position;
+    uniform vec3 direction_light_position;
+    uniform vec3 spot_light_position;
     uniform vec3 view_position;
 
     uniform sampler2D texture;
 
     uniform int lighting_type;
 
-    vec4 calculate_toon()
+    vec4 calculate_point_light()
+    {
+	    vec3 light = point_light_position - vs_position;
+
+	    float distance = length(light);
+	    float a = 1.6f;
+	    float b = 0.4f;
+	    float intensivity = 1.0f / (a * distance * distance + b * distance + 1.0f);
+
+	    float ambient = 0.20f;
+
+	    vec3 normal = normalize(vs_normal);
+	    vec3 light_direction = normalize(light);
+	    float diffuse = max(dot(normal, light_direction), 0.0f);
+
+	    float specular_light = 0.50f;
+	    vec3 view_direction = normalize(view_position - vs_position);
+	    vec3 reflection_direction = reflect(-light_direction, normal);
+	    float spec_amount = pow(max(dot(view_direction, reflection_direction), 0.0f), 8);
+	    float specular = spec_amount * specular_light;
+
+	    return texture(texture, vs_texcoord) * (diffuse * intensivity + ambient) + texture(texture, vs_texcoord).r * specular * intensivity;
+    }
+
+    vec4 calculate_direction_light()
+    {
+	    float ambient = 0.10f;
+
+	    vec3 normal = normalize(vs_normal);
+	    vec3 light_direction = normalize(direction_light_position);
+	    float diffuse = max(dot(normal, light_direction), 0.0f);
+
+	    float specular_light = 0.20f;
+	    vec3 view_direction = normalize(view_position - vs_position);
+	    vec3 reflection_direction = reflect(-light_direction, normal);
+	    float spec_amount = pow(max(dot(view_direction, reflection_direction), 0.0f), 8);
+	    float specular = spec_amount * specular_light;
+
+	    return texture(texture, vs_texcoord) * (diffuse + ambient) + texture(texture, vs_texcoord).r * specular;
+    }
+
+    vec4 calculate_toon(vec3 light_position)
     {
         vec4 diffColor = texture(texture, vs_texcoord);
 
         vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(point_light_position);
+        vec3 l2 = normalize(light_position);
         float diff = 0.2f + max(dot(n2, l2), 0.0f);
         if (diff < 0.4f)
         {
@@ -89,25 +130,31 @@ const char* FragmentShaderSource = R"(
         return diffColor;
     }
 
-    vec4 calculate_minnaert()
+    vec4 calculate_minnaert(vec3 light_position)
     {
         vec4 diffColor = texture(texture, vs_texcoord);
         float k = 0.8;
         vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(point_light_position);
+        vec3 l2 = normalize(light_position);
         vec3 v2 = normalize(view_position);
         float d1 = pow(max(dot(n2 , l2), 0.0f), 1.0f + k);
-        float d2 = pow(1.0f - dot(n2, v2), 1.0 - k);
+        float d2 = pow(1.0f - dot(n2, v2), 1.0f - k);
         return diffColor * d1 * d2 + vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     void main() {
         switch (lighting_type) {
         case 0:
-            color = calculate_toon();
+            color = calculate_toon(point_light_position);
+            color += calculate_point_light();
+            color += calculate_toon(direction_light_position);
+            color += calculate_direction_light();
             break;
         case 1:
-            color = calculate_minnaert();
+            color = calculate_minnaert(point_light_position);
+            color = calculate_point_light();
+            color += calculate_minnaert(direction_light_position);
+            color += calculate_direction_light();
             break;
         default:
             color = vec4(0.1f, 0.2f, 0.3f, 1.0f);
@@ -176,53 +223,53 @@ void ShaderLog(unsigned int shader)
 
 void InitShaders()
 {
-    GLuint vShader0 = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader0, 1, &VertexShaderSource, NULL);
-    glCompileShader(vShader0);
+    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader, 1, &VertexShaderSource, NULL);
+    glCompileShader(vShader);
     std::cout << "vertex shader \n";
-    ShaderLog(vShader0);
+    ShaderLog(vShader);
 
-    GLuint fShader0 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader0, 1, &FragmentShaderSource, NULL);
-    glCompileShader(fShader0);
+    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader, 1, &FragmentShaderSource, NULL);
+    glCompileShader(fShader);
     std::cout << "fragment shader \n";
-    ShaderLog(fShader0);
+    ShaderLog(fShader);
 
     Program = glCreateProgram();
 
-    glAttachShader(Program, vShader0);
-    glAttachShader(Program, fShader0);
+    glAttachShader(Program, vShader);
+    glAttachShader(Program, fShader);
 
     glLinkProgram(Program);
-    int link_ok0;
-    glGetProgramiv(Program, GL_LINK_STATUS, &link_ok0);
-    if (!link_ok0)
+    int link_ok;
+    glGetProgramiv(Program, GL_LINK_STATUS, &link_ok);
+    if (!link_ok)
     {
         std::cout << "error attach shaders \n";
         return;
     }
 
-    const char* attr_name_position0 = "position";
-    Attrib_vertex_position = glGetAttribLocation(Program, attr_name_position0);
+    const char* attr_name_position = "position";
+    Attrib_vertex_position = glGetAttribLocation(Program, attr_name_position);
     if (Attrib_vertex_position == -1)
     {
-        std::cout << "could not bind attrib " << attr_name_position0 << std::endl;
+        std::cout << "could not bind attrib " << attr_name_position << std::endl;
         return;
     }
 
-    const char* attr_name_texture_coordinate0 = "texcoord";
-    Attrib_vertex_texture_coordinate = glGetAttribLocation(Program, attr_name_texture_coordinate0);
+    const char* attr_name_texture_coordinate = "texcoord";
+    Attrib_vertex_texture_coordinate = glGetAttribLocation(Program, attr_name_texture_coordinate);
     if (Attrib_vertex_texture_coordinate == -1)
     {
-        std::cout << "could not bind attrib " << attr_name_texture_coordinate0 << std::endl;
+        std::cout << "could not bind attrib " << attr_name_texture_coordinate << std::endl;
         return;
     }
 
-    const char* attr_name_normal0 = "normal";
-    Attrib_vertex_normal = glGetAttribLocation(Program, attr_name_normal0);
+    const char* attr_name_normal = "normal";
+    Attrib_vertex_normal = glGetAttribLocation(Program, attr_name_normal);
     if (Attrib_vertex_position == -1)
     {
-        std::cout << "could not bind attrib " << attr_name_normal0 << std::endl;
+        std::cout << "could not bind attrib " << attr_name_normal << std::endl;
         return;
     }
 
@@ -232,7 +279,7 @@ void InitShaders()
 void _load_texture(const char* filename, GLuint unit, GLuint &texture)
 {
     int image_width, image_height;
-    image = SOIL_load_image(filename, &image_width, &image_height, 0, SOIL_LOAD_RGBA);
+    unsigned char* image = SOIL_load_image(filename, &image_width, &image_height, 0, SOIL_LOAD_RGBA);
     glActiveTexture(GL_TEXTURE0 + unit);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -279,13 +326,17 @@ GLuint windowWidth = 1200, windowHeight = 1200;
 GLfloat cameraX = -40.0f, cameraY = -100.0f, cameraZ = 110.0f;
 GLfloat pitch = 40.0f, yaw = 325.0f, roll = 355.0f;  // Тангаж, рысканье и крен
 
-GLfloat pointLightX = 1.0f;
-GLfloat pointLightY = 1.0f;
-GLfloat pointLightZ = 1.0f;
+GLfloat pointLightX = -1.0f;
+GLfloat pointLightY = -1.0f;
+GLfloat pointLightZ = 0.0f;
 
-GLfloat spotLightX = 180.0f;
-GLfloat spotLightY = 275.0f;
-GLfloat spotLightZ = 60.0f;
+GLfloat directionLightX = 1.0f;
+GLfloat directionLightY = 1.0f;
+GLfloat directionLightZ = 0.0f;
+
+GLfloat spotLightX = 0;
+GLfloat spotLightY = 0;
+GLfloat spotLightZ = 30.0f;
 
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
@@ -346,6 +397,8 @@ void Draw()
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform3f(glGetUniformLocation(Program, "view_position"), cameraX, cameraY, cameraZ);
     glUniform3f(glGetUniformLocation(Program, "point_light_position"), pointLightX, pointLightY, pointLightZ);
+    glUniform3f(glGetUniformLocation(Program, "direction_light_position"), directionLightX, directionLightY, directionLightZ);
+    glUniform3f(glGetUniformLocation(Program, "spot_light_position"), spotLightX, spotLightY, spotLightZ);
     
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
     glm::mat4 modelBanana0(1.0f);
@@ -362,10 +415,10 @@ void Draw()
     drawMesh(GL_TRIANGLES, 0, bananaFirst1, banana_mesh.size(), modelBanana1);
 
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
-    glm::mat4 modelPlane(1.0f);
-    modelPlane = glm::translate(modelPlane, glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 modelFloor(1.0f);
+    modelFloor = glm::translate(modelFloor, glm::vec3(0.0f, 0.0f, 0.0f));
     const GLuint planeFirst = banana_mesh.size();
-    drawMesh(GL_TRIANGLES, 1, planeFirst, floor_mesh.size(), modelPlane);
+    drawMesh(GL_TRIANGLES, 1, planeFirst, floor_mesh.size(), modelFloor);
 
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
     glm::mat4 modelApple(1.0f);
@@ -437,7 +490,7 @@ void Release()
 
 int main()
 {
-    sf::Window window(sf::VideoMode(windowWidth, windowHeight), "Solar System Model", sf::Style::Default, sf::ContextSettings(24));
+    sf::Window window(sf::VideoMode(windowWidth, windowHeight), "Lighting", sf::Style::Default, sf::ContextSettings(24));
     window.setVerticalSyncEnabled(true);
     window.setActive(true);
 
