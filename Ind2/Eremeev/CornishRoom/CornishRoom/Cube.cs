@@ -8,14 +8,16 @@ namespace CornishRoom
 {
     public class Cube : Primitive
     {
+        private Vector3D position;
         private double edgeLength;
         private double epsilon;
 
         public Vector3D[] Vectices { get; }
 
-        public Cube(double edgeLength, Material material, double epsilon = 0.001) 
+        public Cube(Vector3D position, double edgeLength, Material material, double epsilon = 0.001) 
             : base(material)
         {
+            this.position = position;
             this.edgeLength = edgeLength;
             this.epsilon = epsilon;
         }
