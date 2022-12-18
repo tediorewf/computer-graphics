@@ -27,7 +27,7 @@ GLuint textures[5];
 
 unsigned char* image;
 
-const char* VertexShaderSource0 = R"(
+const char* VertexShaderSource = R"(
     #version 330 core
 
     in vec3 position;
@@ -37,7 +37,6 @@ const char* VertexShaderSource0 = R"(
     out vec3 vs_position;
     out vec2 vs_texcoord;
     out vec3 vs_normal;
-    out vec3 vs_l;
 
     uniform mat4 model;
     uniform mat4 view;
@@ -46,94 +45,74 @@ const char* VertexShaderSource0 = R"(
     void main() {
         vs_position = vec4(model * vec4(position, 1.0f)).xyz;
         vs_texcoord = vec2(texcoord.x, texcoord.y);
+        vs_normal = normal;
 
         gl_Position = projection * view * model * vec4(position, 1.0f);
-
-        vs_normal = normal;
-        vs_l = vec3(1, 1, 1);
     }
 )";
 
-const char* FragShaderSource0 = R"(
+const char* FragmentShaderSource = R"(
     #version 330 core
     
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;    
-    in vec3 vs_l;    
+    in vec3 vs_normal;   
 
     out vec4 color;
 
+    uniform vec3 point_light_position;
+    uniform vec3 view_position;
+
     uniform sampler2D texture;
 
-    void main() {
+    uniform int lighting_type;
+
+    vec4 calculate_toon()
+    {
         vec4 diffColor = texture(texture, vs_texcoord);
 
         vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(vs_l);
-        float diff = 0.2f + max(dot( n2, l2 ), 0.0f);
+        vec3 l2 = normalize(point_light_position);
+        float diff = 0.2f + max(dot(n2, l2), 0.0f);
         if (diff < 0.4f)
-	        diffColor = diffColor * 0.3f + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        {
+            diffColor = diffColor * 0.3f + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        }
         else if (diff < 0.7f)
-	        diffColor = diffColor;
-        else
-	        diffColor = diffColor * 1.3f;
-        color = diffColor;
+        {
+            diffColor = diffColor;
+        }
+        else        
+        {
+            diffColor = diffColor * 1.3f;
+        }
+        return diffColor;
     }
-)";
 
-const char* VertexShaderSource1 = R"(
-    #version 330 core
-
-    in vec3 position;
-    in vec2 texcoord;
-    in vec3 normal;
-
-    out vec3 vs_position;
-    out vec2 vs_texcoord;
-    out vec3 vs_normal;
-    out vec3 vs_l;
-    out vec4 vs_v;
-
-    uniform mat4 model;
-    uniform mat4 view;
-    uniform mat4 projection;
-
-    void main() {
-        vs_position = vec4(model * vec4(position, 1.0f)).xyz;
-        vs_texcoord = vec2(texcoord.x, texcoord.y);
-
-        gl_Position = projection * view * model * vec4(position, 1.0f);
-
-        vs_normal = normal;
-        vs_l = vec3(1.0f, 1.0f, 1.0f);
-
-        vs_v = view * vec4(0.0f, 0.0f, -1.0f, 0.0f);
-    }
-)";
-
-const char* FragShaderSource1 = R"(
-    #version 330 core
-    
-    in vec3 vs_position;
-    in vec2 vs_texcoord;
-    in vec3 vs_normal;    
-    in vec3 vs_l;    
-    in vec4 vs_v;
-
-    out vec4 color;
-
-    uniform sampler2D texture;
-
-    void main() {
+    vec4 calculate_minnaert()
+    {
         vec4 diffColor = texture(texture, vs_texcoord);
         float k = 0.8;
         vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(vs_l);
-        vec3 v2 = normalize(vec3(vs_v));
+        vec3 l2 = normalize(point_light_position);
+        vec3 v2 = normalize(view_position);
         float d1 = pow(max(dot(n2 , l2), 0.0f), 1.0f + k);
         float d2 = pow(1.0f - dot(n2, v2), 1.0 - k);
-        color = diffColor * d1 * d2 + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        return diffColor * d1 * d2 + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    void main() {
+        switch (lighting_type) {
+        case 0:
+            color = calculate_toon();
+            break;
+        case 1:
+            color = calculate_minnaert();
+            break;
+        default:
+            color = vec4(0.1f, 0.2f, 0.3f, 1.0f);
+            break;
+        }
     }
 )";
 
@@ -151,12 +130,12 @@ auto banana_mesh = parse_obj("Models/banana.obj");
 // Пол
 auto floor_mesh = std::vector<Vertex>{
     { glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-    { glm::vec3(1000.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-    { glm::vec3(1000.0f, 1000.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
+    { glm::vec3(1000.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 1.0f) },
+    { glm::vec3(1000.0f, 1000.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f) },
 
     { glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-    { glm::vec3(1000.0f, 1000.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-    { glm::vec3(0.0f, 1000.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f) }
+    { glm::vec3(1000.0f, 1000.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f) },
+    { glm::vec3(0.0f, 1000.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 1.0f) }
 };
 // Яблоко
 auto apple_mesh = parse_obj("Models/apple.obj");
@@ -198,13 +177,13 @@ void ShaderLog(unsigned int shader)
 void InitShaders()
 {
     GLuint vShader0 = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader0, 1, &VertexShaderSource0, NULL);
+    glShaderSource(vShader0, 1, &VertexShaderSource, NULL);
     glCompileShader(vShader0);
     std::cout << "vertex shader \n";
     ShaderLog(vShader0);
 
     GLuint fShader0 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader0, 1, &FragShaderSource0, NULL);
+    glShaderSource(fShader0, 1, &FragmentShaderSource, NULL);
     glCompileShader(fShader0);
     std::cout << "fragment shader \n";
     ShaderLog(fShader0);
@@ -365,24 +344,30 @@ void Draw()
 
     glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform3f(glGetUniformLocation(Program, "view_position"), cameraX, cameraY, cameraZ);
+    glUniform3f(glGetUniformLocation(Program, "point_light_position"), pointLightX, pointLightY, pointLightZ);
     
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
     glm::mat4 modelBanana0(1.0f);
     modelBanana0 = glm::translate(modelBanana0, glm::vec3(100.f, 40.f, 20.f));
     modelBanana0 = glm::rotate(modelBanana0, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst0 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst0, banana_mesh.size(), modelBanana0);
 
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
     glm::mat4 modelBanana1(1.0f);
     modelBanana1 = glm::translate(modelBanana1, glm::vec3(331.f, 72.f, 18.f));
     modelBanana1 = glm::rotate(modelBanana1, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst1 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst1, banana_mesh.size(), modelBanana1);
 
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
     glm::mat4 modelPlane(1.0f);
     modelPlane = glm::translate(modelPlane, glm::vec3(0.0f, 0.0f, 0.0f));
     const GLuint planeFirst = banana_mesh.size();
     drawMesh(GL_TRIANGLES, 1, planeFirst, floor_mesh.size(), modelPlane);
 
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
     glm::mat4 modelApple(1.0f);
     modelApple = glm::translate(modelApple, glm::vec3(250.f, 390.f, 90.f));
     modelApple = glm::rotate(modelApple, glm::radians(180.0f), glm::vec3(10.f, 0.0f, 0.0f));
@@ -390,6 +375,7 @@ void Draw()
     const GLuint appleFirst = banana_mesh.size() + floor_mesh.size();
     drawMesh(GL_TRIANGLES, 2, appleFirst, apple_mesh.size(), modelApple);
 
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
     glm::mat4 modelChair(1.0f);
     modelChair = glm::translate(modelChair, glm::vec3(195.0f, 200.0f, 163.0f));
     modelChair = glm::scale(modelChair, glm::vec3(20.0f));
@@ -511,6 +497,25 @@ int main()
                     break;
                 case sf::Keyboard::M:
                     cameraZ -= 10.0;
+                    break;
+                // Point ligh position
+                case sf::Keyboard::T:
+                    pointLightX += 1.0f;
+                    break;
+                case sf::Keyboard::Y:
+                    pointLightX -= 1.0f;
+                    break;
+                case sf::Keyboard::U:
+                    pointLightY += 1.0f;
+                    break;
+                case sf::Keyboard::I:
+                    pointLightY -= 1.0f;
+                    break;
+                case sf::Keyboard::O:
+                    pointLightZ += 1.0f;
+                    break;
+                case sf::Keyboard::P:
+                    pointLightZ -= 1.0f;
                     break;
                 }
             }
