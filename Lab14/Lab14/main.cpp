@@ -300,6 +300,14 @@ GLuint windowWidth = 1200, windowHeight = 1200;
 GLfloat cameraX = -40.0f, cameraY = -100.0f, cameraZ = 110.0f;
 GLfloat pitch = 40.0f, yaw = 325.0f, roll = 355.0f;  // Тангаж, рысканье и крен
 
+GLfloat pointLightX = 1.0f;
+GLfloat pointLightY = 1.0f;
+GLfloat pointLightZ = 1.0f;
+
+GLfloat spotLightX = 180.0f;
+GLfloat spotLightY = 275.0f;
+GLfloat spotLightZ = 60.0f;
+
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
     glActiveTexture(GL_TEXTURE0 + unit);
@@ -358,11 +366,17 @@ void Draw()
     glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     
-    glm::mat4 modelBanana(1.0f);
-    modelBanana = glm::translate(modelBanana, glm::vec3(100.f, 40.f, 20.f));
-    modelBanana = glm::rotate(modelBanana, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    const GLuint bananaFirst = 0;
-    drawMesh(GL_TRIANGLES, 0, bananaFirst, banana_mesh.size(), modelBanana);
+    glm::mat4 modelBanana0(1.0f);
+    modelBanana0 = glm::translate(modelBanana0, glm::vec3(100.f, 40.f, 20.f));
+    modelBanana0 = glm::rotate(modelBanana0, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    const GLuint bananaFirst0 = 0;
+    drawMesh(GL_TRIANGLES, 0, bananaFirst0, banana_mesh.size(), modelBanana0);
+
+    glm::mat4 modelBanana1(1.0f);
+    modelBanana1 = glm::translate(modelBanana1, glm::vec3(331.f, 72.f, 18.f));
+    modelBanana1 = glm::rotate(modelBanana1, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    const GLuint bananaFirst1 = 0;
+    drawMesh(GL_TRIANGLES, 0, bananaFirst1, banana_mesh.size(), modelBanana1);
 
     glm::mat4 modelPlane(1.0f);
     modelPlane = glm::translate(modelPlane, glm::vec3(0.0f, 0.0f, 0.0f));
