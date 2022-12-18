@@ -6,8 +6,8 @@ namespace CornishRoom
     {
         private double epsilon;
 
-        public Vector3D Position;
-        public Vector3D Normal;
+        public Vector3D Position { get; }
+        public Vector3D Normal { get; }
 
         public Plane(Vector3D position, Vector3D normal, Material material, double epsilon = 0.001) 
             : base(material)
