@@ -51,10 +51,10 @@ const char *VertexShaderSource = R"(
 
 const char *FragmentShaderSource = R"(
     #version 330 core
-    
+
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;   
+    in vec3 vs_normal;
 
     out vec4 color;
 
@@ -123,7 +123,7 @@ const char *FragmentShaderSource = R"(
         {
             diffColor = diffColor;
         }
-        else        
+        else
         {
             diffColor = diffColor * 1.3f;
         }
