@@ -142,6 +142,8 @@ const char* FragmentShaderSource = R"(
         return diffColor * d1 * d2 + vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
+   
+
     void main() {
         switch (lighting_type) {
         case 0:
@@ -155,6 +157,11 @@ const char* FragmentShaderSource = R"(
             color = calculate_point_light();
             color += calculate_minnaert(direction_light_position);
             color += calculate_direction_light();
+            break;
+        case 2:
+           color = calculate_toon(point_light_position);
+            color +=calculate_point_light();
+           
             break;
         default:
             color = vec4(0.1f, 0.2f, 0.3f, 1.0f);
@@ -413,6 +420,13 @@ void Draw()
     modelBanana1 = glm::rotate(modelBanana1, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst1 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst1, banana_mesh.size(), modelBanana1);
+
+    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 2);
+    glm::mat4 modelBanana2(1.0f);
+    modelBanana1 = glm::translate(modelBanana2, glm::vec3(221.f, 92.f, 18.f));
+    modelBanana1 = glm::rotate(modelBanana2, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    const GLuint bananaFirst2 = 0;
+    drawMesh(GL_TRIANGLES, 0, bananaFirst2, banana_mesh.size(), modelBanana2);
 
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
     glm::mat4 modelFloor(1.0f);
