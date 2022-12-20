@@ -19,6 +19,7 @@ class Camera
 	void setFront()
 	{
 		GLfloat cosPitch = cos(glm::radians(pitch));
+		auto cameraFront = 
 		front = glm::normalize(
 			glm::vec3(
 				cos(glm::radians(yaw)) * cosPitch, 
@@ -32,6 +33,16 @@ public:
 		: position(position), up(glm::vec3(0.0f, 0.0f, 1.0f)), pitch(pitch), yaw(yaw), speed(speed), sensitivity(sensitivity), wasNotMovedBefore(true)
 	{
 		setFront();
+	}
+
+	glm::vec3 getPosition() const
+	{
+		return position;
+	}
+
+	glm::vec3 getFront() const
+	{
+		return front;
 	}
 
 	void moveForward() 
@@ -73,13 +84,9 @@ public:
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		rotateDegrees(xOffset, yOffset);
-	}
+		yaw += yOffset;
+		pitch += xOffset;
 
-	void rotateDegrees(GLfloat x, GLfloat y)
-	{
-		yaw += y;
-		pitch += x;
 		setFront();
 	}
 
@@ -89,4 +96,4 @@ public:
 	}
 };
 
-#endif // CAMERA_H
+#endif // !CAMERA_H

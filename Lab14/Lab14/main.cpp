@@ -49,119 +49,121 @@ const char* VertexShaderSource = R"(
     }
 )";
 
+// https://learnopengl.com/Lighting/Light-casters
+// http://steps3d.narod.ru/tutorials/lighting-tutorial.html
 const char* FragmentShaderSource = R"(
     #version 330 core
-    
+
+    struct PointLight {    
+        vec3 position;
+
+        float constant;
+        float linear;
+        float quadratic;
+    };
+
+    struct DirLight {
+        vec3 direction;
+    };
+
+    struct SpotLight {
+        vec3 position;
+        vec3 direction;
+
+        float innerCone;
+        float outerCone;
+    };
+
     in vec3 vs_position;
     in vec2 vs_texcoord;
     in vec3 vs_normal;   
 
-    out vec4 color;
-
-    uniform vec3 point_light_position;
-    uniform vec3 direction_light_position;
-    uniform vec3 spot_light_position;
     uniform vec3 view_position;
 
     uniform sampler2D texture;
 
-    uniform int lighting_type;
+    uniform PointLight pointLight;
+    uniform DirLight dirLight;
+    uniform SpotLight spotLight;
 
-    vec4 calculate_point_light()
+    uniform int lighting_model;
+
+    out vec4 color;
+
+    vec4 shadePhong(vec3 light_direction, vec3 view_direction, float intensivity)
     {
-	    vec3 light = point_light_position - vs_position;
-
-	    float distance = length(light);
-	    float a = 1.6f;
-	    float b = 0.4f;
-	    float intensivity = 1.0f / (a * distance * distance + b * distance + 1.0f);
-
-	    float ambient = 0.20f;
-
-	    vec3 normal = normalize(vs_normal);
-	    vec3 light_direction = normalize(light);
-	    float diffuse = max(dot(normal, light_direction), 0.0f);
-
-	    float specular_light = 0.50f;
-	    vec3 view_direction = normalize(view_position - vs_position);
-	    vec3 reflection_direction = reflect(-light_direction, normal);
-	    float spec_amount = pow(max(dot(view_direction, reflection_direction), 0.0f), 8);
-	    float specular = spec_amount * specular_light;
-
-	    return texture(texture, vs_texcoord) * (diffuse * intensivity + ambient) + texture(texture, vs_texcoord).r * specular * intensivity;
+        vec4 textureColor = texture(texture, vs_texcoord);
+        vec3 normal = normalize(vs_normal);
+        vec3 lightDir = normalize(light_direction);
+        vec3 viewDir = normalize(view_direction);
+        vec3 reflectedViewDir = reflect(-viewDir, normal);
+        vec4 diff = textureColor * max(dot(normal, lightDir), 0.0f);
+        vec4 spec = textureColor * pow(max(dot(lightDir, reflectedViewDir), 0.0f), 8.0f);
+        return (diff + spec) * intensivity;
     }
 
-    vec4 calculate_direction_light()
-    {
-	    float ambient = 0.10f;
-
-	    vec3 normal = normalize(vs_normal);
-	    vec3 light_direction = normalize(direction_light_position);
-	    float diffuse = max(dot(normal, light_direction), 0.0f);
-
-	    float specular_light = 0.20f;
-	    vec3 view_direction = normalize(view_position - vs_position);
-	    vec3 reflection_direction = reflect(-light_direction, normal);
-	    float spec_amount = pow(max(dot(view_direction, reflection_direction), 0.0f), 8);
-	    float specular = spec_amount * specular_light;
-
-	    return texture(texture, vs_texcoord) * (diffuse + ambient) + texture(texture, vs_texcoord).r * specular;
-    }
-
-    vec4 calculate_toon(vec3 light_position)
+    vec4 shadeToon(vec3 light_direction, float intensivity)
     {
         vec4 diffColor = texture(texture, vs_texcoord);
-
-        vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(light_position);
-        float diff = 0.2f + max(dot(n2, l2), 0.0f);
+        vec3 normal = normalize(vs_normal);
+        vec3 lightDir = normalize(light_direction);
+        float diff = 0.2f + max(dot(normal, lightDir), 0.0f);
         if (diff < 0.4f)
         {
-            diffColor = diffColor * 0.3f + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            diffColor *= 0.3f;
         }
-        else if (diff < 0.7f)
+        else if (diff > 0.7f)    
         {
-            diffColor = diffColor;
+            diffColor *= 1.3f;
         }
-        else        
-        {
-            diffColor = diffColor * 1.3f;
-        }
-        return diffColor;
+        return diffColor * intensivity;
     }
 
-    vec4 calculate_minnaert(vec3 light_position)
+    vec4 shadeMinnaert(vec3 light_direction, vec3 view_direction, float intensivity)
     {
         vec4 diffColor = texture(texture, vs_texcoord);
-        float k = 0.8;
-        vec3 n2 = normalize(vs_normal);
-        vec3 l2 = normalize(light_position);
-        vec3 v2 = normalize(view_position);
-        float d1 = pow(max(dot(n2 , l2), 0.0f), 1.0f + k);
-        float d2 = pow(1.0f - dot(n2, v2), 1.0f - k);
-        return diffColor * d1 * d2 + vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        float k = 0.8f;
+        vec3 normal = normalize(vs_normal);
+        vec3 lightDir = normalize(light_direction);
+        vec3 viewDir = normalize(view_direction);
+        float d1 = pow(max(dot(normal, lightDir), 0.0f), 1.0f + k);
+        float d2 = pow(1.0f - dot(normal, viewDir), 1.0f - k);
+        return diffColor * d1 * d2 * intensivity;
     }
-
    
-
     void main() {
-        switch (lighting_type) {
+        vec3 point_light_direction = pointLight.position - vs_position;
+        vec3 dir_light_direction = dirLight.direction;
+        vec3 spot_light_direction = spotLight.position - vs_position;
+
+        vec3 view_direction = view_position - vs_position;
+
+        float distance_point_light = length(point_light_direction);
+        float point_light_intensivity = 1.0f / (pointLight.constant + pointLight.linear * distance_point_light + pointLight.quadratic * distance_point_light * distance_point_light);
+        
+        float dir_light_intensivity = 0.6f;
+
+	    float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
+        float spot_light_intensivity = clamp((theta - spotLight.outerCone) / (spotLight.innerCone - spotLight.outerCone), 0.0f, 1.0f);
+
+        // ambient
+        color = texture(texture, vs_texcoord);
+        
+        switch (lighting_model) {
         case 0:
-            color = calculate_toon(point_light_position);
-            color += calculate_point_light();
-            color += calculate_toon(direction_light_position);
-            color += calculate_direction_light();
+            color += shadePhong(point_light_direction, view_direction, point_light_intensivity);
+            color += shadePhong(dir_light_direction, view_direction, dir_light_intensivity);
+            color += shadePhong(spot_light_direction, view_direction, spot_light_intensivity);
             break;
         case 1:
-            color = calculate_minnaert(point_light_position);
-            color += calculate_point_light();
-            color += calculate_minnaert(direction_light_position);
-            color += calculate_direction_light();
+            color += shadeToon(point_light_direction, point_light_intensivity);
+            color += shadeToon(dir_light_direction, dir_light_intensivity);
+            color += shadeToon(spot_light_direction, spot_light_intensivity);
             break;
         case 2:
-           color = calculate_toon(point_light_position);
-           color +=calculate_point_light();
-           
+            color += shadeMinnaert(point_light_direction, view_direction, point_light_intensivity);
+            color += shadeMinnaert(dir_light_direction, view_direction, dir_light_intensivity);
+            color += shadeMinnaert(spot_light_direction, view_direction, spot_light_intensivity);
             break;
         default:
             color = vec4(0.1f, 0.2f, 0.3f, 1.0f);
@@ -198,7 +200,7 @@ auto chair_mesh = parse_obj("Models/chair.obj");
 // Стол
 auto table_mesh = parse_obj("Models/table.obj");
 
-void InitVBOs()
+void InitVBO()
 {
     auto scene = std::vector<Vertex>();
     const std::size_t sceneSize = banana_mesh.size() + floor_mesh.size() + apple_mesh.size();
@@ -228,7 +230,7 @@ void ShaderLog(unsigned int shader)
     }
 }
 
-void InitShaders()
+void InitShader()
 {
     GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vShader, 1, &VertexShaderSource, NULL);
@@ -336,17 +338,13 @@ auto camera = Camera(glm::vec3(cameraX, cameraY, cameraZ), pitch, yaw);
 
 bool rotating = false;
 
-GLfloat pointLightX = -1.0f;
-GLfloat pointLightY = -1.0f;
-GLfloat pointLightZ = 0.0f;
+GLfloat pointLightPositionX = 0.0f;
+GLfloat pointLightPositionY = 0.0f;
+GLfloat pointLightPositionZ = 30.0f;
 
 GLfloat directionLightX = 1.0f;
 GLfloat directionLightY = 1.0f;
-GLfloat directionLightZ = 0.0f;
-
-GLfloat spotLightX = 0;
-GLfloat spotLightY = 0;
-GLfloat spotLightZ = 30.0f;
+GLfloat directionLightZ = 1.0f;
 
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
@@ -385,39 +383,49 @@ void Draw()
 
     glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3f(glGetUniformLocation(Program, "view_position"), cameraX, cameraY, cameraZ);
-    glUniform3f(glGetUniformLocation(Program, "point_light_position"), pointLightX, pointLightY, pointLightZ);
-    glUniform3f(glGetUniformLocation(Program, "direction_light_position"), directionLightX, directionLightY, directionLightZ);
-    glUniform3f(glGetUniformLocation(Program, "spot_light_position"), spotLightX, spotLightY, spotLightZ);
+
+    glUniform3f(glGetUniformLocation(Program, "view_position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+
+    glUniform3f(glGetUniformLocation(Program, "pointLight.position"), pointLightPositionX, pointLightPositionY, pointLightPositionZ);
+    glUniform1f(glGetUniformLocation(Program, "pointLight.constant"), 1.0f);
+    glUniform1f(glGetUniformLocation(Program, "pointLight.linear"), 0.000007f);
+    glUniform1f(glGetUniformLocation(Program, "pointLight.quadratic"), 0.000000027f);
+
+    glUniform3f(glGetUniformLocation(Program, "dirLight.direction"), directionLightX, directionLightY, directionLightZ);
+
+    glUniform3f(glGetUniformLocation(Program, "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+    glUniform3f(glGetUniformLocation(Program, "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
+    glUniform1f(glGetUniformLocation(Program, "spotLight.innerCone"), cos(glm::radians(20.0f)));
+    glUniform1f(glGetUniformLocation(Program, "spotLight.outerCone"), cos(glm::radians(25.0f)));
     
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 0);
     glm::mat4 modelBanana0(1.0f);
     modelBanana0 = glm::translate(modelBanana0, glm::vec3(100.f, 40.f, 20.f));
     modelBanana0 = glm::rotate(modelBanana0, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst0 = 0;
     drawMesh(GL_TRIANGLES, 0, 0, banana_mesh.size(), modelBanana0);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 1);
     glm::mat4 modelBanana1(1.0f);
     modelBanana1 = glm::translate(modelBanana1, glm::vec3(331.f, 72.f, 18.f));
     modelBanana1 = glm::rotate(modelBanana1, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst1 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst1, banana_mesh.size(), modelBanana1);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 2);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 2);
     glm::mat4 modelBanana2(1.0f);
     modelBanana2 = glm::translate(modelBanana2, glm::vec3(221.f, 92.f, 18.f));
     modelBanana2 = glm::rotate(modelBanana2, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst2 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst2, banana_mesh.size(), modelBanana2);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 0);
     glm::mat4 modelFloor(1.0f);
     modelFloor = glm::translate(modelFloor, glm::vec3(0.0f, 0.0f, 0.0f));
     const GLuint planeFirst = banana_mesh.size();
     drawMesh(GL_TRIANGLES, 1, planeFirst, floor_mesh.size(), modelFloor);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 1);
     glm::mat4 modelApple(1.0f);
     modelApple = glm::translate(modelApple, glm::vec3(250.f, 390.f, 90.f));
     modelApple = glm::rotate(modelApple, glm::radians(180.0f), glm::vec3(10.f, 0.0f, 0.0f));
@@ -425,7 +433,7 @@ void Draw()
     const GLuint appleFirst = banana_mesh.size() + floor_mesh.size();
     drawMesh(GL_TRIANGLES, 2, appleFirst, apple_mesh.size(), modelApple);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_type"), 0);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 2);
     glm::mat4 modelChair(1.0f);
     modelChair = glm::translate(modelChair, glm::vec3(195.0f, 200.0f, 163.0f));
     modelChair = glm::scale(modelChair, glm::vec3(20.0f));
@@ -462,9 +470,9 @@ void InitOptions()
 void Init()
 {
     InitOptions();
-    InitShaders();
+    InitShader();
     InitTextures();
-    InitVBOs();
+    InitVBO();
 }
 
 void ReleaseVBO()
@@ -553,22 +561,22 @@ int main()
                     break;
                 // Point ligh position
                 case sf::Keyboard::T:
-                    pointLightX += 1.0f;
+                    pointLightPositionX += 1.0f;
                     break;
                 case sf::Keyboard::Y:
-                    pointLightX -= 1.0f;
+                    pointLightPositionX -= 1.0f;
                     break;
                 case sf::Keyboard::U:
-                    pointLightY += 1.0f;
+                    pointLightPositionY += 1.0f;
                     break;
                 case sf::Keyboard::I:
-                    pointLightY -= 1.0f;
+                    pointLightPositionY -= 1.0f;
                     break;
                 case sf::Keyboard::O:
-                    pointLightZ += 1.0f;
+                    pointLightPositionZ += 1.0f;
                     break;
                 case sf::Keyboard::P:
-                    pointLightZ -= 1.0f;
+                    pointLightPositionZ -= 1.0f;
                     break;
                 }
             }
