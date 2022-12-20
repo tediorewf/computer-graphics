@@ -1,12 +1,12 @@
 ﻿#include "Vertex.h"
 #include "obj-parser.h"
+#include "Camera.h"
 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SOIL/SOIL.h>
-#include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -154,13 +154,13 @@ const char* FragmentShaderSource = R"(
             break;
         case 1:
             color = calculate_minnaert(point_light_position);
-            color = calculate_point_light();
+            color += calculate_point_light();
             color += calculate_minnaert(direction_light_position);
             color += calculate_direction_light();
             break;
         case 2:
            color = calculate_toon(point_light_position);
-            color +=calculate_point_light();
+           color +=calculate_point_light();
            
             break;
         default:
@@ -307,7 +307,7 @@ void _load_texture(const char* filename, GLuint unit, GLuint &texture)
     SOIL_free_image_data(image);
 }
 
-void _loadTextures(const std::vector<const char*> imageNames)
+void _loadTextures(const std::vector<const char*>& imageNames)
 {
     for (GLuint unit = 0; unit < imageNames.size(); unit += 1)
     {
@@ -318,7 +318,7 @@ void _loadTextures(const std::vector<const char*> imageNames)
 void InitTextures()
 {
     _loadTextures(
-        { 
+        std::vector<const char*> { 
             "Textures/banana.png", 
             "Textures/laminate.jpg", 
             "Textures/apple.jpeg", 
@@ -331,7 +331,10 @@ void InitTextures()
 GLuint windowWidth = 1200, windowHeight = 1200;
 
 GLfloat cameraX = -40.0f, cameraY = -100.0f, cameraZ = 110.0f;
-GLfloat pitch = 40.0f, yaw = 325.0f, roll = 355.0f;  // Тангаж, рысканье и крен
+GLfloat pitch = 40.0f, yaw = 325.0f;
+auto camera = Camera(glm::vec3(cameraX, cameraY, cameraZ), pitch, yaw);
+
+bool rotating = false;
 
 GLfloat pointLightX = -1.0f;
 GLfloat pointLightY = -1.0f;
@@ -374,33 +377,13 @@ void Draw()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    //glm::mat4 model(1.0f);
-    //model = glm::translate(model, glm::vec3(-500.f, -250.f, 0.f));
-    //model = glm::rotate(model, glm::radians(xAngle), glm::vec3(1.f, 0.f, 0.f));
-    //model = glm::rotate(model, glm::radians(yAngle), glm::vec3(0.f, 1.f, 0.f));
-    //model = glm::rotate(model, glm::radians(zAngle), glm::vec3(0.f, 0.f, 1.f));
-    //model = glm::scale(model, glm::vec3(1.0f));
-
-    glm::vec3 camera_position(cameraX, cameraY, cameraZ);
-    glm::vec3 camera_up(0.0f, 0.0f, 1.0f);
-    glm::vec3 camera_front = glm::normalize(
-        glm::vec3(
-            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
-            sin(glm::radians(pitch)),
-            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
-        )
-    );
-
-    glm::mat4 view(1.0f);
-    view = glm::lookAt(camera_position, camera_position + camera_front, camera_up);
-
-    GLfloat field_of_view = 60.0f;
+    GLfloat field_of_view = 90;
     GLfloat near_plane = 0.01f;
     GLfloat far_plane = 10000.0f;
     glm::mat4 projection(1.0f);
     projection = glm::perspective(glm::radians(field_of_view), static_cast<GLfloat>(windowWidth) / windowHeight, near_plane, far_plane);
 
-    glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(Program, "view"), 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     glUniformMatrix4fv(glGetUniformLocation(Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform3f(glGetUniformLocation(Program, "view_position"), cameraX, cameraY, cameraZ);
     glUniform3f(glGetUniformLocation(Program, "point_light_position"), pointLightX, pointLightY, pointLightZ);
@@ -412,7 +395,7 @@ void Draw()
     modelBanana0 = glm::translate(modelBanana0, glm::vec3(100.f, 40.f, 20.f));
     modelBanana0 = glm::rotate(modelBanana0, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst0 = 0;
-    drawMesh(GL_TRIANGLES, 0, bananaFirst0, banana_mesh.size(), modelBanana0);
+    drawMesh(GL_TRIANGLES, 0, 0, banana_mesh.size(), modelBanana0);
 
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 1);
     glm::mat4 modelBanana1(1.0f);
@@ -423,8 +406,8 @@ void Draw()
 
     glUniform1i(glGetUniformLocation(Program, "lighting_type"), 2);
     glm::mat4 modelBanana2(1.0f);
-    modelBanana1 = glm::translate(modelBanana2, glm::vec3(221.f, 92.f, 18.f));
-    modelBanana1 = glm::rotate(modelBanana2, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelBanana2 = glm::translate(modelBanana2, glm::vec3(221.f, 92.f, 18.f));
+    modelBanana2 = glm::rotate(modelBanana2, glm::radians(47.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     const GLuint bananaFirst2 = 0;
     drawMesh(GL_TRIANGLES, 0, bananaFirst2, banana_mesh.size(), modelBanana2);
 
@@ -525,45 +508,48 @@ int main()
                 windowWidth = event.size.width;
                 windowHeight = event.size.height;
             }
+            else if (event.type == sf::Event::MouseButtonPressed)
+            {
+                switch (event.key.code)
+                {
+                case sf::Mouse::Left:
+                    rotating = true;
+                    break;
+                }
+            }
+            else if (event.type == sf::Event::MouseButtonReleased)
+            {
+                switch (event.key.code)
+                {
+                case sf::Mouse::Left:
+                    rotating = false;
+                    break;
+                }
+            }
+            else if (event.type == sf::Event::MouseMoved)
+            {
+                if (rotating)
+                {
+                    GLfloat x = static_cast<GLfloat>(event.mouseMove.x);
+                    GLfloat y = static_cast<GLfloat>(event.mouseMove.y);
+                    camera.rotateMouse(x, y);
+                }
+            }
             else if (event.type == sf::Event::KeyPressed)
             {
                 switch (event.key.code)
                 {
-                case sf::Keyboard::A:
-                    pitch += 5.0f;
+                case sf::Keyboard::Up:
+                    camera.moveForward();
                     break;
-                case sf::Keyboard::Z:
-                    pitch -= 5.0f;
+                case sf::Keyboard::Down:
+                    camera.moveBackward();
                     break;
-                case sf::Keyboard::S:
-                    yaw += 5.0f;
+                case sf::Keyboard::Right:
+                    camera.moveRight();
                     break;
-                case sf::Keyboard::X:
-                    yaw -= 5.0f;
-                    break;
-                case sf::Keyboard::D:
-                    roll += 5.0f;
-                    break;
-                case sf::Keyboard::C:
-                    roll -= 5.0f;
-                    break;
-                case sf::Keyboard::G:
-                    cameraX += 10.0f;
-                    break;
-                case sf::Keyboard::B:
-                    cameraX -= 10.0f;
-                    break;
-                case sf::Keyboard::H:
-                    cameraY += 10.0f;
-                    break;
-                case sf::Keyboard::N:
-                    cameraY -= 10.0f;
-                    break;
-                case sf::Keyboard::J:
-                    cameraZ += 10.0;
-                    break;
-                case sf::Keyboard::M:
-                    cameraZ -= 10.0;
+                case sf::Keyboard::Left:
+                    camera.moveLeft();
                     break;
                 // Point ligh position
                 case sf::Keyboard::T:
@@ -591,14 +577,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         Draw();
         window.display();
-        /*
-        std::cout << "X " << cameraX << std::endl;
-        std::cout << "Y " << cameraY << std::endl;
-        std::cout << "Z " << cameraZ << std::endl;
-        std::cout << "pitch " << pitch << std::endl;
-        std::cout << "yaw " << yaw << std::endl;
-        std::cout << "roll " << roll << std::endl;
-        */
     }
     Release();
     return 0;

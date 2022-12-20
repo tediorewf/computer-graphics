@@ -143,6 +143,7 @@
     <ClCompile Include="obj-parser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="obj-parser.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
