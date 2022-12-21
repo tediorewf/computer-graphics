@@ -54,7 +54,7 @@ const char *VertexShaderSource = R"(
 const char *FragmentShaderSource = R"(
     #version 330 core
 
-    struct PointLight {    
+    struct PointLight {
         vec3 position;
 
         float constant;
@@ -76,7 +76,7 @@ const char *FragmentShaderSource = R"(
 
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;   
+    in vec3 vs_normal;
 
     uniform vec3 view_position;
 
@@ -112,7 +112,7 @@ const char *FragmentShaderSource = R"(
         {
             diffColor *= 0.3f;
         }
-        else if (diff > 0.7f)    
+        else if (diff > 0.7f)
         {
             diffColor *= 1.3f;
         }
@@ -130,7 +130,7 @@ const char *FragmentShaderSource = R"(
         float d2 = pow(1.0f - dot(normal, viewDir), 1.0f - k);
         return diffColor * d1 * d2 * intensivity;
     }
-   
+
     void main() {
         vec3 point_light_direction = pointLight.position - vs_position;
         vec3 dir_light_direction = dirLight.direction;
@@ -140,7 +140,7 @@ const char *FragmentShaderSource = R"(
 
         float distance_point_light = length(point_light_direction);
         float point_light_intensivity = 1.0f / (pointLight.constant + pointLight.linear * distance_point_light + pointLight.quadratic * distance_point_light * distance_point_light);
-        
+
         float dir_light_intensivity = 0.6f;
 
         float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
@@ -148,7 +148,7 @@ const char *FragmentShaderSource = R"(
 
         // ambient
         color = texture(texture, vs_texcoord);
-        
+
         switch (lighting_model) {
         case 0:
             color += shadePhong(point_light_direction, view_direction, point_light_intensivity);
