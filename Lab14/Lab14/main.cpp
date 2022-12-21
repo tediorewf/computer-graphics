@@ -534,6 +534,7 @@ int main()
                     break;
                 }
             }
+            // Поворот камеры
             else if (event.type == sf::Event::MouseMoved)
             {
                 if (rotating)
@@ -547,6 +548,7 @@ int main()
             {
                 switch (event.key.code)
                 {
+                // Смена позиции камеры
                 case sf::Keyboard::Up:
                     camera.moveForward();
                     break;
@@ -559,7 +561,7 @@ int main()
                 case sf::Keyboard::Left:
                     camera.moveLeft();
                     break;
-                // Point ligh position
+                // Смена позиции точечного источника света
                 case sf::Keyboard::T:
                     pointLightPositionX += 1.0f;
                     break;
