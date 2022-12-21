@@ -143,7 +143,7 @@ const char* FragmentShaderSource = R"(
         
         float dir_light_intensivity = 0.6f;
 
-	    float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
+        float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
         float spot_light_intensivity = clamp((theta - spotLight.outerCone) / (spotLight.innerCone - spotLight.outerCone), 0.0f, 1.0f);
 
         // ambient
