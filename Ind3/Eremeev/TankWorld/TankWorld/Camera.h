@@ -12,7 +12,7 @@
 
 class Camera
 {
-	glm::vec3 position, up, spotLightTarget, worldUp, right;
+	glm::vec3 position, up, front, worldUp, right;
 	GLfloat pitch, distanceToPlayer, angleAroundPlayer;
 	Player player;
 public:
@@ -49,7 +49,7 @@ public:
 
 	glm::vec3 getFront() const
 	{
-		return spotLightTarget;
+		return front;
 	}
 
 	void move(const sf::Event& e, GLfloat framesRenderTimeDelta)
@@ -81,20 +81,20 @@ public:
 
 		GLfloat yaw = player.getRotationY() + angleAroundPlayer;
 		GLfloat radiansYaw = glm::radians(yaw);
-		spotLightTarget = glm::normalize(
+		front = glm::normalize(
 			glm::vec3(
 				sin(radiansYaw) * cosPitch,
 				sinPitch,
 				cos(radiansYaw) * cosPitch
 			)
 		);
-		right = glm::normalize(glm::cross(spotLightTarget, worldUp));
-		up = glm::normalize(glm::cross(right, spotLightTarget));
+		right = glm::normalize(glm::cross(front, worldUp));
+		up = glm::normalize(glm::cross(right, front));
 	}
 
 	glm::mat4 getViewMatrix() const 
 	{
-		return glm::lookAt(position, position + spotLightTarget, up);
+		return glm::lookAt(position, position + front, up);
 	}
 };
 

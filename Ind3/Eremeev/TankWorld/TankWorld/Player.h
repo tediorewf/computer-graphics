@@ -69,20 +69,24 @@ public:
 
 	glm::vec3 getSpotLightDirection() const
 	{
-		return spotLightTarget - spotLightPosition;
+		auto spotLightDirection = spotLightTarget - spotLightPosition;
+		return spotLightDirection;
 	}
 
 	void move(const sf::Event& e, GLfloat framesRenderTimeDelta)
 	{
 		updateSpeed(e);
+
 		increaseRotation(0.0f, currentTurnSpeed * framesRenderTimeDelta, 0.0f);
+
 		GLfloat distance = currentRunSpeed * framesRenderTimeDelta;
 		GLfloat radiansRotationY = glm::radians(rotationY);
 		GLfloat runOffsetX = distance * static_cast<GLfloat>(sin(radiansRotationY));
 		GLfloat runOffsetZ = distance * static_cast<GLfloat>(cos(radiansRotationY));
+
 		increasePosition(runOffsetX, 0.0f, runOffsetZ);
-		increaseSpotLightTarget(runOffsetX, 0.0f, runOffsetX);
-		increaseSpotLightPosition(runOffsetX, 0.0f, runOffsetX);
+		increaseSpotLightTarget(runOffsetX, 0.0f, runOffsetZ);
+		increaseSpotLightPosition(runOffsetX, 0.0f, runOffsetZ);
 	}
 };
 

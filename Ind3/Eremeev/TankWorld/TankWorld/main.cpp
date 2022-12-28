@@ -250,7 +250,7 @@ void InitTextures()
 
 GLuint windowWidth = 1600, windowHeight = 1600;
 
-auto player = Player(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f, 4.0f, 5.0f), 10.0f, 1.0f, 1.0f);
+auto player = Player(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f, 4.0f, 2.0f), 10.0f, 1.0f, 1.0f);
 GLfloat pitch = 5.0f;
 GLfloat distanceToPlayer = 8.0f;
 auto worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -436,10 +436,6 @@ int main()
                 switch (event.key.code)
                 {
                 case sf::Mouse::Left:
-                    //if (shotSound.getStatus() != sf::SoundSource::Playing)
-                    //{
-
-                    //}
                     shotSound.play();
                     break;
                 }
