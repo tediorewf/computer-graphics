@@ -26,7 +26,8 @@ GLuint Attrib_vertex_texture_coordinate;
 GLint Attrib_vertex_normal;
 
 GLuint VBO;
-GLuint textures[5];
+const GLuint NUM_TEXTURES = 6;
+GLuint textures[NUM_TEXTURES];
 
 const char* VertexShaderSource = R"(
     #version 330 core
@@ -138,12 +139,11 @@ void InitVBO()
     auto scene = std::vector<Vertex>();
     const std::size_t sceneSize = tank_mesh.size();
     scene.reserve(sceneSize);
-    // Загружаем игрока (танк)
+    // Загружаем танк
     scene.insert(scene.end(), tank_mesh.begin(), tank_mesh.end());
     // Загружаем поле
     scene.insert(scene.end(), field_mesh.begin(), field_mesh.end());
-
-    // Загружаем бочка
+    // Загружаем бочку
     scene.insert(scene.end(), barrel_mesh.begin(), barrel_mesh.end());
     // Загружаем камень
     scene.insert(scene.end(), stone_mesh.begin(), stone_mesh.end());
@@ -293,7 +293,6 @@ std::random_device rd;
 std::mt19937 mt(rd());
 std::uniform_real_distribution<GLfloat> dist(-15.0f, 15.0f);
 
-// Да, надо было делать нормально, но я уже замучался делать эти лабы
 auto enemyTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto barrel1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto stone1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
