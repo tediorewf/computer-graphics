@@ -17,6 +17,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <random>
 
 GLuint Program;
 
@@ -99,13 +100,13 @@ const char* FragmentShaderSource = R"(
 
         vec3 view_direction = view_position - vs_position;
         
-        float dir_light_intensivity = 0.6f;
+        float dir_light_intensivity = 0.55f;
 
         float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
         float spot_light_intensivity = clamp((theta - spotLight.outerCone) / (spotLight.innerCone - spotLight.outerCone), 0.0f, 1.0f);
 
         color = texture(texture, vs_texcoord);
-        //color += shadePhong(dir_light_direction, view_direction, dir_light_intensivity);
+        color += shadePhong(dir_light_direction, view_direction, dir_light_intensivity);
         color += shadePhong(spot_light_direction, view_direction, spot_light_intensivity);
     }
 )";
@@ -119,18 +120,37 @@ void checkOpenGLerror()
     }
 }
 
-// Игрок (танк)
-auto player_mesh = parse_obj("Models/Tank.obj");
+// Танк
+auto tank_mesh = parse_obj("Models/Tank.obj");
 // Поле
 auto field_mesh = parse_obj("Models/Field.obj");
+// Бочка
+auto barrel_mesh = parse_obj("Models/Barrel.obj");
+// Камень 1
+auto stone_mesh = parse_obj("Models/Stone-1.obj");
+// Новогодняя ёлка
+auto christmas_tree_mesh = parse_obj("Models/ChristmasTree.obj");
+// Дерево
+auto tree_mesh = parse_obj("Models/Tree.obj");
 
 void InitVBO()
 {
     auto scene = std::vector<Vertex>();
-    const std::size_t sceneSize = player_mesh.size();
+    const std::size_t sceneSize = tank_mesh.size();
     scene.reserve(sceneSize);
-    scene.insert(scene.end(), player_mesh.begin(), player_mesh.end());
+    // Загружаем игрока (танк)
+    scene.insert(scene.end(), tank_mesh.begin(), tank_mesh.end());
+    // Загружаем поле
     scene.insert(scene.end(), field_mesh.begin(), field_mesh.end());
+
+    // Загружаем бочка
+    scene.insert(scene.end(), barrel_mesh.begin(), barrel_mesh.end());
+    // Загружаем камень
+    scene.insert(scene.end(), stone_mesh.begin(), stone_mesh.end());
+    // Загружаем новогоднюю ёлку
+    scene.insert(scene.end(), christmas_tree_mesh.begin(), christmas_tree_mesh.end());
+    // Загружаем дерево
+    scene.insert(scene.end(), tree_mesh.begin(), tree_mesh.end());
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -244,6 +264,10 @@ void InitTextures()
         std::vector<const char*> { 
             "Textures/Tank.png",
             "Textures/Field.png",
+            "Textures/Barrel.png",
+            "Textures/Stone-1.png",
+            "Textures/ChristmasTree.png",
+            "Textures/Tree.png"
         }
     );
 }
@@ -264,6 +288,19 @@ GLfloat pitchStep = 1.0;
 GLfloat directionLightX = 1.0f;
 GLfloat directionLightY = 1.0f;
 GLfloat directionLightZ = 1.0f;
+
+std::random_device rd;
+std::mt19937 mt(rd());
+std::uniform_real_distribution<GLfloat> dist(-15.0f, 15.0f);
+
+// Да, надо было делать нормально, но я уже замучался делать эти лабы
+auto enemyTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto barrel1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto stone1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto barrel2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto stone2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto christmasTreeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto treeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
 
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
@@ -321,11 +358,47 @@ void Draw()
     modelPlayer = glm::rotate(modelPlayer, glm::radians(player.getRotationY()), glm::vec3(0.0f, 1.0f, 0.0f));
     modelPlayer = glm::rotate(modelPlayer, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     const GLuint playerFirst = 0;
-    drawMesh(GL_TRIANGLES, 0, playerFirst, player_mesh.size(), modelPlayer);
+    drawMesh(GL_TRIANGLES, 0, playerFirst, tank_mesh.size(), modelPlayer);
+
+    glm::mat4 enemyModel(1.0f);
+    enemyModel = glm::translate(enemyModel, enemyTranslation);
+    enemyModel = glm::rotate(enemyModel, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    const GLuint enemyFirst = 0;
+    drawMesh(GL_TRIANGLES, 0, enemyFirst, tank_mesh.size(), enemyModel);
 
     glm::mat4 modelField(1.0f);
-    const GLuint fieldFirst = player_mesh.size();
+    const GLuint fieldFirst = tank_mesh.size();
     drawMesh(GL_TRIANGLES, 1, fieldFirst, field_mesh.size(), modelField);
+
+    glm::mat4 barrel1Model(1.0f);
+    barrel1Model = glm::translate(barrel1Model, barrel1Translation);
+    const GLuint barrel1First = tank_mesh.size() + field_mesh.size();
+    drawMesh(GL_TRIANGLES, 2, barrel1First, barrel_mesh.size(), barrel1Model);
+
+    glm::mat4 barrel2Model(1.0f);
+    barrel2Model = glm::translate(barrel2Model, barrel2Translation);
+    const GLuint barrel2First = tank_mesh.size() + field_mesh.size();
+    drawMesh(GL_TRIANGLES, 2, barrel2First, barrel_mesh.size(), barrel2Model);
+
+    glm::mat4 stone1Model(1.0f);
+    stone1Model = glm::translate(stone1Model, stone1Translation);
+    const GLuint stone1First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size();
+    drawMesh(GL_TRIANGLES, 3, stone1First, stone_mesh.size(), stone1Model);
+
+    glm::mat4 stone2Model(1.0f);
+    stone2Model = glm::translate(stone2Model, stone2Translation);
+    const GLuint stone2First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size();
+    drawMesh(GL_TRIANGLES, 3, stone2First, stone_mesh.size(), stone2Model);
+
+    glm::mat4 christmasTreeModel(1.0f);
+    christmasTreeModel = glm::translate(christmasTreeModel, christmasTreeTranslation);
+    const GLuint christmasTreeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size();
+    drawMesh(GL_TRIANGLES, 4, christmasTreeFirst, christmas_tree_mesh.size(), christmasTreeModel);
+
+    glm::mat4 treeModel(1.0f);
+    treeModel = glm::translate(treeModel, treeTranslation);
+    const GLuint treeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
+    drawMesh(GL_TRIANGLES, 5, treeFirst, tree_mesh.size(), treeModel);
 
     glDisableVertexAttribArray(Attrib_vertex_position);
     glDisableVertexAttribArray(Attrib_vertex_texture_coordinate);
@@ -385,40 +458,9 @@ int main()
     GLfloat previousFrameRenderTime = elapsed.asMilliseconds();
     GLfloat framesRenderTimeDelta = previousFrameRenderTime;
 
-    auto motorSoundBuffer = sf::SoundBuffer();
-    motorSoundBuffer.loadFromFile("Sounds/motor.wav");
-    auto motorSound = sf::Sound();
-    motorSound.setBuffer(motorSoundBuffer);
-    motorSound.setVolume(30.0f);
-    motorSound.play();
-
-    auto shotSoundBuffer = sf::SoundBuffer();
-    shotSoundBuffer.loadFromFile("Sounds/shot.wav");
-    auto shotSound = sf::Sound();
-    shotSound.setBuffer(shotSoundBuffer);
-
-    auto enemyDestroyedSoundBuffer = sf::SoundBuffer();
-    enemyDestroyedSoundBuffer.loadFromFile("Sounds/destruction.wav");
-    auto enemyDestroyedSound = sf::Sound();
-    enemyDestroyedSound.setBuffer(enemyDestroyedSoundBuffer);
-
-    auto lightSoundBuffer = sf::SoundBuffer();
-    lightSoundBuffer.loadFromFile("Sounds/light.wav");
-    auto lightSound = sf::Sound();
-    lightSound.setBuffer(lightSoundBuffer);
-
-    auto breakSoundBuffer = sf::SoundBuffer();
-    breakSoundBuffer.loadFromFile("Sounds/break.wav");
-    auto breakSound = sf::Sound();
-    breakSound.setBuffer(breakSoundBuffer);
-
     while (window.isOpen())
     {
         sf::Event event;
-        if (motorSound.getStatus() != sf::SoundSource::Playing)
-        {
-            motorSound.play();
-        }
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -430,15 +472,6 @@ int main()
                 glViewport(0, 0, event.size.width, event.size.height);
                 windowWidth = event.size.width;
                 windowHeight = event.size.height;
-            }
-            else if (event.type == sf::Event::MouseButtonPressed)
-            {
-                switch (event.key.code)
-                {
-                case sf::Mouse::Left:
-                    shotSound.play();
-                    break;
-                }
             }
             else if (event.type == sf::Event::MouseWheelScrolled)
             {

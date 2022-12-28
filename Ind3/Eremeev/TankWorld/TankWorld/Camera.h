@@ -83,9 +83,9 @@ public:
 		GLfloat radiansYaw = glm::radians(yaw);
 		front = glm::normalize(
 			glm::vec3(
-				sin(radiansYaw) * cosPitch,
+				static_cast<GLfloat>(sin(radiansYaw)) * cosPitch,
 				sinPitch,
-				cos(radiansYaw) * cosPitch
+				static_cast<GLfloat>(cos(radiansYaw)) * cosPitch
 			)
 		);
 		right = glm::normalize(glm::cross(front, worldUp));

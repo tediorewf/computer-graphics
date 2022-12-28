@@ -79,10 +79,10 @@ public:
 
 		increaseRotation(0.0f, currentTurnSpeed * framesRenderTimeDelta, 0.0f);
 
-		GLfloat distance = currentRunSpeed * framesRenderTimeDelta;
+		GLfloat runDistance = currentRunSpeed * framesRenderTimeDelta;
 		GLfloat radiansRotationY = glm::radians(rotationY);
-		GLfloat runOffsetX = distance * static_cast<GLfloat>(sin(radiansRotationY));
-		GLfloat runOffsetZ = distance * static_cast<GLfloat>(cos(radiansRotationY));
+		GLfloat runOffsetX = runDistance * static_cast<GLfloat>(sin(radiansRotationY));
+		GLfloat runOffsetZ = runDistance * static_cast<GLfloat>(cos(radiansRotationY));
 
 		increasePosition(runOffsetX, 0.0f, runOffsetZ);
 		increaseSpotLightTarget(runOffsetX, 0.0f, runOffsetZ);
