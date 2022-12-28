@@ -10,4 +10,4 @@ struct Vertex
 	glm::vec3 normal;
 };
 
-#endif  // !VERTEX_H
+#endif // !VERTEX_H

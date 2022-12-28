@@ -8,4 +8,4 @@
 
 std::vector<Vertex> parse_obj(const std::string& filename);
 
-#endif  // !OBJ_PARSER_H
+#endif // !OBJ_PARSER_H

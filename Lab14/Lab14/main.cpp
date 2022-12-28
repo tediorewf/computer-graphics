@@ -398,7 +398,7 @@ void Draw()
     glUniform1f(glGetUniformLocation(Program, "spotLight.innerCone"), cos(glm::radians(20.0f)));
     glUniform1f(glGetUniformLocation(Program, "spotLight.outerCone"), cos(glm::radians(25.0f)));
     
-    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 0);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 2);
     glm::mat4 modelBanana0(1.0f);
     modelBanana0 = glm::translate(modelBanana0, glm::vec3(100.f, 40.f, 20.f));
     modelBanana0 = glm::rotate(modelBanana0, glm::radians(23.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -433,7 +433,7 @@ void Draw()
     const GLuint appleFirst = banana_mesh.size() + floor_mesh.size();
     drawMesh(GL_TRIANGLES, 2, appleFirst, apple_mesh.size(), modelApple);
 
-    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 2);
+    glUniform1i(glGetUniformLocation(Program, "lighting_model"), 1);
     glm::mat4 modelChair(1.0f);
     modelChair = glm::translate(modelChair, glm::vec3(195.0f, 200.0f, 163.0f));
     modelChair = glm::scale(modelChair, glm::vec3(20.0f));
@@ -481,7 +481,7 @@ void ReleaseVBO()
     glDeleteBuffers(1, &VBO);
 }
 
-void ReleaseShaders()
+void ReleaseShader()
 {
     glUseProgram(0);
     glDeleteProgram(Program);
@@ -489,7 +489,7 @@ void ReleaseShaders()
 
 void Release()
 {
-    ReleaseShaders();
+    ReleaseShader();
     ReleaseVBO();
 }
 

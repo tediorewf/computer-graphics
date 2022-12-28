@@ -19,12 +19,11 @@ class Camera
 	void setFront()
 	{
 		GLfloat cosPitch = cos(glm::radians(pitch));
-		auto cameraFront = 
 		front = glm::normalize(
 			glm::vec3(
 				cos(glm::radians(yaw)) * cosPitch, 
 			    sin(glm::radians(pitch)), 
-			    sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+			    sin(glm::radians(yaw)) * cosPitch
 			)
 		);
 	}
