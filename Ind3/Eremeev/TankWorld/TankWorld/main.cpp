@@ -299,7 +299,8 @@ auto stone1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto barrel2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto stone2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto christmasTreeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
-auto treeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto tree1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto tree2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
@@ -394,10 +395,15 @@ void Draw()
     const GLuint christmasTreeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size();
     drawMesh(GL_TRIANGLES, 4, christmasTreeFirst, christmas_tree_mesh.size(), christmasTreeModel);
 
-    glm::mat4 treeModel(1.0f);
-    treeModel = glm::translate(treeModel, treeTranslation);
-    const GLuint treeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
-    drawMesh(GL_TRIANGLES, 5, treeFirst, tree_mesh.size(), treeModel);
+    glm::mat4 tree1Model(1.0f);
+    tree1Model = glm::translate(tree1Model, tree1Translation);
+    const GLuint tree1First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
+    drawMesh(GL_TRIANGLES, 5, tree1First, tree_mesh.size(), tree1Model);
+
+    glm::mat4 tree2Model(1.0f);
+    tree2Model = glm::translate(tree2Model, tree2Translation);
+    const GLuint tree2First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
+    drawMesh(GL_TRIANGLES, 5, tree2First, tree_mesh.size(), tree2Model);
 
     glDisableVertexAttribArray(Attrib_vertex_position);
     glDisableVertexAttribArray(Attrib_vertex_texture_coordinate);
