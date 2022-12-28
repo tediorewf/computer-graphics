@@ -26,7 +26,8 @@ GLuint Attrib_vertex_texture_coordinate;
 GLint Attrib_vertex_normal;
 
 GLuint VBO;
-GLuint textures[5];
+const GLuint NUM_TEXTURES = 6;
+GLuint textures[NUM_TEXTURES];
 
 const char* VertexShaderSource = R"(
     #version 330 core
@@ -138,12 +139,11 @@ void InitVBO()
     auto scene = std::vector<Vertex>();
     const std::size_t sceneSize = tank_mesh.size();
     scene.reserve(sceneSize);
-    // Загружаем игрока (танк)
+    // Загружаем танк
     scene.insert(scene.end(), tank_mesh.begin(), tank_mesh.end());
     // Загружаем поле
     scene.insert(scene.end(), field_mesh.begin(), field_mesh.end());
-
-    // Загружаем бочка
+    // Загружаем бочку
     scene.insert(scene.end(), barrel_mesh.begin(), barrel_mesh.end());
     // Загружаем камень
     scene.insert(scene.end(), stone_mesh.begin(), stone_mesh.end());
@@ -293,14 +293,14 @@ std::random_device rd;
 std::mt19937 mt(rd());
 std::uniform_real_distribution<GLfloat> dist(-15.0f, 15.0f);
 
-// Да, надо было делать нормально, но я уже замучался делать эти лабы
 auto enemyTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto barrel1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto stone1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto barrel2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto stone2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 auto christmasTreeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
-auto treeTranslation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto tree1Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
+auto tree2Translation = glm::vec3(dist(mt), 0.0f, dist(mt));
 
 void drawMesh(GLuint mode, GLuint unit, GLuint first, GLsizei count, glm::mat4 model)
 {
@@ -395,10 +395,15 @@ void Draw()
     const GLuint christmasTreeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size();
     drawMesh(GL_TRIANGLES, 4, christmasTreeFirst, christmas_tree_mesh.size(), christmasTreeModel);
 
-    glm::mat4 treeModel(1.0f);
-    treeModel = glm::translate(treeModel, treeTranslation);
-    const GLuint treeFirst = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
-    drawMesh(GL_TRIANGLES, 5, treeFirst, tree_mesh.size(), treeModel);
+    glm::mat4 tree1Model(1.0f);
+    tree1Model = glm::translate(tree1Model, tree1Translation);
+    const GLuint tree1First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
+    drawMesh(GL_TRIANGLES, 5, tree1First, tree_mesh.size(), tree1Model);
+
+    glm::mat4 tree2Model(1.0f);
+    tree2Model = glm::translate(tree2Model, tree2Translation);
+    const GLuint tree2First = tank_mesh.size() + field_mesh.size() + barrel_mesh.size() + stone_mesh.size() + christmas_tree_mesh.size();
+    drawMesh(GL_TRIANGLES, 5, tree2First, tree_mesh.size(), tree2Model);
 
     glDisableVertexAttribArray(Attrib_vertex_position);
     glDisableVertexAttribArray(Attrib_vertex_texture_coordinate);
