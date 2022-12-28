@@ -79,7 +79,7 @@ public:
 		position.y = playerPosition.y + verticalDistance;
 		position.z = playerPosition.z - offsetZ;
 
-		GLfloat yaw = player.getRotationY() + angleAroundPlayer;
+		GLfloat yaw = playerRotation + angleAroundPlayer;
 		GLfloat radiansYaw = glm::radians(yaw);
 		front = glm::normalize(
 			glm::vec3(
