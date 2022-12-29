@@ -7,7 +7,6 @@
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include <SOIL/SOIL.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
