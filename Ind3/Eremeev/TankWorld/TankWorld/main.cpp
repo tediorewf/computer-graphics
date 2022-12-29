@@ -71,7 +71,7 @@ const char *FragmentShaderSource = R"(
 
     in vec3 vs_position;
     in vec2 vs_texcoord;
-    in vec3 vs_normal;   
+    in vec3 vs_normal;
 
     uniform vec3 view_position;
 
@@ -93,13 +93,13 @@ const char *FragmentShaderSource = R"(
         vec4 spec = textureColor * pow(max(dot(lightDir, reflectedViewDir), 0.0f), 8.0f);
         return (diff + spec) * intensivity;
     }
-   
+
     void main() {
         vec3 dir_light_direction = dirLight.direction;
         vec3 spot_light_direction = spotLight.position - vs_position;
 
         vec3 view_direction = view_position - vs_position;
-        
+
         float dir_light_intensivity = 0.55f;
 
         float theta = dot(normalize(spot_light_direction), normalize(-spotLight.direction));
